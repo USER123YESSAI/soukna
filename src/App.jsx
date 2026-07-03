@@ -39,7 +39,9 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminUsersPage from './pages/admin/AdminUsersPage';
 import AdminProductsPage from './pages/admin/AdminProductsPage';
 import AdminCouponsPage from './pages/admin/AdminCouponsPage';
+import AdminCategoriesPage from './pages/admin/AdminCategoriesPage';
 import BuyerDashboardPage from './pages/buyer/BuyerDashboardPage';
+
 
 export default function App() {
   return (
@@ -94,8 +96,10 @@ export default function App() {
                 <Route index element={<AdminDashboardPage />} />
                 <Route path="users" element={<AdminUsersPage />} />
                 <Route path="products" element={<AdminProductsPage />} />
+                <Route path="categories" element={<AdminCategoriesPage />} />
                 <Route path="coupons" element={<AdminCouponsPage />} />
                 <Route path="messages" element={<MessagesPage />} />
+
               </Route>
 
             </Route>
