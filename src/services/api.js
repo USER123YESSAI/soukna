@@ -8,12 +8,14 @@ export function resolveMediaUrl(url) {
   if (!url || typeof url !== 'string') return null;
   if (url.startsWith('blob:') || url.startsWith('data:')) return url;
 
+  // Si l'API renvoie directement une URL complète, on ne doit jamais la modifier.
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+
+  // Normalisation /storage/... (chemin relatif)
   const storageMatch = url.match(/\/storage\/(.+)$/);
   if (storageMatch) {
     const path = `/storage/${storageMatch[1]}`;
-    if (import.meta.env.DEV) {
-      return path;
-    }
+    if (import.meta.env.DEV) return path;
     return `${BACKEND_URL}${path}`;
   }
 
@@ -25,13 +27,13 @@ export function resolveMediaUrl(url) {
     return `${BACKEND_URL}/${url}`;
   }
 
-
   if (url.startsWith('http://localhost/') && BACKEND_URL.includes(':8000')) {
     return url.replace('http://localhost/', `${BACKEND_URL}/`);
   }
 
   return url;
 }
+
 
 export const api = axios.create({
   baseURL: API_URL,
