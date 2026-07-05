@@ -8,6 +8,14 @@ export function resolveMediaUrl(url) {
   if (!url || typeof url !== 'string') return null;
   if (url.startsWith('blob:') || url.startsWith('data:')) return url;
 
+  // En dev, si l'API renvoie une URL complète du backend, la convertir en chemin relatif pour utiliser le proxy Vite
+  if (import.meta.env.DEV && url.includes('/storage/')) {
+    const storageMatch = url.match(/\/storage\/(.+)$/);
+    if (storageMatch) {
+      return `/storage/${storageMatch[1]}`;
+    }
+  }
+
   // Si l'API renvoie directement une URL complète, on ne doit jamais la modifier.
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
 
@@ -15,6 +23,8 @@ export function resolveMediaUrl(url) {
   const storageMatch = url.match(/\/storage\/(.+)$/);
   if (storageMatch) {
     const path = `/storage/${storageMatch[1]}`;
+    // En dev, le proxy Vite redirige /storage vers le backend
+    // En prod, on utilise l'URL complète du backend
     if (import.meta.env.DEV) return path;
     return `${BACKEND_URL}${path}`;
   }

@@ -33,6 +33,13 @@ export default function ProductImage({
     return resolved;
   }, [resolved, errored, fallbackSrc]);
 
+  console.log('[ProductImage]', {
+    originalSrc: src,
+    resolved,
+    finalSrc,
+    errored,
+  });
+
   return (
     <img
       src={finalSrc}
@@ -48,7 +55,16 @@ export default function ProductImage({
       }}
       loading="lazy"
       decoding="async"
-      onError={() => setErrored(true)}
+      onError={(e) => {
+        console.error('[ProductImage] Image load error', {
+          src: finalSrc,
+          error: e,
+        });
+        setErrored(true);
+      }}
+      onLoad={() => {
+        console.log('[ProductImage] Image loaded successfully', { src: finalSrc });
+      }}
       {...props}
     />
   );
