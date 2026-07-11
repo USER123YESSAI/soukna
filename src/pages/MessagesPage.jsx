@@ -305,7 +305,7 @@ function MessagesContent() {
                 ) : (
                   <>
                     {messages.map(msg => (
-                      <MessageBubble key={msg.id} msg={msg} isMine={msg.sender_id === user?.id || msg.is_mine} />
+                      <MessageBubble key={msg.id} msg={msg} isMine={msg.sender?.id === user?.id || msg.sender_id === user?.id || msg.is_mine} />
                     ))}
                     <div ref={messagesEndRef} />
                   </>

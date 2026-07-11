@@ -11,7 +11,7 @@ import { useDebounce } from '../hooks/useDebounce';
 import { getErrorMessage } from '../services/api';
 import toast from 'react-hot-toast';
 
-export default function ProductsPage() {
+export default function ProductsPage({ basePath = '/products' }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -92,7 +92,7 @@ export default function ProductsPage() {
         <>
           <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} basePath={basePath} />
             ))}
           </div>
           <Pagination

@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom';
 import { formatPrice } from '../../services/api';
 import ProductImage from '../ui/ProductImage';
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, basePath = '/products' }) {
   const price = product.effective_price ?? product.price;
   const isOnSale = product.is_on_sale && product.price !== price;
 
   return (
-    <Link to={`/products/${product.id}`} style={{ textDecoration: 'none' }}>
+    <Link to={`${basePath}/${product.id}`} style={{ textDecoration: 'none' }}>
       <div style={{
         background: 'white', borderRadius: 16, border: '1.5px solid var(--border)',
         overflow: 'hidden', boxShadow: 'var(--shadow-sm)', transition: 'all .2s',

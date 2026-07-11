@@ -161,7 +161,7 @@ export default function MessagesWidget() {
               <div style={{ flex: 1, overflowY: 'auto', padding: '10px 12px', background: '#f8fafc' }}>
                 {messages.length === 0
                   ? <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: 12, marginTop: 20 }}>Commencez la conversation 👋</p>
-                  : <>{messages.map(msg => <MessageBubble key={msg.id} msg={msg} isMine={msg.sender_id === user?.id || msg.is_mine} />)}<div ref={endRef} /></>
+                  : <>{messages.map(msg => <MessageBubble key={msg.id} msg={msg} isMine={msg.sender?.id === user?.id || msg.sender_id === user?.id || msg.is_mine} />)}<div ref={endRef} /></>
                 }
               </div>
               <div style={{ padding: '8px 10px', borderTop: '1px solid var(--border)', background: 'white', flexShrink: 0 }}>

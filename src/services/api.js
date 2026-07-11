@@ -8,15 +8,15 @@ export function resolveMediaUrl(url) {
   if (!url || typeof url !== 'string') return null;
   if (url.startsWith('blob:') || url.startsWith('data:')) return url;
 
-  // En dev, si l'API renvoie une URL complète du backend, la convertir en chemin relatif pour utiliser le proxy Vite
-  if (import.meta.env.DEV && url.includes('/storage/')) {
+  // Si l'API (mal configurée) renvoie localhost en production, on corrige l'URL
+  if ((url.startsWith('http://localhost') || url.startsWith('http://127.0.0.1')) && !import.meta.env.DEV) {
     const storageMatch = url.match(/\/storage\/(.+)$/);
     if (storageMatch) {
-      return `/storage/${storageMatch[1]}`;
+      return `${BACKEND_URL}/storage/${storageMatch[1]}`;
     }
   }
 
-  // Si l'API renvoie directement une URL complète, on ne doit jamais la modifier.
+  // Si l'API renvoie directement une URL complète, on ne la modifie pas
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
 
   // Normalisation /storage/... (chemin relatif)

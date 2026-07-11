@@ -44,10 +44,10 @@ function SellerDashboard() {
 
   if (loading) return <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}><LoadingSpinner size="lg" /></div>;
 
-  const totalRevenue = dashboard?.total_revenue ?? stats?.total_revenue ?? 0;
-  const totalOrders = dashboard?.total_orders ?? stats?.orders_count ?? 0;
+  const totalRevenue = dashboard?.total_sales ?? 0;
+  const totalOrders = dashboard?.total_orders ?? 0;
   const pendingOrders = dashboard?.pending_orders ?? 0;
-  const totalProducts = dashboard?.published_products ?? stats?.products_count ?? 0;
+  const totalProducts = dashboard?.active_products ?? dashboard?.total_products ?? 0;
 
   return (
     <div>
@@ -110,10 +110,10 @@ function SellerDashboard() {
             <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700 }}>Statistiques détaillées</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
-                ['Ventes ce mois', formatPrice(stats?.monthly_revenue ?? 0)],
-                ['Total avis', stats?.total_reviews ?? 0],
-                ['Produits en stock', stats?.products_in_stock ?? totalProducts],
-                ['Taux de livraison', stats?.delivery_rate ? stats.delivery_rate + '%' : '—'],
+                ['Vues totales', stats?.total_views ?? 0],
+                ['Taux de conversion', stats?.conversion_rate ? stats.conversion_rate + '%' : '0%'],
+                ['Panier moyen', formatPrice(stats?.average_order_value ?? 0)],
+                ['Satisfaction client', stats?.customer_satisfaction ? stats.customer_satisfaction + ' / 5' : '—'],
               ].map(([label, val]) => (
                 <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #f1f5f9' }}>
                   <span style={{ fontSize: 13, color: '#64748b' }}>{label}</span>

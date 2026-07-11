@@ -115,11 +115,11 @@ function AdminCoupons() {
           </div>
           <div>
             <label className="text-sm font-medium">Début</label>
-            <input type="datetime-local" {...register('starts_at')} className="mt-1 w-full rounded-lg border px-3 py-2" />
+            <input type="datetime-local" min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)} {...register('starts_at')} className="mt-1 w-full rounded-lg border px-3 py-2" />
           </div>
           <div>
             <label className="text-sm font-medium">Expiration</label>
-            <input type="datetime-local" {...register('ends_at')} className="mt-1 w-full rounded-lg border px-3 py-2" />
+            <input type="datetime-local" min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)} {...register('ends_at')} className="mt-1 w-full rounded-lg border px-3 py-2" />
           </div>
           <div>
             <label className="text-sm font-medium">Limite d&apos;usage</label>

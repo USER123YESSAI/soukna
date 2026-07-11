@@ -73,6 +73,8 @@ export default function App() {
               {/* ── Espace acheteur ── */}
               <Route path="buyer" element={<BuyerLayout />}>
                 <Route index element={<BuyerDashboardPage />} />
+                <Route path="catalogue" element={<ProductsPage basePath="/buyer/catalogue" />} />
+                <Route path="catalogue/:id" element={<ProductDetailPage basePath="/buyer/catalogue" />} />
                 <Route path="orders" element={<OrdersPage />} />
                 <Route path="orders/:id" element={<OrderDetailPage />} />
                 <Route path="favorites" element={<FavoritesPage />} />
@@ -84,6 +86,8 @@ export default function App() {
               {/* ── Espace vendeur ── */}
               <Route path="seller" element={<SellerLayout />}>
                 <Route index element={<SellerDashboardPage />} />
+                <Route path="catalogue" element={<ProductsPage basePath="/seller/catalogue" />} />
+                <Route path="catalogue/:id" element={<ProductDetailPage basePath="/seller/catalogue" />} />
                 <Route path="products" element={<SellerProductsPage />} />
                 <Route path="products/new" element={<SellerProductFormPage />} />
                 <Route path="products/:id/edit" element={<SellerProductFormPage />} />
@@ -94,6 +98,8 @@ export default function App() {
               {/* ── Espace admin ── */}
               <Route path="admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboardPage />} />
+                <Route path="catalogue" element={<ProductsPage basePath="/admin/catalogue" />} />
+                <Route path="catalogue/:id" element={<ProductDetailPage basePath="/admin/catalogue" />} />
                 <Route path="users" element={<AdminUsersPage />} />
                 <Route path="products" element={<AdminProductsPage />} />
                 <Route path="categories" element={<AdminCategoriesPage />} />

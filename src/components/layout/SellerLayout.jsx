@@ -4,6 +4,7 @@ import DashboardSidebar from './DashboardSidebar';
 
 const SELLER_NAV = [
   { to: '/seller', label: 'Tableau de bord', icon: '📊', end: true },
+  { to: '/seller/catalogue', label: 'Catalogue', icon: '🛍️' },
   {
     to: '/seller/products',
     label: 'Mes produits',

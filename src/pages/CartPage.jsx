@@ -63,7 +63,7 @@ function CartContent() {
               <Link to={`/products/${item.product?.id}`} className="font-medium hover:text-indigo-600">
                 {item.product?.title}
               </Link>
-              <p className="text-sm text-slate-500">{formatPrice(item.unit_price)} / unité</p>
+              <p className="text-sm text-slate-500">{formatPrice(item.product?.effective_price)} / unité</p>
             </div>
             <div className="flex items-center gap-2">
               <button

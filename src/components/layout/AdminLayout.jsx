@@ -4,6 +4,7 @@ import DashboardSidebar from './DashboardSidebar';
 
 const ADMIN_NAV = [
   { to: '/admin', label: 'Tableau de bord', icon: '📊', end: true },
+  { to: '/admin/catalogue', label: 'Catalogue', icon: '🛍️' },
   { to: '/admin/users', label: 'Utilisateurs', icon: '👥' },
   { to: '/admin/products', label: 'Modération produits', icon: '📦' },
   { to: '/admin/coupons', label: 'Coupons', icon: '🎫' },

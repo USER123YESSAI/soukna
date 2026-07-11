@@ -132,14 +132,7 @@ export default function HomePage() {
           </div>
 
           {/* Stats */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 32, marginTop: 48, borderTop: '1px solid rgba(255,255,255,.12)', paddingTop: 32 }}>
-            {[['500+', 'Produits'], ['120+', 'Vendeurs'], ['2 400+', 'Acheteurs'], ['98%', 'Satisfaction']].map(([n, l]) => (
-              <div key={l}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: 'white' }}>{n}</div>
-                <div style={{ fontSize: 12, color: '#a78bfa', fontWeight: 500, marginTop: 2 }}>{l}</div>
-              </div>
-            ))}
-          </div>
+         
         </div>
       </section>
 

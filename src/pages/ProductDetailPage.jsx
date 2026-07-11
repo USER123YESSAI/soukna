@@ -11,7 +11,7 @@ import InlineChat from '../components/messages/InlineChat';
 import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 
-export default function ProductDetailPage() {
+export default function ProductDetailPage({ basePath = '/products' }) {
   const { id } = useParams();
   const { isAuthenticated, user } = useAuth();
   const { addToCart } = useCart();
@@ -135,7 +135,7 @@ export default function ProductDetailPage() {
           <h1 className="text-2xl font-bold text-slate-900">{product.title}</h1>
           {product.category && (
             <Link
-              to={`/products?category_id=${product.category.id}`}
+              to={`${basePath}?category_id=${product.category.id}`}
               className="mt-1 inline-block text-sm text-indigo-600 hover:underline"
             >
               {product.category.name}
