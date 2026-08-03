@@ -3,21 +3,21 @@ import ProtectedRoute from '../auth/ProtectedRoute';
 import DashboardSidebar from './DashboardSidebar';
 
 const SELLER_NAV = [
-  { to: '/seller', label: 'Tableau de bord', icon: '📊', end: true },
-  { to: '/seller/catalogue', label: 'Catalogue', icon: '🛍️' },
+  { to: '/seller', label: 'Accueil', icon: 'home', end: true },
+  { type: 'section', label: 'COMMERCE' },
   {
+    label: 'Produits',
+    icon: 'package',
     to: '/seller/products',
-    label: 'Mes produits',
-    icon: '📦',
-    end: true,
-    isActive: (_, location) => {
-      const p = location.pathname;
-      return p === '/seller/products' || /^\/seller\/products\/\d+\/edit$/.test(p);
-    },
+    children: [
+      { to: '/seller/products', label: 'Mes produits', end: true },
+      { to: '/seller/products/new', label: 'Nouveau produit', end: true },
+    ]
   },
-  { to: '/seller/products/new', label: 'Nouveau produit', icon: '➕', end: true },
-  { to: '/seller/orders', label: 'Commandes', icon: '🛒' },
-  { to: '/seller/messages', label: 'Messages', icon: '💬' },
+  { to: '/seller/catalogue', label: 'Catalogue global', icon: 'grid' },
+  { to: '/seller/orders', label: 'Commandes', icon: 'shopping-bag' },
+  { type: 'section', label: 'RELATION CLIENT' },
+  { to: '/seller/messages', label: 'Messages', icon: 'message-square' },
 ];
 
 export default function SellerLayout() {
@@ -27,7 +27,7 @@ export default function SellerLayout() {
         <DashboardSidebar
           title="Espace Vendeur"
           subtitle="Mon activité"
-          accentColor="#6366f1"
+          accentColor="#059669"
           navItems={SELLER_NAV}
         />
         <div className="dashboard-content">
@@ -37,3 +37,4 @@ export default function SellerLayout() {
     </ProtectedRoute>
   );
 }
+

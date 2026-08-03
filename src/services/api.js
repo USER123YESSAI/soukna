@@ -67,7 +67,8 @@ export const setLogoutCallback = (cb) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && logoutCallback) {
+    const hasToken = !!localStorage.getItem('token');
+    if (error.response?.status === 401 && logoutCallback && hasToken) {
       logoutCallback();
     }
     return Promise.reject(error);
@@ -75,10 +76,13 @@ api.interceptors.response.use(
 );
 
 export const getErrorMessage = (error) => {
+  if (error.response?.status === 401) {
+    return 'Veuillez vous connecter pour effectuer cette action.';
+  }
   if (error.response?.status === 403) {
     return "Vous n'avez pas les droits pour effectuer cette action.";
   }
-  if (error.response?.data?.message) {
+  if (error.response?.data?.message && error.response.data.message !== 'Unauthenticated.') {
     return error.response.data.message;
   }
   if (error.response?.data?.errors) {

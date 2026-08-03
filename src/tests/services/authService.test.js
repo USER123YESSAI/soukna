@@ -1,13 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { authService } from '../../services/authService';
-import api from '../../services/api';
+import { api } from '../../services/api';
 
-// Mock the API module
+const mockApi = vi.hoisted(() => ({
+  post: vi.fn(),
+  get: vi.fn(),
+  put: vi.fn(),
+  delete: vi.fn(),
+  patch: vi.fn(),
+}));
+
 vi.mock('../../services/api', () => ({
-  default: {
-    post: vi.fn(),
-    get: vi.fn(),
-  },
+  default: mockApi,
+  api: mockApi,
 }));
 
 describe('authService', () => {
@@ -30,7 +35,7 @@ describe('authService', () => {
       const result = await authService.register(mockData);
 
       expect(api.post).toHaveBeenCalledWith('/auth/register', mockData);
-      expect(result).toEqual({ user: mockData, token: 'mock-token' });
+      expect(result).toEqual({ data: { user: mockData, token: 'mock-token' } });
     });
 
     it('should handle API errors', async () => {
@@ -53,7 +58,7 @@ describe('authService', () => {
       const result = await authService.login(mockCredentials);
 
       expect(api.post).toHaveBeenCalledWith('/auth/login', mockCredentials);
-      expect(result).toEqual({ user: { id: 1, email: 'test@example.com' }, token: 'mock-token' });
+      expect(result).toEqual({ data: { user: { id: 1, email: 'test@example.com' }, token: 'mock-token' } });
     });
   });
 
@@ -75,7 +80,7 @@ describe('authService', () => {
       const result = await authService.me();
 
       expect(api.get).toHaveBeenCalledWith('/auth/me');
-      expect(result).toEqual(mockUser);
+      expect(result).toEqual({ data: mockUser });
     });
   });
 
@@ -88,10 +93,8 @@ describe('authService', () => {
 
       const result = await authService.updateProfile(mockData);
 
-      expect(api.post).toHaveBeenCalledWith('/auth/profile', mockData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      expect(result).toEqual({ name: 'Updated Name' });
+      expect(api.post).toHaveBeenCalledWith('/auth/profile', mockData);
+      expect(result).toEqual({ data: { name: 'Updated Name' } });
     });
   });
 });

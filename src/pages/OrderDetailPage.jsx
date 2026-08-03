@@ -92,7 +92,26 @@ function OrderDetail() {
                 </p>
                 {item.seller && <p className="text-xs text-slate-400">Vendeur : {item.seller.name}</p>}
               </div>
-              <p className="font-medium">{formatPrice(item.subtotal)}</p>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+                <p className="font-medium" style={{ margin: 0 }}>{formatPrice(item.subtotal)}</p>
+                {item.product?.id && (
+                  <Link
+                    to={`/products/${item.product.id}#reviews-section`}
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: '#4f46e5',
+                      textDecoration: 'none',
+                      background: '#f1f5f9',
+                      padding: '4px 10px',
+                      borderRadius: 99,
+                      border: '1px solid #e2e8f0'
+                    }}
+                  >
+                    ⭐ Noter le produit
+                  </Link>
+                )}
+              </div>
             </div>
           ))}
         </div>

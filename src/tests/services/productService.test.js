@@ -1,14 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { productService } from '../../services/productService';
-import api from '../../services/api';
+import { api } from '../../services/api';
+
+const mockApi = vi.hoisted(() => ({
+  get: vi.fn(),
+  post: vi.fn(),
+  put: vi.fn(),
+  delete: vi.fn(),
+  patch: vi.fn(),
+}));
 
 vi.mock('../../services/api', () => ({
-  default: {
-    get: vi.fn(),
-    post: vi.fn(),
-    put: vi.fn(),
-    delete: vi.fn(),
-  },
+  default: mockApi,
+  api: mockApi,
 }));
 
 describe('productService', () => {
@@ -46,7 +50,7 @@ describe('productService', () => {
 
       const result = await productService.getTopSelling();
 
-      expect(api.get).toHaveBeenCalledWith('/products/top-selling');
+      expect(api.get).toHaveBeenCalledWith('/products/top-selling', { params: { limit: 8 } });
       expect(result).toEqual(mockResponse);
     });
   });

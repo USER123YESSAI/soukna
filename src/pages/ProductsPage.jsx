@@ -23,6 +23,8 @@ export default function ProductsPage({ basePath = '/products' }) {
     category_id: searchParams.get('category_id') || '',
     min_price: searchParams.get('min_price') || '',
     max_price: searchParams.get('max_price') || '',
+    in_stock: searchParams.get('in_stock') === 'true',
+    on_sale: searchParams.get('on_sale') === 'true',
     sort: searchParams.get('sort') || 'newest',
     page: parseInt(searchParams.get('page') || '1', 10),
   });
@@ -41,16 +43,25 @@ export default function ProductsPage({ basePath = '/products' }) {
       if (filters.category_id) params.category_id = filters.category_id;
       if (filters.min_price) params.min_price = filters.min_price;
       if (filters.max_price) params.max_price = filters.max_price;
+      if (filters.in_stock) params.in_stock = 'true';
+      if (filters.on_sale) params.discount = 'true';
 
       const { data } = await productService.getAll(params);
-      setProducts(data.data || []);
+      let list = data.data || [];
+      if (filters.in_stock) {
+        list = list.filter((p) => p.stock > 0 || p.in_stock !== false);
+      }
+      if (filters.on_sale) {
+        list = list.filter((p) => p.is_on_sale || p.old_price > p.price);
+      }
+      setProducts(list);
       setPagination(data.pagination);
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
-  }, [filters.page, filters.sort, filters.category_id, filters.min_price, filters.max_price, debouncedSearch]);
+  }, [filters.page, filters.sort, filters.category_id, filters.min_price, filters.max_price, filters.in_stock, filters.on_sale, debouncedSearch]);
 
   useEffect(() => {
     categoryService.getAll().then(({ data }) => {
@@ -68,6 +79,8 @@ export default function ProductsPage({ basePath = '/products' }) {
     if (filters.category_id) params.set('category_id', filters.category_id);
     if (filters.min_price) params.set('min_price', filters.min_price);
     if (filters.max_price) params.set('max_price', filters.max_price);
+    if (filters.in_stock) params.set('in_stock', 'true');
+    if (filters.on_sale) params.set('on_sale', 'true');
     if (filters.sort !== 'newest') params.set('sort', filters.sort);
     if (filters.page > 1) params.set('page', String(filters.page));
     setSearchParams(params, { replace: true });
@@ -78,19 +91,50 @@ export default function ProductsPage({ basePath = '/products' }) {
   };
 
   return (
-    <div>
-      <h1 className="mb-6 text-2xl font-bold text-slate-900">Catalogue produits</h1>
-      <ProductFilters filters={filters} categories={categories} onChange={handleFilterChange} />
+    <div style={{ maxWidth: 1280, margin: '0 auto', padding: '24px 0 64px' }}>
+      {/* Header */}
+      <div style={{ marginBottom: 32 }}>
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          padding: '4px 14px', borderRadius: 99, fontSize: 12, fontWeight: 700,
+          background: '#e0e7ff', color: '#4f46e5', marginBottom: 12
+        }}>
+          ✦ Explorez l&apos;univers Soukna
+        </span>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16 }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: 32, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.5px' }}>
+              Catalogue Produits
+            </h1>
+            <p style={{ margin: '6px 0 0', fontSize: 15, color: '#64748b' }}>
+              Découvrez notre sélection complète de produits authentiques et vérifiés
+            </p>
+          </div>
+          {pagination && (
+            <span style={{ fontSize: 14, fontWeight: 700, color: '#475569', background: 'white', padding: '8px 16px', borderRadius: 99, border: '1px solid var(--border)', boxShadow: 'var(--shadow-xs)' }}>
+              {pagination.total || products.length} article{(pagination.total || products.length) > 1 ? 's' : ''} disponible{(pagination.total || products.length) > 1 ? 's' : ''}
+            </span>
+          )}
+        </div>
+      </div>
 
+      {/* Filtres */}
+      <div style={{ marginBottom: 36 }}>
+        <ProductFilters filters={filters} categories={categories} onChange={handleFilterChange} />
+      </div>
+
+      {/* Grid Produits */}
       {loading ? (
-        <div className="flex justify-center py-20">
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '100px 0' }}>
           <LoadingSpinner size="lg" />
         </div>
       ) : products.length === 0 ? (
-        <EmptyState title="Aucun produit trouvé" description="Essayez de modifier vos filtres." />
+        <div style={{ margin: '40px 0' }}>
+          <EmptyState title="Aucun produit trouvé" description="Essayez d&apos;ajuster vos critères de recherche ou vos filtres de prix." />
+        </div>
       ) : (
         <>
-          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 24, marginBottom: 40 }}>
             {products.map((product) => (
               <ProductCard key={product.id} product={product} basePath={basePath} />
             ))}

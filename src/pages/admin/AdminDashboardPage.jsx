@@ -10,7 +10,7 @@ function KpiCard({ icon, label, value, sub, color, linkTo, linkLabel }) {
   return (
     <div style={{ background: 'white', borderRadius: 16, border: '1.5px solid var(--border)', padding: '22px 24px', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div style={{ width: 44, height: 44, borderRadius: 12, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>{icon}</div>
+        {icon && <div style={{ width: 44, height: 44, borderRadius: 12, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>{icon}</div>}
         {linkTo && <Link to={linkTo} style={{ fontSize: 12, color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>{linkLabel ?? 'Voir →'}</Link>}
       </div>
       <div>
@@ -44,10 +44,10 @@ function AdminDashboard() {
 
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 32 }}>
-        <KpiCard icon="👥" label="Utilisateurs" value={stats?.users_count ?? stats?.total_users ?? 0} sub="comptes actifs" color="#6366f1" linkTo="/admin/users" />
-        <KpiCard icon="📦" label="Produits" value={stats?.products_count ?? stats?.total_products ?? 0} sub="dans le catalogue" color="#f59e0b" linkTo="/admin/products" />
-        <KpiCard icon="🛒" label="Commandes" value={stats?.orders_count ?? stats?.total_orders ?? 0} color="#10b981" />
-        <KpiCard icon="💰" label="Revenus" value={formatPrice(stats?.total_revenue ?? 0)} color="#ec4899" />
+        <KpiCard label="Utilisateurs" value={stats?.users_count ?? stats?.total_users ?? 0} sub="comptes actifs" color="#6366f1" linkTo="/admin/users" />
+        <KpiCard label="Produits" value={stats?.products_count ?? stats?.total_products ?? 0} sub="dans le catalogue" color="#f59e0b" linkTo="/admin/products" />
+        <KpiCard label="Commandes" value={stats?.orders_count ?? stats?.total_orders ?? 0} color="#10b981" />
+        <KpiCard label="Revenus" value={formatPrice(stats?.total_revenue ?? 0)} color="#ec4899" />
       </div>
 
       {/* Detail grid */}
@@ -59,14 +59,14 @@ function AdminDashboard() {
           </div>
           <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
             {[
-              { to: '/admin/users', icon: '👥', label: 'Gérer les utilisateurs', desc: 'Suspendre, réactiver des comptes', color: '#6366f1' },
-              { to: '/admin/products', icon: '📦', label: 'Modérer les produits', desc: 'Valider, rejeter des produits', color: '#f59e0b' },
-              { to: '/admin/coupons', icon: '🎫', label: 'Gérer les coupons', desc: 'Créer et modifier des codes promo', color: '#10b981' },
+              { to: '/admin/users', label: 'Gérer les utilisateurs', desc: 'Suspendre, réactiver des comptes', color: '#6366f1' },
+              { to: '/admin/products', label: 'Modérer les produits', desc: 'Valider, rejeter des produits', color: '#f59e0b' },
+              { to: '/admin/coupons', label: 'Gérer les coupons', desc: 'Créer et modifier des codes promo', color: '#10b981' },
             ].map(({ to, icon, label, desc, color }) => (
               <Link key={to} to={to} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 12, textDecoration: 'none', border: '1.5px solid var(--border)', transition: 'all .15s' }}
                 onMouseEnter={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.borderColor = color; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.borderColor = 'var(--border)'; }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{icon}</div>
+                {icon && <div style={{ width: 40, height: 40, borderRadius: 10, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{icon}</div>}
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 14, color: '#0f172a' }}>{label}</div>
                   <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2 }}>{desc}</div>
@@ -108,7 +108,6 @@ function AdminDashboard() {
 
           {/* Alert card */}
           <div style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)', borderRadius: 16, padding: '20px 24px', border: '1.5px solid #fcd34d' }}>
-            <div style={{ fontSize: 20, marginBottom: 8 }}>⚠️</div>
             <h4 style={{ margin: '0 0 6px', fontSize: 14, fontWeight: 700, color: '#92400e' }}>Produits en attente</h4>
             <p style={{ margin: '0 0 14px', fontSize: 12, color: '#b45309', lineHeight: 1.5 }}>
               Des produits soumis par les vendeurs attendent votre validation.

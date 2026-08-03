@@ -20,7 +20,7 @@ function KpiCard({ icon, label, value, sub, color = '#10b981', linkTo, linkLabel
               {linkLabel ?? 'Voir →'}
             </Link>
           )}
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>{icon}</div>
+          {icon && <div style={{ width: 36, height: 36, borderRadius: 10, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>{icon}</div>}
         </div>
       </div>
       <div style={{ fontSize: 28, fontWeight: 800, color: '#0f172a' }}>{value}</div>
@@ -64,9 +64,9 @@ function BuyerDashboard() {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 32 }}>
-        <KpiCard icon="🛒" label="Commandes récentes" value={orders.length > 0 ? orders.length : 0} sub={pendingCount ? `${pendingCount} en attente` : 'sur les 5 dernières'} color="#6366f1" linkTo="/buyer/orders" />
-        <KpiCard icon="❤️" label="Favoris" value={favoritesCount} color="#ec4899" linkTo="/buyer/favorites" />
-        <KpiCard icon="🛍️" label="Panier" value={itemCount} sub={itemCount === 1 ? 'article' : 'articles'} color="#10b981" linkTo="/buyer/cart" />
+        <KpiCard label="Commandes récentes" value={orders.length > 0 ? orders.length : 0} sub={pendingCount ? `${pendingCount} en attente` : 'sur les 5 dernières'} color="#6366f1" linkTo="/buyer/orders" />
+        <KpiCard label="Favoris" value={favoritesCount} color="#ec4899" linkTo="/buyer/favorites" />
+        <KpiCard label="Panier" value={itemCount} sub={itemCount === 1 ? 'article' : 'articles'} color="#10b981" linkTo="/buyer/cart" />
       </div>
 
       <div style={{ background: 'white', borderRadius: 20, border: '1.5px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
@@ -76,7 +76,6 @@ function BuyerDashboard() {
         </div>
         {orders.length === 0 ? (
           <div style={{ padding: '48px 24px', textAlign: 'center', color: '#94a3b8' }}>
-            <div style={{ fontSize: 36, marginBottom: 8 }}>📋</div>
             <p style={{ margin: '0 0 12px', fontWeight: 500 }}>Aucune commande pour le moment</p>
             <Link to="/products" style={{ fontSize: 13, fontWeight: 600, color: '#10b981', textDecoration: 'none' }}>
               Parcourir le catalogue →

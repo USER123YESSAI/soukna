@@ -15,7 +15,7 @@ function KpiCard({ icon, label, value, sub, color = '#6366f1' }) {
     <div style={{ background: 'white', borderRadius: 16, border: '1.5px solid var(--border)', padding: '20px 24px', boxShadow: 'var(--shadow-sm)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <span style={{ fontSize: 12, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
-        <div style={{ width: 36, height: 36, borderRadius: 10, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>{icon}</div>
+        {icon && <div style={{ width: 36, height: 36, borderRadius: 10, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>{icon}</div>}
       </div>
       <div style={{ fontSize: 28, fontWeight: 800, color: '#0f172a' }}>{value}</div>
       {sub && <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 4, fontWeight: 500 }}>{sub}</div>}
@@ -58,10 +58,10 @@ function SellerDashboard() {
 
       {/* KPI Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 32 }}>
-        <KpiCard icon="💰" label="Revenus totaux" value={formatPrice(totalRevenue)} sub="toutes commandes" color="#10b981" />
-        <KpiCard icon="🛒" label="Commandes" value={totalOrders} sub={`${pendingOrders} en attente`} color="#6366f1" />
-        <KpiCard icon="📦" label="Produits publiés" value={totalProducts} color="#f59e0b" />
-        <KpiCard icon="⭐" label="Note moyenne" value={stats?.average_rating ? parseFloat(stats.average_rating).toFixed(1) + ' / 5' : '—'} color="#ec4899" />
+        <KpiCard label="Revenus totaux" value={formatPrice(totalRevenue)} sub="toutes commandes" color="#10b981" />
+        <KpiCard label="Commandes" value={totalOrders} sub={`${pendingOrders} en attente`} color="#6366f1" />
+        <KpiCard label="Produits publiés" value={totalProducts} color="#f59e0b" />
+        <KpiCard label="Note moyenne" value={stats?.average_rating ? parseFloat(stats.average_rating).toFixed(1) + ' / 5' : '—'} color="#ec4899" />
       </div>
 
       {/* Main grid */}
@@ -74,7 +74,6 @@ function SellerDashboard() {
           </div>
           {recentOrders.length === 0 ? (
             <div style={{ padding: '48px 24px', textAlign: 'center', color: '#94a3b8' }}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}>📋</div>
               <p style={{ margin: 0, fontWeight: 500 }}>Aucune commande reçue</p>
             </div>
           ) : (

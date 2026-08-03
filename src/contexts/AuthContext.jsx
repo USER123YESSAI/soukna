@@ -33,8 +33,11 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     setLogoutCallback(() => {
+      const hadToken = !!localStorage.getItem('token');
       clearAuth();
-      toast.error('Session expirée. Veuillez vous reconnecter.');
+      if (hadToken) {
+        toast.error('Session expirée. Veuillez vous reconnecter.');
+      }
     });
   }, [clearAuth]);
 

@@ -1,7 +1,10 @@
+import { lazy, Suspense } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import ProtectedRoute from '../auth/ProtectedRoute';
-import ProfilePage from '../../pages/ProfilePage';
+import LoadingSpinner from '../ui/LoadingSpinner';
+
+const ProfilePage = lazy(() => import('../../pages/ProfilePage'));
 
 export function RedirectToBuyerOrders() {
   return <Navigate to="/buyer/orders" replace />;
@@ -31,7 +34,9 @@ export function ProfileRoute() {
   if (user?.role === 'seller') {
     return (
       <ProtectedRoute roles={['seller']}>
-        <ProfilePage />
+        <Suspense fallback={<LoadingSpinner />}>
+          <ProfilePage />
+        </Suspense>
       </ProtectedRoute>
     );
   }

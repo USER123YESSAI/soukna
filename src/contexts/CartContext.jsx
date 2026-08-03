@@ -38,6 +38,10 @@ export function CartProvider({ children }) {
     parseInt(localStorage.getItem('cart_count') || '0', 10);
 
   const addToCart = async (productId, quantity = 1) => {
+    if (!isAuthenticated) {
+      toast.error('Veuillez vous connecter pour ajouter un produit au panier.');
+      return;
+    }
     try {
       const { data } = await cartService.add(productId, quantity);
       setCart(data.cart ?? data);

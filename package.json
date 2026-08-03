@@ -1,5 +1,5 @@
 {
-  "name": "epf-marketplace-frontend",
+  "name": "soukna-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -11,8 +11,8 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:integration": "vitest --run src/tests/integration",
-    "lint": "eslint src --ext .js,.jsx",
-    "lint:fix": "eslint src --ext .js,.jsx --fix"
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.62.7",

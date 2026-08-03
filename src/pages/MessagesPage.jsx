@@ -218,7 +218,7 @@ function MessagesContent() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-      <h1 style={{ margin: '0 0 20px', fontSize: 24, fontWeight: 800, color: '#0f172a' }}>💬 Messagerie</h1>
+      <h1 style={{ margin: '0 0 20px', fontSize: 24, fontWeight: 800, color: '#0f172a' }}>Messagerie</h1>
 
       <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: 0, height: 'calc(100vh - 220px)', minHeight: 500, background: 'white', borderRadius: 20, border: '1.5px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--shadow)' }}>
 
@@ -249,7 +249,6 @@ function MessagesContent() {
               <div style={{ display: 'flex', justifyContent: 'center', padding: 32 }}><LoadingSpinner /></div>
             ) : filteredConvs.length === 0 ? (
               <div style={{ padding: 24, textAlign: 'center', color: '#94a3b8' }}>
-                <div style={{ fontSize: 36, marginBottom: 8 }}>💬</div>
                 <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>
                   {searchQuery ? 'Aucun résultat' : 'Aucune conversation'}
                 </p>
@@ -274,7 +273,6 @@ function MessagesContent() {
         <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {!selectedUser ? (
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
-              <div style={{ fontSize: 64, marginBottom: 16 }}>💬</div>
               <h3 style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700, color: '#475569' }}>Vos messages</h3>
               <p style={{ margin: 0, fontSize: 14, textAlign: 'center', maxWidth: 280, lineHeight: 1.6 }}>
                 Sélectionnez une conversation à gauche ou démarrez une nouvelle discussion.
@@ -299,7 +297,6 @@ function MessagesContent() {
                   <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}><LoadingSpinner /></div>
                 ) : messages.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px 20px', color: '#94a3b8' }}>
-                    <div style={{ fontSize: 40, marginBottom: 8 }}>👋</div>
                     <p style={{ margin: 0, fontSize: 14 }}>Commencez la conversation avec <strong>{selectedUser.name}</strong></p>
                   </div>
                 ) : (

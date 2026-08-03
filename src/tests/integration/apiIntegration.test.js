@@ -4,13 +4,18 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { authService } from '../../services/authService';
 import { productService } from '../../services/productService';
 
+const mockApi = vi.hoisted(() => ({
+  post: vi.fn(),
+  get: vi.fn(),
+  put: vi.fn(),
+  delete: vi.fn(),
+  patch: vi.fn(),
+}));
+
 // Mock API
 vi.mock('../../services/api', () => ({
-  default: {
-    post: vi.fn(),
-    get: vi.fn(),
-    delete: vi.fn(),
-  },
+  default: mockApi,
+  api: mockApi,
 }));
 
 const createWrapper = () => {
@@ -74,20 +79,20 @@ describe('API Integration Tests', () => {
         password_confirmation: 'password123',
         role: 'buyer',
       });
-      expect(registerResult.user).toBeDefined();
-      expect(registerResult.token).toBe('test-token');
+      expect(registerResult.data.user).toBeDefined();
+      expect(registerResult.data.token).toBe('test-token');
 
       // Login
       const loginResult = await authService.login({
         email: 'test@example.com',
         password: 'password123',
       });
-      expect(loginResult.user).toBeDefined();
-      expect(loginResult.token).toBe('test-token');
+      expect(loginResult.data.user).toBeDefined();
+      expect(loginResult.data.token).toBe('test-token');
 
       // Get profile
       const profileResult = await authService.me();
-      expect(profileResult.email).toBe('test@example.com');
+      expect(profileResult.data.email).toBe('test@example.com');
 
       // Logout
       await authService.logout();

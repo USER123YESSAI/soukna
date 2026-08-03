@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { productService } from '../services/productService';
 import { favoriteService } from '../services/favoriteService';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,11 +8,14 @@ import { formatPrice, formatDate, getErrorMessage } from '../services/api';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ProductImage from '../components/ui/ProductImage';
 import InlineChat from '../components/messages/InlineChat';
+import ProductSeoSchema from '../components/seo/ProductSeoSchema';
+import ProductReviews from '../components/products/ProductReviews';
 import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 
 export default function ProductDetailPage({ basePath = '/products' }) {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
   const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
@@ -46,6 +49,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
   const toggleFavorite = async () => {
     if (!isAuthenticated) {
       toast.error('Connectez-vous pour ajouter aux favoris');
+      navigate('/login');
       return;
     }
     try {
@@ -66,6 +70,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
       toast.error('Connectez-vous pour ajouter au panier');
+      navigate('/login');
       return;
     }
     setAdding(true);
@@ -120,6 +125,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
 
   return (
     <div>
+      <ProductSeoSchema product={product} />
       <div className="grid gap-8 lg:grid-cols-2">
         <div className="overflow-hidden rounded-xl bg-white">
           {product.image ? (
@@ -149,10 +155,19 @@ export default function ProductDetailPage({ basePath = '/products' }) {
             )}
           </div>
 
-          <div className="mt-2 flex items-center gap-4 text-sm text-slate-500">
-            {product.rating && <span>★ {parseFloat(product.rating).toFixed(1)} ({product.total_reviews} avis)</span>}
-            <span>Stock : {product.quantity}</span>
-            <span>{product.views} vues</span>
+          {/* Notation & Avis */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 10, flexWrap: 'wrap' }}>
+            <a href="#reviews-section" style={{ display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none', background: '#fef3c7', padding: '4px 12px', borderRadius: 99, border: '1px solid #fde68a' }}>
+              <span style={{ color: '#d97706', fontSize: 14, fontWeight: 800 }}>★</span>
+              <span style={{ fontWeight: 800, color: '#92400e', fontSize: 13 }}>
+                {product.rating && parseFloat(product.rating) > 0 ? parseFloat(product.rating).toFixed(1) : '5.0'}
+              </span>
+              <span style={{ color: '#b45309', fontSize: 12 }}>
+                ({product.total_reviews || product.reviews?.length || 0} avis)
+              </span>
+            </a>
+            <span style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>📦 En stock : {product.quantity}</span>
+            <span style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>👁️ {product.views} vues</span>
           </div>
 
           {/* Section des boutons d'action */}
@@ -231,7 +246,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
               <InlineChat
                 recipientId={product.seller.id}
                 recipientName={product.seller.name}
-                title={`💬 Discussion avec ${product.seller.name}`}
+                title={`Discussion avec ${product.seller.name}`}
                 maxHeight={300}
               />
             </div>
@@ -249,53 +264,8 @@ export default function ProductDetailPage({ basePath = '/products' }) {
         </div>
       </div>
 
-      <section className="mt-12">
-        <h2 className="mb-4 text-xl font-bold">Avis clients</h2>
-        {product.reviews?.length === 0 ? (
-          <p className="text-slate-500">Aucun avis pour le moment.</p>
-        ) : (
-          <div className="space-y-4">
-            {product.reviews?.map((review) => (
-              <div key={review.id} className="rounded-lg border border-slate-200 bg-white p-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">{review.buyer?.name}</span>
-                  <span className="text-amber-500">{'★'.repeat(review.rating)}</span>
-                </div>
-                {review.comment && <p className="mt-2 text-slate-600">{review.comment}</p>}
-                <p className="mt-1 text-xs text-slate-400">{formatDate(review.created_at)}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {isAuthenticated && (
-          <form onSubmit={handleSubmit(onSubmitReview)} className="mt-6 rounded-lg border border-slate-200 bg-white p-4">
-            <h3 className="font-medium">Laisser un avis</h3>
-            <div className="mt-3">
-              <label className="text-sm text-slate-600">Note (1-5)</label>
-              <select
-                {...register('rating', { required: true, valueAsNumber: true })}
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-              >
-                {[5, 4, 3, 2, 1].map((n) => (
-                  <option key={n} value={n}>{n} étoile{n > 1 ? 's' : ''}</option>
-                ))}
-              </select>
-            </div>
-            <div className="mt-3">
-              <label className="text-sm text-slate-600">Commentaire</label>
-              <textarea
-                rows={3}
-                {...register('comment')}
-                className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2"
-              />
-            </div>
-            <button type="submit" className="mt-3 rounded-lg bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700">
-              Publier
-            </button>
-          </form>
-        )}
-      </section>
+      {/* Section Notation & Avis acheteurs vérifiés */}
+      <ProductReviews productId={product.id} />
     </div>
   );
 }
