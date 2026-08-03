@@ -89,16 +89,6 @@ export default function LoginPage() {
             {submitting ? 'Connexion en cours...' : 'Se connecter →'}
           </button>
         </form>
-
-        {/* Demo accounts */}
-        <div style={{ marginTop: 24, padding: '14px 16px', borderRadius: 12, background: '#f8fafc', border: '1px solid var(--border)' }}>
-          <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 700, color: '#475569' }}>🔑 Comptes de démonstration</p>
-          {[['Acheteur', 'buyer@example.com', 'secret12'], ['Vendeur', 'seller@example.com', 'secret12'], ['Admin', 'admin@example.com', 'secret12']].map(([role, email, pwd]) => (
-            <p key={role} style={{ margin: '4px 0 0', fontSize: 11, color: '#64748b', fontFamily: 'monospace' }}>
-              <span style={{ fontWeight: 700, color: '#475569', fontFamily: 'inherit' }}>{role}:</span> {email} / {pwd}
-            </p>
-          ))}
-        </div>
       </div>
     </div>
   );
