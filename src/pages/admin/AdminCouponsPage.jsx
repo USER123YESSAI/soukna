@@ -160,7 +160,7 @@ function AdminCoupons() {
                 <tr key={c.id} className="">
                   <td className="p-3 font-mono font-medium">{c.code}</td>
                   <td className="p-3">{c.type}</td>
-                  <td className="p-3">{c.value}{c.type === 'percent' ? '%' : '€'}</td>
+                  <td className="p-3">{c.value} {c.type === 'percent' ? '%' : 'FCFA'}</td>
                   <td className="p-3">{formatDate(c.ends_at)}</td>
                   <td className="p-3">{c.is_active ? 'Oui' : 'Non'}</td>
                   <td className="p-3">

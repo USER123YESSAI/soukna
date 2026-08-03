@@ -5,15 +5,7 @@ import DashboardSidebar from './DashboardSidebar';
 const SELLER_NAV = [
   { to: '/seller', label: 'Accueil', icon: 'home', end: true },
   { type: 'section', label: 'COMMERCE' },
-  {
-    label: 'Produits',
-    icon: 'package',
-    to: '/seller/products',
-    children: [
-      { to: '/seller/products', label: 'Mes produits', end: true },
-      { to: '/seller/products/new', label: 'Nouveau produit', end: true },
-    ]
-  },
+  { to: '/seller/products', label: 'Mes produits', icon: 'package' },
   { to: '/seller/catalogue', label: 'Catalogue global', icon: 'grid' },
   { to: '/seller/orders', label: 'Commandes', icon: 'shopping-bag' },
   { type: 'section', label: 'RELATION CLIENT' },

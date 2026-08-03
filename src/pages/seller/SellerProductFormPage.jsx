@@ -121,8 +121,8 @@ function ProductForm() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium">Prix (€)</label>
-            <input type="number" step="0.01" {...register('price', { required: 'Requis', min: 0 })} className="w-full rounded-lg border border-slate-200 px-3 py-2" />
+            <label className="mb-1 block text-sm font-medium">Prix (FCFA)</label>
+            <input type="number" step="1" {...register('price', { required: 'Requis', min: 0 })} className="w-full rounded-lg border border-slate-200 px-3 py-2" />
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium">Stock</label>

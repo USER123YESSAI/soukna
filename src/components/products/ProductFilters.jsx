@@ -117,7 +117,7 @@ export default function ProductFilters({ filters, categories, onChange }) {
         {/* Prix min */}
         <div>
           <label style={labelStyle}>
-            Prix min (€)
+            Prix min (FCFA)
           </label>
           <input
             type="number"
@@ -134,7 +134,7 @@ export default function ProductFilters({ filters, categories, onChange }) {
         {/* Prix max */}
         <div>
           <label style={labelStyle}>
-            Prix max (€)
+            Prix max (FCFA)
           </label>
           <input
             type="number"

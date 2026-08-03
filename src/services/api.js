@@ -76,28 +76,56 @@ api.interceptors.response.use(
 );
 
 export const getErrorMessage = (error) => {
-  if (error.response?.status === 401) {
+  // Log en console pour faciliter le diagnostic en production / dev
+  console.error('API Error:', error?.response || error);
+
+  // 1. Erreur réseau / CORS / Serveur inaccessible (sans réponse HTTP)
+  if (!error.response) {
+    if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
+      return "Impossible de joindre le serveur. Vérifiez que l'API est accessible et le CORS configuré.";
+    }
+    return error.message || 'Erreur de connexion au serveur.';
+  }
+
+  const { status, data } = error.response;
+
+  // 2. Erreurs d'authentification et d'autorisation standards
+  if (status === 401) {
     return 'Veuillez vous connecter pour effectuer cette action.';
   }
-  if (error.response?.status === 403) {
+  if (status === 403) {
     return "Vous n'avez pas les droits pour effectuer cette action.";
   }
-  if (error.response?.data?.message && error.response.data.message !== 'Unauthenticated.') {
-    return error.response.data.message;
+  if (status === 404) {
+    return "Service introuvable (404). Vérifiez l'URL de l'API en production.";
   }
-  if (error.response?.data?.errors) {
-    const first = Object.values(error.response.data.errors)[0];
-    return Array.isArray(first) ? first[0] : first;
+  if (status >= 500) {
+    return `Erreur interne du serveur (${status}). Veuillez vérifier les logs backend.`;
   }
-  return 'Une erreur est survenue.';
+
+  // 3. Extraction du message renvoyé par l'API (JSON)
+  if (typeof data === 'object' && data !== null) {
+    if (data.message && data.message !== 'Unauthenticated.') {
+      return data.message;
+    }
+    if (data.error) {
+      return typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
+    }
+    if (data.errors) {
+      const first = Object.values(data.errors)[0];
+      return Array.isArray(first) ? first[0] : first;
+    }
+  }
+
+  return `Une erreur est survenue (${status || 'Inconnue'}).`;
 };
 
 export const formatPrice = (price) => {
   const num = parseFloat(price);
+  const val = Number.isNaN(num) ? 0 : num;
   return new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(Number.isNaN(num) ? 0 : num);
+    maximumFractionDigits: 0,
+  }).format(val) + ' FCFA';
 };
 
 export const formatDate = (dateStr) => {
