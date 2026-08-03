@@ -157,7 +157,7 @@ function ProductForm() {
             className="w-full rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
           />
           <p className="mt-1.5 text-xs text-indigo-600">
-            Collez un lien d&apos;image du web pour garantir une persistance indéfinie en base de données.
+            Collez un lien d&apos;image direct (ex: <b>https://i.ibb.co/... .jpg/.png</b> — sélectionnez <i>&laquo; Lien direct de l&apos;image &raquo;</i> sur ImgBB).
           </p>
         </div>
         {!isEdit && (

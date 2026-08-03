@@ -16,6 +16,17 @@ export function resolveMediaUrl(url) {
     }
   }
 
+  // Correction automatique des pages HTML ImgBB vers l'image directe
+  const ibbMapping = {
+    'https://ibb.co/Nd70kZY1': 'https://i.ibb.co/sdtTDy35/habit-homme.png',
+    'https://ibb.co/VcnxGyzR': 'https://i.ibb.co/FLZX1vy2/chaussure-femme.png',
+    'https://ibb.co/W4v51Vsw': 'https://i.ibb.co/nNMmSPRv/chaussure-homme.png',
+    'https://ibb.co/Zp4RJ9TQ': 'https://i.ibb.co/pBV6PqXH/iphone17.png',
+  };
+  if (ibbMapping[url]) {
+    return ibbMapping[url];
+  }
+
   // Si l'API renvoie directement une URL complète, on ne la modifie pas
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
 
