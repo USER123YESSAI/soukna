@@ -48,6 +48,7 @@ function ProductForm() {
           quantity: data.quantity,
           category_id: data.category?.id,
           status: data.status,
+          image_url: data.image && (data.image.startsWith('http://') || data.image.startsWith('https://')) ? data.image : '',
           sale_price: data.sale_price || '',
           sale_starts_at: data.sale_starts_at?.slice(0, 16) || '',
           sale_ends_at: data.sale_ends_at?.slice(0, 16) || '',
@@ -80,8 +81,8 @@ function ProductForm() {
         await productService.update(id, formData);
         toast.success('Produit mis à jour');
       } else {
-        if (!data.image?.[0]) {
-          toast.error('Image principale requise');
+        if (!data.image?.[0] && !data.image_url?.trim()) {
+          toast.error('Image principale (ou URL d\'image externe) requise');
           setSubmitting(false);
           return;
         }
@@ -145,15 +146,29 @@ function ProductForm() {
             <option value="published">Publié</option>
           </select>
         </div>
+        <div className="rounded-xl border border-indigo-100 bg-indigo-50/40 p-4">
+          <label className="mb-1 block text-sm font-semibold text-indigo-900">
+            🔗 URL d&apos;image externe permanente (Recommandé en démo)
+          </label>
+          <input
+            type="url"
+            placeholder="https://images.unsplash.com/... ou lien d'image web"
+            {...register('image_url')}
+            className="w-full rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+          />
+          <p className="mt-1.5 text-xs text-indigo-600">
+            Collez un lien d&apos;image du web pour garantir une persistance indéfinie en base de données.
+          </p>
+        </div>
         {!isEdit && (
           <div>
-            <label className="mb-1 block text-sm font-medium">Image principale *</label>
+            <label className="mb-1 block text-sm font-medium">Ou importer un fichier image local *</label>
             <input type="file" accept="image/*" {...register('image')} className="w-full text-sm" />
           </div>
         )}
         {isEdit && (
           <div>
-            <label className="mb-1 block text-sm font-medium">Nouvelle image (optionnel)</label>
+            <label className="mb-1 block text-sm font-medium">Ou remplacer par un fichier image local (optionnel)</label>
             <input type="file" accept="image/*" {...register('image')} className="w-full text-sm" />
           </div>
         )}
