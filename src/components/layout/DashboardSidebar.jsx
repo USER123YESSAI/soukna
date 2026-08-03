@@ -166,7 +166,7 @@ export default function DashboardSidebar({ title, subtitle, accentColor = '#10b9
   const getRoleBadge = () => {
     const t = (title || '').toLowerCase();
     const sub = (subtitle || '').toLowerCase();
-    if (user?.role === 'seller' || t.includes('vendeur') || sub.includes('vendeur')) return 'Créateur';
+    if (user?.role === 'seller' || t.includes('vendeur') || sub.includes('vendeur')) return 'Vendeur';
     if (user?.role === 'admin' || t.includes('admin') || sub.includes('admin')) return 'Administrateur';
     return 'Acheteur';
   };
