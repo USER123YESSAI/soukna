@@ -6,6 +6,7 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import Pagination from '../../components/ui/Pagination';
 import { getErrorMessage } from '../../services/api';
 import { adminCategoryService } from '../../services/adminCategoryService';
+import { getCategoryIcon } from '../../utils/categoryIcons';
 
 function safeTrim(v) {
   return typeof v === 'string' ? v.trim() : v;
@@ -274,16 +275,12 @@ function AdminCategories() {
                   <tr key={c.id} className="border-t">
                     <td className="p-3">
                       <div className="flex items-center gap-3">
-                        {c.icon ? (
-                          <div
-                            className="flex h-10 w-10 items-center justify-center rounded-lg border bg-slate-50 text-lg"
-                            aria-label="icon"
-                          >
-                            {c.icon}
-                          </div>
-                        ) : (
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg border bg-slate-50 text-slate-400">—</div>
-                        )}
+                        <div
+                          className="flex h-10 w-10 items-center justify-center rounded-lg border bg-slate-50 text-xl"
+                          aria-label="icon"
+                        >
+                          {getCategoryIcon(c)}
+                        </div>
                         <span className="font-medium">{c.name}</span>
                       </div>
                     </td>

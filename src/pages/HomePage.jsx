@@ -5,8 +5,7 @@ import { productService } from '../services/productService';
 import { categoryService } from '../services/categoryService';
 import ProductCard from '../components/products/ProductCard';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
-
-const CATEGORY_ICONS = ['🎧', '👗', '💻', '🏠', '📱', '👟', '📚', '🎮'];
+import { getCategoryIcon } from '../utils/categoryIcons';
 
 export default function HomePage() {
   const { isAuthenticated, user, isSeller, isAdmin } = useAuth();
@@ -95,7 +94,7 @@ export default function HomePage() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 24, border: '1px solid var(--border)'
                   }}>
-                    {CATEGORY_ICONS[i % CATEGORY_ICONS.length]}
+                    {getCategoryIcon(cat)}
                   </div>
                   <span>{cat.name}</span>
                 </Link>
@@ -425,7 +424,7 @@ export default function HomePage() {
                       fontSize: 24
                     }}
                   >
-                    {CATEGORY_ICONS[i % CATEGORY_ICONS.length]}
+                    {getCategoryIcon(cat)}
                   </div>
                   <span>{cat.name}</span>
                 </Link>
