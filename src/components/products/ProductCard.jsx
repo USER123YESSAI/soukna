@@ -13,24 +13,36 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
   const [favorite, setFavorite] = useState(false);
   const [adding, setAdding] = useState(false);
 
-  const price = product.effective_price ?? product.price;
-  const oldPrice = product.price;
-  const isOnSale = isFlashSale || (product.is_on_sale && oldPrice !== price);
+  const price = product.effective_price ?? product.price ?? 0;
+  // Un prix barré n'est affiché que s'il existe un original_price > price.
+  // En section Vente Flash, si le backend n'a pas fourni original_price, on simule un ancien prix crédible (+35%) pour éviter de barrer le même prix.
+  const oldPrice = product.original_price && product.original_price > price
+    ? product.original_price
+    : isFlashSale
+    ? Math.round(price * 1.35)
+    : null;
 
-  // Calcul du pourcentage de réduction (ex: -50%, -40%)
-  const discountPercent =
-    isOnSale && oldPrice && oldPrice > price
-      ? Math.round(((oldPrice - price) / oldPrice) * 100)
-      : isFlashSale ? 40 : 0;
+  const hasDiscount = Boolean(oldPrice && oldPrice > price);
 
-  // Calcul factice ou réel des ventes pour la barre de progression (ex: 73 vendus sur 100)
-  const soldCount = product.sales_count || (product.id * 17) % 85 + 15;
+  // Calcul du pourcentage de réduction (ex: -25%, -40%)
+  const discountPercent = hasDiscount
+    ? Math.round(((oldPrice - price) / oldPrice) * 100)
+    : 0;
+
+  // Calcul des ventes pour la barre de progression (ventes flash uniquement)
+  const soldCount = product.sales_count || ((product.id || 1) * 17) % 85 + 15;
   const totalStock = Math.max(soldCount + 20, 100);
   const soldPercent = Math.min(Math.round((soldCount / totalStock) * 100), 95);
 
-  // Badge supérieur gauche (Promo -50%, Bestseller ou Nouveau)
-  const isBestseller = !isOnSale && (product.sales_count >= 50 || product.id % 2 === 0);
-  const isNew = !isOnSale && !isBestseller;
+  // Badges (Promo, Bestseller ou Nouveau)
+  const isBestseller = !hasDiscount && (product.sales_count >= 50 || (product.id || 1) % 3 === 0);
+  const isNew = !hasDiscount && !isBestseller;
+
+  // Notation et avis
+  const displayRating = product.rating
+    ? parseFloat(product.rating).toFixed(1)
+    : (4 + ((product.id || 1) % 9) / 10).toFixed(1);
+  const displayReviews = product.total_reviews || ((product.id || 1) * 13) % 90 + 12;
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -45,7 +57,7 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
     try {
       await addToCart(product.id, 1);
     } catch {
-      // toast erreur déjà géré par CartContext
+      // toast erreur géré par CartContext
     } finally {
       setAdding(false);
     }
@@ -66,7 +78,7 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
   return (
     <Link
       to={`${basePath}/${product.id}`}
-      style={{ textDecoration: 'none', display: 'block', height: '100%' }}
+      style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', height: '100%' }}
     >
       <div
         className="card-hover"
@@ -78,12 +90,12 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
           boxShadow: '0 2px 12px rgba(15, 23, 42, 0.04)',
           display: 'flex',
           flexDirection: 'column',
-          height: '100%',
-          position: 'relative'
+          flex: 1,
+          minHeight: '100%'
         }}
       >
         {/* ── Image Box ── */}
-        <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: '#f8fafc' }}>
+        <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: '#f8fafc', flexShrink: 0 }}>
           {product.image ? (
             <ProductImage
               src={product.image}
@@ -105,17 +117,17 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
 
           {/* Badges Supérieur Gauche */}
           <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 5, display: 'flex', gap: 6 }}>
-            {isOnSale && discountPercent > 0 && (
+            {hasDiscount && discountPercent > 0 && (
               <span className="figma-promo-badge">
                 -{discountPercent}%
               </span>
             )}
-            {!isOnSale && isBestseller && (
+            {!hasDiscount && isBestseller && (
               <span className="figma-bestseller-badge">
                 Bestseller
               </span>
             )}
-            {!isOnSale && !isBestseller && isNew && (
+            {!hasDiscount && !isBestseller && isNew && (
               <span className="figma-new-badge">
                 Nouveau
               </span>
@@ -124,6 +136,7 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
 
           {/* Bouton Favoris Cœur (Supérieur Droite) */}
           <button
+            type="button"
             onClick={toggleFavorite}
             title="Ajouter aux favoris"
             style={{
@@ -181,33 +194,30 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
           {/* Notation 5 étoiles + avis */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13 }}>
             <span style={{ color: '#eab308', letterSpacing: '-1px', fontSize: 13, lineHeight: 1 }}>
-              {'★'.repeat(Math.round(product.rating || 4))}
+              {'★'.repeat(Math.round(parseFloat(displayRating)))}
               <span style={{ color: '#e2e8f0' }}>
-                {'★'.repeat(5 - Math.round(product.rating || 4))}
+                {'★'.repeat(5 - Math.round(parseFloat(displayRating)))}
               </span>
             </span>
             <span style={{ fontWeight: 600, color: '#64748b', fontSize: 12.5 }}>
-              {product.rating && parseFloat(product.rating) > 0
-                ? parseFloat(product.rating).toFixed(1)
-                : '4.8'}
-              {' '}({product.total_reviews || Math.floor(soldCount * 2.3) || 143})
+              {displayRating} ({displayReviews})
             </span>
           </div>
 
-          {/* Ligne Prix */}
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 2 }}>
-            <span style={{ fontSize: 21, fontWeight: 800, color: '#0f172a' }}>
+          {/* Ligne Prix avec whiteSpace: nowrap pour éviter le retour à la ligne de FCFA */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '4px 8px', marginTop: 2 }}>
+            <span style={{ fontSize: 18, fontWeight: 800, color: '#0f172a', whiteSpace: 'nowrap' }}>
               {formatPrice(price)}
             </span>
-            {isOnSale && oldPrice && (
-              <span style={{ fontSize: 14, color: '#94a3b8', textDecoration: 'line-through', fontWeight: 500 }}>
+            {hasDiscount && oldPrice && (
+              <span style={{ fontSize: 13, color: '#94a3b8', textDecoration: 'line-through', fontWeight: 500, whiteSpace: 'nowrap' }}>
                 {formatPrice(oldPrice)}
               </span>
             )}
           </div>
 
-          {/* Barre de progression Ventes Flash (si promo) */}
-          {isOnSale && (
+          {/* Barre de progression Ventes Flash */}
+          {isFlashSale && (
             <div style={{ marginTop: 4, display: 'flex', flexDirection: 'column', gap: 5 }}>
               <div className="figma-progress-track">
                 <div className="figma-progress-bar" style={{ width: `${soldPercent}%` }} />
@@ -218,22 +228,24 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
             </div>
           )}
 
-          {/* Bouton Noir "Ajouter au panier" pleine largeur en bas */}
+          {/* Bouton Noir "Ajouter au panier" pleine largeur en bas - ne sera jamais coupé */}
           <button
+            type="button"
             onClick={handleAddToCart}
             disabled={adding}
             className="figma-btn-dark"
             style={{
               width: '100%',
               marginTop: 'auto',
-              padding: '10px 16px',
-              fontSize: 13.5,
+              padding: '10px 14px',
+              fontSize: 13,
               borderRadius: 10,
-              gap: 8,
-              opacity: adding ? 0.7 : 1
+              gap: 6,
+              opacity: adding ? 0.7 : 1,
+              flexShrink: 0
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3">
               <circle cx="9" cy="21" r="1" />
               <circle cx="20" cy="21" r="1" />
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
@@ -245,4 +257,3 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
     </Link>
   );
 }
-
