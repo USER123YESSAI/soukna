@@ -57,7 +57,7 @@ function SellerDashboard() {
       </div>
 
       {/* KPI Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 32 }}>
+      <div className="dashboard-kpi-grid">
         <KpiCard label="Revenus totaux" value={formatPrice(totalRevenue)} sub="toutes commandes" color="#10b981" />
         <KpiCard label="Commandes" value={totalOrders} sub={`${pendingOrders} en attente`} color="#6366f1" />
         <KpiCard label="Produits publiés" value={totalProducts} color="#f59e0b" />
@@ -65,7 +65,7 @@ function SellerDashboard() {
       </div>
 
       {/* Main grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24, alignItems: 'start' }}>
+      <div className="dashboard-split-grid-seller">
         {/* Recent orders */}
         <div style={{ background: 'white', borderRadius: 20, border: '1.5px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

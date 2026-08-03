@@ -63,7 +63,7 @@ function BuyerDashboard() {
         <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: '#0f172a' }}>Tableau de bord</h1>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 32 }}>
+      <div className="dashboard-kpi-grid">
         <KpiCard label="Commandes récentes" value={orders.length > 0 ? orders.length : 0} sub={pendingCount ? `${pendingCount} en attente` : 'sur les 5 dernières'} color="#6366f1" linkTo="/buyer/orders" />
         <KpiCard label="Favoris" value={favoritesCount} color="#ec4899" linkTo="/buyer/favorites" />
         <KpiCard label="Panier" value={itemCount} sub={itemCount === 1 ? 'article' : 'articles'} color="#10b981" linkTo="/buyer/cart" />

@@ -43,7 +43,7 @@ function AdminDashboard() {
       </div>
 
       {/* KPIs */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 32 }}>
+      <div className="dashboard-kpi-grid">
         <KpiCard label="Utilisateurs" value={stats?.users_count ?? stats?.total_users ?? 0} sub="comptes actifs" color="#6366f1" linkTo="/admin/users" />
         <KpiCard label="Produits" value={stats?.products_count ?? stats?.total_products ?? 0} sub="dans le catalogue" color="#f59e0b" linkTo="/admin/products" />
         <KpiCard label="Commandes" value={stats?.orders_count ?? stats?.total_orders ?? 0} color="#10b981" />
@@ -51,7 +51,7 @@ function AdminDashboard() {
       </div>
 
       {/* Detail grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, alignItems: 'start' }}>
+      <div className="dashboard-split-grid-admin">
         {/* Quick actions */}
         <div style={{ background: 'white', borderRadius: 20, border: '1.5px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)' }}>
