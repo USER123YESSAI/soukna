@@ -404,21 +404,6 @@ export default function HomePage() {
                     textAlign: 'center'
                   }}
                 >
-                  <div
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 12,
-                      background: '#f8fafc',
-                      border: '1px solid #e2e8f0',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 24
-                    }}
-                  >
-                    {getCategoryIcon(cat)}
-                  </div>
                   <span>{cat.name}</span>
                 </Link>
               ))}
