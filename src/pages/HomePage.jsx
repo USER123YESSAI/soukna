@@ -89,13 +89,6 @@ export default function HomePage() {
                   border: '1px solid var(--border)', textDecoration: 'none', color: '#0f172a',
                   fontSize: 14, fontWeight: 700, textAlign: 'center', boxShadow: 'var(--shadow-xs)'
                 }}>
-                  <div style={{
-                    width: 48, height: 48, borderRadius: 14, background: '#f8fafc',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 24, border: '1px solid var(--border)'
-                  }}>
-                    {getCategoryIcon(cat)}
-                  </div>
                   <span>{cat.name}</span>
                 </Link>
               ))}
