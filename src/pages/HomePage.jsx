@@ -114,7 +114,7 @@ export default function HomePage() {
                   <p style={{ margin: 0, fontWeight: 600, color: '#64748b' }}>Aucun produit pour le moment.</p>
                 </div>
               : <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 24 }}>
-                  {topProducts.map(p => <ProductCard key={p.id} product={p} />)}
+                  {topProducts.map((p, idx) => <ProductCard key={p.id} product={p} priority={idx < 4} />)}
                 </div>
           }
         </section>
@@ -321,8 +321,8 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
-              {flashList.map((p) => (
-                <ProductCard key={p.id} product={p} isFlashSale={true} />
+              {flashList.map((p, idx) => (
+                <ProductCard key={p.id} product={p} isFlashSale={true} priority={idx < 4} />
               ))}
             </div>
           )}
@@ -357,8 +357,8 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
-              {popularList.map((p) => (
-                <ProductCard key={p.id} product={p} />
+              {popularList.map((p, idx) => (
+                <ProductCard key={p.id} product={p} priority={idx < 4} />
               ))}
             </div>
           )}

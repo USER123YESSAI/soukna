@@ -3,18 +3,10 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 export const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || API_URL.replace(/\/api\/?$/, '')).replace(/\/$/, '');
 
-/** Convertit les URLs médias renvoyées par l'API en URL accessible. */
+/** Convertit les URLs médias renvoyées par l'API en URL accessible et optimisée. */
 export function resolveMediaUrl(url) {
   if (!url || typeof url !== 'string') return null;
   if (url.startsWith('blob:') || url.startsWith('data:')) return url;
-
-  // Si l'API (mal configurée) renvoie localhost en production, on corrige l'URL
-  if ((url.startsWith('http://localhost') || url.startsWith('http://127.0.0.1')) && !import.meta.env.DEV) {
-    const storageMatch = url.match(/\/storage\/(.+)$/);
-    if (storageMatch) {
-      return `${BACKEND_URL}/storage/${storageMatch[1]}`;
-    }
-  }
 
   // Correction automatique des pages HTML ImgBB vers l'image directe
   const ibbMapping = {
@@ -27,30 +19,22 @@ export function resolveMediaUrl(url) {
     return ibbMapping[url];
   }
 
-  // Si l'API renvoie directement une URL complète, on ne la modifie pas
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
-
-  // Normalisation /storage/... (chemin relatif)
-  const storageMatch = url.match(/\/storage\/(.+)$/);
+  // Normalisation des fichiers stockés /storage/...
+  // Qu'il s'agisse de "http://127.0.0.1:8000/storage/...", "/storage/..." ou "storage/..."
+  const storageMatch = url.match(/(?:\/|^)storage\/(.+)$/);
   if (storageMatch) {
     const path = `/storage/${storageMatch[1]}`;
-    // En dev, le proxy Vite redirige /storage vers le backend
-    // En prod, on utilise l'URL complète du backend
+    // En dev, le proxy Vite redirige directement /storage vers le backend sans pénalité CORS
     if (import.meta.env.DEV) return path;
+    // En prod, si l'URL est déjà une URL complète avec domaine valide (ex: Render), on la garde si ce n'est pas localhost
+    if ((url.startsWith('http://') || url.startsWith('https://')) && !url.includes('localhost') && !url.includes('127.0.0.1')) {
+      return url;
+    }
     return `${BACKEND_URL}${path}`;
   }
 
-  if (url.startsWith('/storage/')) {
-    return `${BACKEND_URL}${url}`;
-  }
-
-  if (url.startsWith('storage/')) {
-    return `${BACKEND_URL}/${url}`;
-  }
-
-  if (url.startsWith('http://localhost/') && BACKEND_URL.includes(':8000')) {
-    return url.replace('http://localhost/', `${BACKEND_URL}/`);
-  }
+  // Si l'API renvoie directement une URL complète externe (ex: Cloudinary, Unsplash, ImgBB)
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
 
   return url;
 }

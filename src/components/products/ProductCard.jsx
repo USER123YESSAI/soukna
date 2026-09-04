@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
-export default function ProductCard({ product, basePath = '/products', isFlashSale = false }) {
+export default function ProductCard({ product, basePath = '/products', isFlashSale = false, priority = false }) {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
@@ -100,6 +100,7 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
             <ProductImage
               src={product.image}
               alt={product.title}
+              priority={priority}
               style={{
                 width: '100%',
                 height: '100%',

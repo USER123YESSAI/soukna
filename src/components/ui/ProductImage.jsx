@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { resolveMediaUrl } from '../../services/api';
 
 const PLACEHOLDER_SVG =
@@ -15,13 +15,17 @@ const PLACEHOLDER_SVG =
       `</svg>`
   );
 
+// Cache mémoire pour mémoriser les images déjà chargées pendant la session
+const loadedImageCache = new Set();
+
 export default function ProductImage({
   src,
   alt = '',
-  className,
+  className = '',
   style,
-  width = 80,
-  height = 80,
+  width,
+  height,
+  priority = false,
   fallbackSrc = PLACEHOLDER_SVG,
   ...props
 }) {
@@ -33,40 +37,84 @@ export default function ProductImage({
     return resolved;
   }, [resolved, errored, fallbackSrc]);
 
-  console.log('[ProductImage]', {
-    originalSrc: src,
-    resolved,
-    finalSrc,
-    errored,
-  });
+  const isAlreadyCached = Boolean(finalSrc && loadedImageCache.has(finalSrc));
+  const isSvgFallback = Boolean(finalSrc && finalSrc.startsWith('data:image/svg'));
+  const [loaded, setLoaded] = useState(isAlreadyCached || isSvgFallback);
+
+  useEffect(() => {
+    if (finalSrc && loadedImageCache.has(finalSrc)) {
+      setLoaded(true);
+    } else if (finalSrc && !finalSrc.startsWith('data:image/svg')) {
+      setLoaded(false);
+    }
+  }, [finalSrc]);
+
+  const handleLoad = () => {
+    if (finalSrc) loadedImageCache.add(finalSrc);
+    setLoaded(true);
+  };
+
+  const handleError = () => {
+    setErrored(true);
+    setLoaded(true);
+  };
 
   return (
-    <img
-      src={finalSrc}
-      alt={alt}
-      className={className}
+    <div
       style={{
-        width,
-        height,
-        borderRadius: 12,
-        objectFit: 'cover',
-        display: 'block',
+        position: 'relative',
+        width: width ?? '100%',
+        height: height ?? '100%',
+        overflow: 'hidden',
+        borderRadius: style?.borderRadius ?? 12,
+        backgroundColor: '#f1f5f9',
         ...style,
       }}
-      loading="lazy"
-      decoding="async"
-      onError={(e) => {
-        console.error('[ProductImage] Image load error', {
-          src: finalSrc,
-          error: e,
-        });
-        setErrored(true);
-      }}
-      onLoad={() => {
-        console.log('[ProductImage] Image loaded successfully', { src: finalSrc });
-      }}
-      {...props}
-    />
+      className={`product-image-container ${className}`}
+    >
+      {/* Skeleton Shimmer affiché pendant le chargement initial */}
+      {!loaded && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%)',
+            backgroundSize: '200% 100%',
+            animation: 'shimmerPulse 1.5s infinite linear',
+            zIndex: 1,
+          }}
+        />
+      )}
+
+      {/* Balise image optimisée avec transition douce */}
+      <img
+        src={finalSrc}
+        alt={alt}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+        // @ts-expect-error fetchpriority is standard HTML
+        fetchpriority={priority ? 'high' : 'auto'}
+        onLoad={handleLoad}
+        onError={handleError}
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: style?.objectFit ?? 'cover',
+          display: 'block',
+          opacity: loaded ? 1 : 0,
+          transition: 'opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+        {...props}
+      />
+
+      <style>{`
+        @keyframes shimmerPulse {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
+    </div>
   );
 }
 

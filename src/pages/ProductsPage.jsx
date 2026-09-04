@@ -135,8 +135,8 @@ export default function ProductsPage({ basePath = '/products' }) {
       ) : (
         <>
           <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 24, marginBottom: 40 }}>
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} basePath={basePath} />
+            {products.map((product, idx) => (
+              <ProductCard key={product.id} product={product} basePath={basePath} priority={idx < 4} />
             ))}
           </div>
           <Pagination

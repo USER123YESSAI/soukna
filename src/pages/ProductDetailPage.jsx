@@ -129,7 +129,12 @@ export default function ProductDetailPage({ basePath = '/products' }) {
       <div className="grid gap-8 lg:grid-cols-2">
         <div className="overflow-hidden rounded-xl bg-white">
           {product.image ? (
-            <ProductImage src={product.image} alt={product.title} style={{ width: '100%', height: '100%', objectFit: 'cover', aspectRatio: '1/1' }} />
+            <ProductImage
+              src={product.image}
+              alt={product.title}
+              priority={true}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', aspectRatio: '1/1' }}
+            />
           ) : (
             <div className="flex aspect-square items-center justify-center bg-slate-100 text-slate-400">
               Sans image

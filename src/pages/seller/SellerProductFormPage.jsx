@@ -5,6 +5,7 @@ import { productService } from '../../services/productService';
 import { categoryService } from '../../services/categoryService';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { getErrorMessage } from '../../services/api';
+import { compressImage, compressImages } from '../../utils/imageCompressor';
 import toast from 'react-hot-toast';
 
 function ProductForm() {
@@ -67,14 +68,18 @@ function ProductForm() {
         if (key === 'image' || key === 'images') return;
         formData.append(key, value);
       });
-      if (data.image?.[0]) formData.append('image', data.image[0]);
+      if (data.image?.[0]) {
+        const compressedMain = await compressImage(data.image[0]);
+        formData.append('image', compressedMain);
+      }
       if (data.images) {
         const files = Array.from(data.images);
         const maxImages = 10;
         if (files.length > maxImages) {
           toast.error(`Trop d’images (max ${maxImages}). Seules les ${maxImages} premières seront envoyées.`);
         }
-        files.slice(0, maxImages).forEach((file) => formData.append('images[]', file));
+        const compressedExtras = await compressImages(files.slice(0, maxImages));
+        compressedExtras.forEach((file) => formData.append('images[]', file));
       }
 
       if (isEdit) {
