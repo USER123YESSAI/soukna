@@ -8,6 +8,8 @@ import StatusBadge from '../../components/ui/StatusBadge';
 import { formatPrice, formatDate, getErrorMessage } from '../../services/api';
 import toast from 'react-hot-toast';
 import MessagesWidget from '../../components/messages/MessagesWidget';
+import PageHeader from '../../components/ui/PageHeader';
+import Button from '../../components/ui/Button';
 
 function KpiCard({ icon, label, value, sub, color = '#10b981', linkTo, linkLabel }) {
   return (
@@ -59,9 +61,19 @@ function BuyerDashboard() {
 
   return (
     <div>
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: '#0f172a' }}>Tableau de bord</h1>
-      </div>
+      <PageHeader
+        title="Mon espace acheteur"
+        subtitle="Suivez vos commandes, vos favoris et les dernières nouveautés"
+        actions={
+          <Button
+            to="/products"
+            variant="primary"
+            size="md"
+          >
+            Explorer le catalogue →
+          </Button>
+        }
+      />
 
       <div className="dashboard-kpi-grid">
         <KpiCard label="Commandes récentes" value={orders.length > 0 ? orders.length : 0} sub={pendingCount ? `${pendingCount} en attente` : 'sur les 5 dernières'} color="#6366f1" linkTo="/buyer/orders" />

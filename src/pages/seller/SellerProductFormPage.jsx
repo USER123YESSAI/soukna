@@ -4,6 +4,11 @@ import { useForm } from 'react-hook-form';
 import { productService } from '../../services/productService';
 import { categoryService } from '../../services/categoryService';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import PageHeader from '../../components/ui/PageHeader';
+import Card from '../../components/ui/Card';
+import Button from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
+import Select from '../../components/ui/Select';
 import { getErrorMessage } from '../../services/api';
 import { compressImage, compressImages } from '../../utils/imageCompressor';
 import toast from 'react-hot-toast';
@@ -84,7 +89,7 @@ function ProductForm() {
 
       if (isEdit) {
         await productService.update(id, formData);
-        toast.success('Produit mis à jour');
+        toast.success('Produit mis à jour avec succès');
       } else {
         if (!data.image?.[0]) {
           toast.error('Image principale requise');
@@ -92,7 +97,7 @@ function ProductForm() {
           return;
         }
         await productService.create(formData);
-        toast.success('Produit créé');
+        toast.success('Produit créé avec succès');
       }
       navigate('/seller/products');
     } catch (error) {
@@ -111,84 +116,155 @@ function ProductForm() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <h1 className="mb-6 text-2xl font-bold">{isEdit ? 'Modifier le produit' : 'Nouveau produit'}</h1>
+    <div className="mx-auto max-w-3xl py-4">
+      <PageHeader
+        title={isEdit ? 'Modifier le produit' : 'Créer un nouveau produit'}
+        subtitle="Renseignez les détails, prix, catégorie et photos de votre article"
+        backTo="/seller/products"
+        backLabel="Retour aux produits"
+      />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
-        <div>
-          <label className="mb-1 block text-sm font-medium">Titre</label>
-          <input {...register('title', { required: 'Requis' })} className="w-full rounded-lg border border-slate-200 px-3 py-2" />
-          {errors.title && <p className="text-sm text-red-600">{errors.title.message}</p>}
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium">Description</label>
-          <textarea rows={4} {...register('description', { required: 'Requis' })} className="w-full rounded-lg border border-slate-200 px-3 py-2" />
-          {errors.description && <p className="text-sm text-red-600">{errors.description.message}</p>}
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className="mb-1 block text-sm font-medium">Prix (FCFA)</label>
-            <input type="number" step="1" {...register('price', { required: 'Requis', min: 0 })} className="w-full rounded-lg border border-slate-200 px-3 py-2" />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Stock</label>
-            <input type="number" {...register('quantity', { min: 0 })} className="w-full rounded-lg border border-slate-200 px-3 py-2" />
-          </div>
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium">Catégorie</label>
-          <select {...register('category_id', { required: 'Requis' })} className="w-full rounded-lg border border-slate-200 px-3 py-2">
-            <option value="">Choisir...</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium">Statut</label>
-          <select {...register('status')} className="w-full rounded-lg border border-slate-200 px-3 py-2">
-            <option value="draft">Brouillon</option>
-            <option value="published">Publié</option>
-          </select>
-        </div>
+      <Card className="p-6 sm:p-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <Input
+            label="Titre de l'article *"
+            placeholder="Ex: Sneakers Nike Air Max Édition Limitée"
+            error={errors.title?.message}
+            {...register('title', { required: 'Le titre du produit est requis' })}
+          />
 
-        {!isEdit && (
           <div>
-            <label className="mb-1 block text-sm font-medium">Image principale *</label>
-            <input type="file" accept="image/*" {...register('image')} className="w-full text-sm" />
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Description complète *
+            </label>
+            <textarea
+              rows={4}
+              placeholder="Décrivez précisément l'état, les fonctionnalités, les dimensions..."
+              {...register('description', { required: 'La description est requise' })}
+              className="w-full p-3.5 text-sm bg-white rounded-xl border border-slate-200 hover:border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none resize-none"
+            />
+            {errors.description && (
+              <p className="mt-1.5 text-xs font-medium text-rose-600">{errors.description.message}</p>
+            )}
           </div>
-        )}
-        {isEdit && (
-          <div>
-            <label className="mb-1 block text-sm font-medium">Modifier l'image principale (optionnel)</label>
-            <input type="file" accept="image/*" {...register('image')} className="w-full text-sm" />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <Input
+              label="Prix unitaire (FCFA) *"
+              type="number"
+              step="1"
+              placeholder="Ex: 25000"
+              error={errors.price?.message}
+              {...register('price', { required: 'Le prix est requis', min: { value: 0, message: 'Min. 0' } })}
+            />
+
+            <Input
+              label="Quantité en stock *"
+              type="number"
+              placeholder="Ex: 10"
+              error={errors.quantity?.message}
+              {...register('quantity', { required: 'Le stock est requis', min: { value: 0, message: 'Min. 0' } })}
+            />
           </div>
-        )}
-        <div>
-          <label className="mb-1 block text-sm font-medium">Images supplémentaires</label>
-          <input type="file" accept="image/*" multiple {...register('images')} className="w-full text-sm" />
-        </div>
-        <fieldset className="rounded-lg border border-slate-200 p-4">
-          <legend className="px-2 text-sm font-medium">Promotion flash (optionnel)</legend>
-          <div className="grid gap-4 sm:grid-cols-3">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <Select
+              label="Catégorie de produit *"
+              error={errors.category_id?.message}
+              {...register('category_id', { required: 'Veuillez sélectionner une catégorie' })}
+            >
+              <option value="">Sélectionnez un univers...</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </Select>
+
+            <Select
+              label="Statut de publication"
+              {...register('status')}
+            >
+              <option value="published">Publié (Directement visible aux acheteurs)</option>
+              <option value="draft">Brouillon (Non visible)</option>
+            </Select>
+          </div>
+
+          {/* Photos */}
+          <div className="space-y-4 pt-2 border-t border-slate-100">
+            <h4 className="text-sm font-bold text-slate-900">Photos de l'article</h4>
+
             <div>
-              <label className="text-xs text-slate-500">Prix promo</label>
-              <input type="number" step="0.01" {...register('sale_price')} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2" />
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                {isEdit ? "Remplacer l'image principale (Optionnel)" : "Image principale du produit *"}
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                {...register('image')}
+                className="w-full text-sm text-slate-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+              />
             </div>
+
             <div>
-              <label className="text-xs text-slate-500">Début</label>
-              <input type="datetime-local" min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)} {...register('sale_starts_at')} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2" />
-            </div>
-            <div>
-              <label className="text-xs text-slate-500">Fin</label>
-              <input type="datetime-local" min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)} {...register('sale_ends_at')} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2" />
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Images secondaires (Optionnel - jusqu'à 10 photos)
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                {...register('images')}
+                className="w-full text-sm text-slate-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer"
+              />
             </div>
           </div>
-        </fieldset>
-        <button type="submit" disabled={submitting} className="rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50">
-          {submitting ? 'Enregistrement...' : isEdit ? 'Mettre à jour' : 'Créer le produit'}
-        </button>
-      </form>
+
+          {/* Promotion flash */}
+          <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-5 space-y-4">
+            <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <span>⚡ Promotion flash (Optionnel)</span>
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Input
+                label="Prix réduit (FCFA)"
+                type="number"
+                step="0.01"
+                placeholder="Ex: 19900"
+                {...register('sale_price')}
+              />
+
+              <Input
+                label="Début de promo"
+                type="datetime-local"
+                {...register('sale_starts_at')}
+              />
+
+              <Input
+                label="Fin de promo"
+                type="datetime-local"
+                {...register('sale_ends_at')}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+            <Button
+              variant="secondary"
+              size="md"
+              to="/seller/products"
+            >
+              Annuler
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              loading={submitting}
+            >
+              {isEdit ? 'Mettre à jour le produit' : 'Publier le produit'}
+            </Button>
+          </div>
+        </form>
+      </Card>
     </div>
   );
 }

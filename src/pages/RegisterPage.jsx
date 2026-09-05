@@ -4,6 +4,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { getErrorMessage } from '../services/api';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
+import Card from '../components/ui/Card';
+import Input from '../components/ui/Input';
+import Select from '../components/ui/Select';
+import Button from '../components/ui/Button';
 
 export default function RegisterPage() {
   const { register: registerUser } = useAuth();
@@ -18,6 +22,7 @@ export default function RegisterPage() {
   } = useForm({ defaultValues: { role: 'buyer' } });
 
   const password = watch('password');
+  const selectedRole = watch('role');
 
   const onSubmit = async (data) => {
     setSubmitting(true);
@@ -32,6 +37,7 @@ export default function RegisterPage() {
         city: data.city || undefined,
       };
       await registerUser(payload);
+      toast.success('Compte créé avec succès !');
       navigate('/');
     } catch (error) {
       toast.error(getErrorMessage(error));
@@ -41,88 +47,109 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="mx-auto max-w-md">
-      <h1 className="text-2xl font-bold text-slate-900">Inscription</h1>
-      <p className="mt-2 text-sm text-slate-500">
-        Déjà inscrit ?{' '}
-        <Link to="/login" className="font-medium text-indigo-600 hover:underline">
-          Connectez-vous
-        </Link>
-      </p>
+    <div className="max-w-[480px] mx-auto my-10 px-4">
+      <Card className="p-8 sm:p-10 shadow-lg border-slate-200">
+        {/* Logo & Header */}
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center mx-auto mb-4 shadow-sm shadow-indigo-200">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
+            </svg>
+          </div>
+          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+            Créer un compte
+          </h1>
+          <p className="mt-1.5 text-sm text-slate-500">
+            Déjà inscrit ?{' '}
+            <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-700 hover:underline">
+              Connectez-vous
+            </Link>
+          </p>
+        </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Nom</label>
-          <input
-            {...register('name', { required: 'Nom requis' })}
-            className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Input
+            label="Nom complet"
+            placeholder="Ex: Amadou Diallo"
+            error={errors.name?.message}
+            {...register('name', { required: 'Le nom complet est requis' })}
           />
-          {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
-          <input
+
+          <Input
+            label="Adresse email"
             type="email"
-            {...register('email', { required: 'Email requis' })}
-            className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            placeholder="vous@exemple.com"
+            error={errors.email?.message}
+            {...register('email', { required: 'L\'adresse email est requise' })}
           />
-          {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Mot de passe</label>
-          <input
-            type="password"
-            {...register('password', { required: 'Mot de passe requis', minLength: { value: 6, message: 'Min. 6 caractères' } })}
-            className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-          {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Confirmer le mot de passe</label>
-          <input
-            type="password"
-            {...register('password_confirmation', {
-              required: 'Confirmation requise',
-              validate: (v) => v === password || 'Les mots de passe ne correspondent pas',
-            })}
-            className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-          {errors.password_confirmation && (
-            <p className="mt-1 text-sm text-red-600">{errors.password_confirmation.message}</p>
-          )}
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Rôle</label>
-          <select
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Mot de passe"
+              type="password"
+              placeholder="••••••••"
+              error={errors.password?.message}
+              {...register('password', {
+                required: 'Mot de passe requis',
+                minLength: { value: 6, message: 'Min. 6 caractères' },
+              })}
+            />
+
+            <Input
+              label="Confirmation"
+              type="password"
+              placeholder="••••••••"
+              error={errors.password_confirmation?.message}
+              {...register('password_confirmation', {
+                required: 'Confirmation requise',
+                validate: (v) => v === password || 'Mots de passe différents',
+              })}
+            />
+          </div>
+
+          <Select
+            label="Je souhaite rejoindre en tant que :"
+            error={errors.role?.message}
+            helperText={selectedRole === 'seller' ? 'Vous pourrez publier et vendre vos produits.' : 'Vous pourrez acheter et commander des produits.'}
             {...register('role')}
-            className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none"
           >
-            <option value="buyer">Acheteur</option>
-            <option value="seller">Vendeur</option>
-          </select>
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Téléphone (optionnel)</label>
-          <input
-            {...register('phone')}
-            className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none"
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium text-slate-700">Ville (optionnel)</label>
-          <input
-            {...register('city')}
-            className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
-        >
-          {submitting ? 'Inscription...' : "S'inscrire"}
-        </button>
-      </form>
+            <option value="buyer">Acheteur (Commander des produits)</option>
+            <option value="seller">Vendeur (Vendre sur la plateforme)</option>
+          </Select>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Téléphone (optionnel)"
+              placeholder="+221 77 000 00 00"
+              {...register('phone')}
+            />
+
+            <Input
+              label="Ville (optionnel)"
+              placeholder="Ex: Dakar"
+              {...register('city')}
+            />
+          </div>
+
+          <div className="pt-2">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              loading={submitting}
+              className="w-full"
+            >
+              Créer mon compte Soukna →
+            </Button>
+          </div>
+
+          <p className="text-center text-xs text-slate-400 mt-4">
+            En vous inscrivant, vous acceptez nos Conditions Générales et notre Politique de Confidentialité.
+          </p>
+        </form>
+      </Card>
     </div>
   );
 }

@@ -6,6 +6,8 @@ import { formatPrice, getErrorMessage } from '../../services/api';
 import toast from 'react-hot-toast';
 import MessagesWidget from '../../components/messages/MessagesWidget';
 import SalesChart from '../../components/analytics/SalesChart';
+import PageHeader from '../../components/ui/PageHeader';
+import Button from '../../components/ui/Button';
 
 const STATUS_LABEL = { pending: 'En attente', confirmed: 'Confirmée', shipped: 'Expédiée', delivered: 'Livrée', cancelled: 'Annulée' };
 const STATUS_COLOR = { pending: '#f59e0b', confirmed: '#3b82f6', shipped: '#8b5cf6', delivered: '#10b981', cancelled: '#ef4444' };
@@ -55,10 +57,24 @@ function SellerDashboard() {
 
   return (
     <div>
-      {/* Header */}
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: '#0f172a' }}>Tableau de bord</h1>
-      </div>
+      <PageHeader
+        title="Tableau de bord Vendeur"
+        subtitle="Suivez la santé de votre boutique, vos commandes et vos performances de vente"
+        actions={
+          <Button
+            to="/seller/products/new"
+            variant="primary"
+            size="md"
+            iconLeft={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+              </svg>
+            }
+          >
+            Ajouter un produit
+          </Button>
+        }
+      />
 
       {/* KPI Grid */}
       <div className="dashboard-kpi-grid">

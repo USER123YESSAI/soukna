@@ -3,6 +3,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { getErrorMessage, resolveMediaUrl } from '../services/api';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
+import Card from '../components/ui/Card';
+import Input from '../components/ui/Input';
+import Button from '../components/ui/Button';
+import PageHeader from '../components/ui/PageHeader';
 
 function ProfileForm() {
   const { user, updateProfile } = useAuth();
@@ -30,6 +34,7 @@ function ProfileForm() {
         formData.append('profile_image', data.profile_image[0]);
       }
       await updateProfile(formData);
+      toast.success('Profil mis à jour avec succès !');
     } catch (error) {
       toast.error(getErrorMessage(error));
     } finally {
@@ -37,81 +42,113 @@ function ProfileForm() {
     }
   };
 
+  const roleLabel = {
+    admin: 'Administrateur',
+    seller: 'Vendeur Certifié',
+    buyer: 'Acheteur',
+  }[user?.role] || user?.role;
+
   return (
-    <div className="mx-auto max-w-lg">
-      <h1 className="text-2xl font-bold text-slate-900">Mon profil</h1>
-      <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6">
-        <div className="mb-6 flex items-center gap-4">
-          {preview ? (
-            <img src={preview} alt="" className="h-16 w-16 rounded-full object-cover" />
-          ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 text-xl font-bold text-indigo-600">
-              {user?.name?.charAt(0)}
-            </div>
-          )}
-          <div>
-            <p className="font-medium text-slate-900">{user?.name}</p>
+    <div className="max-w-2xl mx-auto py-4">
+      <PageHeader
+        title="Mon profil"
+        subtitle="Gérez vos informations personnelles et vos coordonnées de livraison"
+      />
+
+      <Card className="p-6 sm:p-8">
+        {/* En-tête profil avec avatar */}
+        <div className="flex flex-wrap items-center gap-5 pb-6 mb-6 border-b border-slate-100">
+          <div className="relative group">
+            {preview ? (
+              <img
+                src={preview}
+                alt={user?.name || 'Avatar'}
+                className="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-100 shadow-sm"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-2xl bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center text-2xl font-extrabold text-indigo-600 shadow-sm">
+                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+            )}
+            <label
+              htmlFor="avatar-upload"
+              className="absolute -bottom-1.5 -right-1.5 bg-indigo-600 hover:bg-indigo-700 text-white p-1.5 rounded-xl shadow cursor-pointer transition-transform group-hover:scale-110"
+              title="Changer la photo"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </label>
+          </div>
+
+          <div className="flex-1 min-w-[200px]">
+            <h2 className="text-lg font-bold text-slate-900">{user?.name}</h2>
             <p className="text-sm text-slate-500">{user?.email}</p>
-            <span className="mt-1 inline-block rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700">
-              {user?.role}
+            <span className="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
+              ⚡ {roleLabel}
             </span>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Nom</label>
-            <input
-              {...register('name', { required: 'Nom requis' })}
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none"
-            />
-            {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Bio</label>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <input
+            id="avatar-upload"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            {...register('profile_image', {
+              onChange: (e) => {
+                const file = e.target.files?.[0];
+                if (file) setPreview(URL.createObjectURL(file));
+              },
+            })}
+          />
+
+          <Input
+            label="Nom complet"
+            error={errors.name?.message}
+            {...register('name', { required: 'Le nom est requis' })}
+          />
+
+          <div className="w-full">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Biographie
+            </label>
             <textarea
               rows={3}
+              placeholder="Présentez-vous en quelques mots..."
               {...register('bio')}
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none"
+              className="w-full p-3.5 text-sm bg-white text-slate-900 placeholder-slate-400 rounded-xl border border-slate-200 hover:border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none resize-none"
             />
           </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Téléphone</label>
-            <input
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Téléphone"
+              placeholder="+221 77 000 00 00"
               {...register('phone')}
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none"
             />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Ville</label>
-            <input
+
+            <Input
+              label="Ville"
+              placeholder="Ex: Dakar"
               {...register('city')}
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none"
             />
           </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Photo de profil</label>
-            <input
-              type="file"
-              accept="image/*"
-              {...register('profile_image', {
-                onChange: (e) => {
-                  const file = e.target.files?.[0];
-                  if (file) setPreview(URL.createObjectURL(file));
-                },
-              })}
-              className="w-full text-sm"
-            />
+
+          <div className="pt-2 flex justify-end">
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              loading={submitting}
+            >
+              Enregistrer les modifications
+            </Button>
           </div>
-          <button
-            type="submit"
-            disabled={submitting}
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
-          >
-            {submitting ? 'Enregistrement...' : 'Enregistrer'}
-          </button>
         </form>
-      </div>
+      </Card>
     </div>
   );
 }

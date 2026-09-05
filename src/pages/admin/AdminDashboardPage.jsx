@@ -5,6 +5,8 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { formatPrice, getErrorMessage } from '../../services/api';
 import { downloadCsvBlob } from '../../utils/csvExporter';
 import toast from 'react-hot-toast';
+import PageHeader from '../../components/ui/PageHeader';
+import Button from '../../components/ui/Button';
 import MessagesWidget from '../../components/messages/MessagesWidget';
 import SalesChart from '../../components/analytics/SalesChart';
 
@@ -53,30 +55,25 @@ function AdminDashboard() {
 
   return (
     <div>
-      {/* Header */}
-      <div style={{ marginBottom: 32, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
-        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: '#0f172a' }}>Tableau de bord administrateur</h1>
-        <button
-          type="button"
-          onClick={handleExportOrders}
-          disabled={exportingOrders}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '10px 18px',
-            borderRadius: 12,
-            background: 'white',
-            border: '1.5px solid var(--border)',
-            fontWeight: 600,
-            fontSize: 13,
-            cursor: 'pointer',
-            boxShadow: 'var(--shadow-sm)',
-          }}
-        >
-          {exportingOrders ? 'Téléchargement...' : '📥 Exporter toutes les commandes (CSV)'}
-        </button>
-      </div>
+      <PageHeader
+        title="Tableau de bord administrateur"
+        subtitle="Vue d'ensemble en temps réel de l'activité, des transactions et des utilisateurs"
+        actions={
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={handleExportOrders}
+            loading={exportingOrders}
+            iconLeft={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            }
+          >
+            Exporter toutes les commandes (CSV)
+          </Button>
+        }
+      />
 
       {/* KPIs */}
       <div className="dashboard-kpi-grid">

@@ -5,12 +5,12 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 import EmptyState from '../components/ui/EmptyState';
 import StatusBadge from '../components/ui/StatusBadge';
 import Pagination from '../components/ui/Pagination';
+import PageHeader from '../components/ui/PageHeader';
+import Card from '../components/ui/Card';
+import Select from '../components/ui/Select';
 import { formatPrice, formatDate, getErrorMessage } from '../services/api';
 import toast from 'react-hot-toast';
 
-// ✅ CORRIGÉ : valeurs exactes acceptées par l'API Laravel
-// pending | confirmed | shipped | delivered | cancelled
-// "processing" n'existe PAS dans l'API → erreur "The selected status is invalid"
 const STATUS_OPTIONS = [
   { value: '',          label: 'Tous les statuts' },
   { value: 'pending',   label: 'En attente' },
@@ -41,71 +41,86 @@ function OrdersList() {
       .finally(() => setLoading(false));
   }, [page, status]);
 
-  if (loading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}><LoadingSpinner size="lg" /></div>;
-  }
-
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
-        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a' }}>Mes commandes</h1>
-        <select
-          value={status}
-          onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-          style={{ padding: '8px 14px', borderRadius: 10, border: '1.5px solid var(--border)', fontSize: 13, fontFamily: 'inherit', background: 'white', cursor: 'pointer', outline: 'none' }}
-        >
-          {STATUS_OPTIONS.map(o => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
-      </div>
+      <PageHeader
+        title="Mes commandes"
+        subtitle="Historique de vos achats et suivi d'acheminement de vos colis en direct"
+        actions={
+          <div className="w-48">
+            <Select
+              value={status}
+              onChange={(e) => { setStatus(e.target.value); setPage(1); }}
+            >
+              {STATUS_OPTIONS.map(o => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </Select>
+          </div>
+        }
+      />
 
-      {orders.length === 0 ? (
+      {loading ? (
+        <div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div>
+      ) : orders.length === 0 ? (
         <EmptyState
           title="Aucune commande"
-          description={status ? `Aucune commande avec le statut "${STATUS_OPTIONS.find(o => o.value === status)?.label}".` : 'Vos commandes apparaîtront ici.'}
+          description={status ? `Aucune commande avec le statut "${STATUS_OPTIONS.find(o => o.value === status)?.label}".` : 'Vos commandes apparaîtront ici dès que vous aurez validé un panier.'}
         />
       ) : (
         <>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div className="space-y-3.5">
             {orders.map((order) => (
               <Link
                 key={order.id}
                 to={`/buyer/orders/${order.id}`}
-                style={{ textDecoration: 'none' }}
+                className="block no-underline"
               >
-                <div style={{
-                  background: 'white', borderRadius: 14, border: '1.5px solid var(--border)',
-                  padding: '16px 20px', transition: 'all .15s', boxShadow: 'var(--shadow-sm)'
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#6366f1'; e.currentTarget.style.boxShadow = 'var(--shadow)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}
-                >
-                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                <Card hoverable className="p-5">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <p style={{ margin: '0 0 3px', fontWeight: 700, fontSize: 15, color: '#0f172a' }}>
-                        {order.order_number ?? `#${order.id}`}
-                      </p>
-                      <p style={{ margin: 0, fontSize: 12, color: '#94a3b8' }}>{formatDate(order.created_at)}</p>
+                      <div className="flex items-center gap-2.5">
+                        <p className="font-bold text-base text-slate-900">
+                          {order.order_number ?? `#${order.id}`}
+                        </p>
+                        <StatusBadge status={order.status} />
+                      </div>
+                      <p className="text-xs text-slate-400 mt-0.5">{formatDate(order.created_at)}</p>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                      <StatusBadge status={order.status} />
-                      <p style={{ margin: 0, fontWeight: 800, fontSize: 16, color: '#6366f1' }}>
+
+                    <div className="text-right">
+                      <p className="font-extrabold text-base text-indigo-600">
                         {formatPrice(order.total_amount)}
                       </p>
+                      {order.payment_method && (
+                        <p className="text-xs text-slate-500 mt-0.5">
+                          {order.payment_method === 'card' ? '💳 Carte' : order.payment_method === 'paypal' ? '🅿️ PayPal' : order.payment_method === 'mobile_pay' ? '📱 Mobile Money' : '💵 À la livraison'}
+                        </p>
+                      )}
                     </div>
                   </div>
+
                   {order.items?.length > 0 && (
-                    <p style={{ margin: '8px 0 0', fontSize: 12, color: '#64748b' }}>
-                      {order.items.length} article{order.items.length > 1 ? 's' : ''}
-                      {order.items[0]?.product?.title ? ` · ${order.items[0].product.title}${order.items.length > 1 ? '…' : ''}` : ''}
-                    </p>
+                    <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                      <span>
+                        {order.items.length} article{order.items.length > 1 ? 's' : ''}
+                        {order.items[0]?.product?.title ? ` · ${order.items[0].product.title}${order.items.length > 1 ? '…' : ''}` : ''}
+                      </span>
+                      <span className="font-semibold text-indigo-600 flex items-center gap-1">
+                        Détails & Facture →
+                      </span>
+                    </div>
                   )}
-                </div>
+                </Card>
               </Link>
             ))}
           </div>
-          <Pagination pagination={pagination} onPageChange={setPage} />
+
+          {pagination && (
+            <div className="mt-6">
+              <Pagination pagination={pagination} onPageChange={setPage} />
+            </div>
+          )}
         </>
       )}
     </div>

@@ -4,6 +4,11 @@ import toast from 'react-hot-toast';
 
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import Pagination from '../../components/ui/Pagination';
+import PageHeader from '../../components/ui/PageHeader';
+import Card from '../../components/ui/Card';
+import Button from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
+import EmptyState from '../../components/ui/EmptyState';
 import { getErrorMessage } from '../../services/api';
 import { adminCategoryService } from '../../services/adminCategoryService';
 import { getCategoryIcon } from '../../utils/categoryIcons';
@@ -45,13 +50,9 @@ function AdminCategories() {
 
   const watchedName = watch('name');
 
-  // Petite aide UI: proposer un slug si l'utilisateur n'en met pas
   useEffect(() => {
     if (!showForm) return;
-    if (editing) {
-      // Pendant édition: on ne force pas.
-      return;
-    }
+    if (editing) return;
     const currentSlug = safeTrim(watch('slug') ?? '');
     if (currentSlug) return;
     const base = safeTrim(watchedName ?? '');
@@ -150,173 +151,184 @@ function AdminCategories() {
     }
   };
 
-  const filteredCountText = useMemo(() => {
-    if (!pagination?.total) return '0 résultat';
-    const t = pagination.total;
-    return t === 1 ? '1 résultat' : `${t} résultats`;
-  }, [pagination?.total]);
-
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Gestion des catégories</h1>
-          <p className="mt-1 text-sm text-slate-600">CRUD complet avec recherche, pagination et validation.</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={() => { setShowForm(false); openCreate(); }}
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+      <PageHeader
+        title="Gestion des catégories"
+        subtitle="Organisez et structurez les rayons et univers de produits du catalogue Soukna"
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => { setShowForm(true); openCreate(); }}
+            iconLeft={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+              </svg>
+            }
           >
-            + Nouvelle catégorie
-          </button>
-        </div>
-      </div>
+            Nouvelle catégorie
+          </Button>
+        }
+      />
 
-      <div className="mb-4 flex flex-col gap-3 rounded-xl border bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <input
+      {/* Barre de recherche */}
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div className="w-full sm:w-80">
+          <Input
             value={q}
             onChange={(e) => { setQ(e.target.value); setPage(1); }}
             placeholder="Rechercher par nom ou slug..."
-            className="w-full rounded-lg border px-3 py-2 text-sm sm:w-72"
+            iconLeft={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            }
           />
         </div>
-        <div className="text-sm text-slate-600">{filteredCountText}</div>
+        <div className="text-xs font-semibold text-slate-500">
+          {pagination?.total ?? categories.length} catégorie(s) au total
+        </div>
       </div>
 
+      {/* Formulaire Modal/Card d'ajout ou d'édition */}
       {showForm && (
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mb-6 grid gap-4 rounded-xl border bg-white p-6 sm:grid-cols-2"
-        >
-          <div>
-            <label className="text-sm font-medium">Nom *</label>
-            <input
-              {...register('name', { required: 'Nom requis' })}
-              className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
-            />
-            {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
-          </div>
+        <Card className="mb-6 shadow-md border-indigo-100 bg-indigo-50/20">
+          <Card.Header
+            title={editing ? `Modifier la catégorie : ${editing.name}` : 'Créer une nouvelle catégorie'}
+            subtitle="Renseignez les détails du rayon"
+          />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                label="Nom de la catégorie *"
+                placeholder="Ex: Électronique & Informatique"
+                error={errors.name?.message}
+                {...register('name', { required: 'Le nom est requis' })}
+              />
 
-          <div>
-            <label className="text-sm font-medium">Slug (optionnel)</label>
-            <input
-              {...register('slug')}
-              placeholder="automatique si vide"
-              className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
-            />
-            {errors.slug && <p className="mt-1 text-sm text-red-600">{errors.slug.message}</p>}
-          </div>
+              <Input
+                label="Slug URL (Optionnel)"
+                placeholder="automatique si vide"
+                error={errors.slug?.message}
+                {...register('slug')}
+              />
+            </div>
 
-          <div className="sm:col-span-2">
-            <label className="text-sm font-medium">Description</label>
-            <textarea
-              {...register('description')}
-              rows={3}
-              className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
-              placeholder="Optionnel"
-            />
-            {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>}
-          </div>
+            <div className="w-full">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Description (Optionnelle)
+              </label>
+              <textarea
+                {...register('description')}
+                rows={2}
+                placeholder="Courte description affichée aux acheteurs..."
+                className="w-full p-3 text-sm bg-white rounded-xl border border-slate-200 hover:border-slate-300 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none resize-none"
+              />
+            </div>
 
-          <div>
-            <label className="text-sm font-medium">Icône (optionnel)</label>
-            <input
+            <Input
+              label="Icône ou Émoji (Optionnel)"
+              placeholder="Ex: 📱 ou 💻"
+              error={errors.icon?.message}
               {...register('icon')}
-              placeholder="Ex: 📱 ou URL"
-              className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
             />
-            {errors.icon && <p className="mt-1 text-sm text-red-600">{errors.icon.message}</p>}
-          </div>
 
-          <div className="sm:col-span-2 flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => { setShowForm(false); setEditing(null); reset({ name: '', slug: '', description: '', icon: '' }); }}
-              className="rounded-lg border px-4 py-2 text-sm font-semibold hover:bg-slate-50"
-              disabled={submitting}
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
-            >
-              {editing ? 'Mettre à jour' : 'Créer'}
-            </button>
-          </div>
-        </form>
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <Button
+                variant="secondary"
+                size="md"
+                type="button"
+                onClick={() => { setShowForm(false); setEditing(null); }}
+              >
+                Annuler
+              </Button>
+              <Button
+                variant="primary"
+                size="md"
+                type="submit"
+                loading={submitting}
+              >
+                {editing ? 'Mettre à jour' : 'Créer la catégorie'}
+              </Button>
+            </div>
+          </form>
+        </Card>
       )}
 
+      {/* Tableau des catégories */}
       {loading ? (
         <div className="flex justify-center py-20">
           <LoadingSpinner size="lg" />
         </div>
       ) : categories.length === 0 ? (
-        <p className="text-slate-500">Aucune catégorie trouvée.</p>
+        <EmptyState
+          title="Aucune catégorie trouvée"
+          description={q ? `Aucune catégorie ne correspond à "${q}".` : 'Commencez par ajouter votre première catégorie.'}
+        />
       ) : (
-        <div className="rounded-xl bg-white">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="p-3">Catégorie</th>
-                  <th className="p-3">Slug</th>
-                  <th className="p-3">Produits</th>
-                  <th className="p-3">Description</th>
-                  <th className="p-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categories.map((c) => (
-                  <tr key={c.id} className="border-t">
-                    <td className="p-3">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="flex h-10 w-10 items-center justify-center rounded-lg border bg-slate-50 text-xl"
-                          aria-label="icon"
-                        >
-                          {getCategoryIcon(c)}
-                        </div>
-                        <span className="font-medium">{c.name}</span>
-                      </div>
-                    </td>
-                    <td className="p-3 font-mono text-xs text-slate-700">{c.slug}</td>
-                    <td className="p-3">{c.products_count ?? 0}</td>
-                    <td className="p-3 text-slate-600 max-w-[280px] truncate">{c.description || '—'}</td>
-                    <td className="p-3">
-                      <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-                        <button
-                          type="button"
-                          onClick={() => openEdit(c)}
-                          className="text-indigo-600 hover:underline text-xs font-semibold"
-                        >
-                          Modifier
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(c.id)}
-                          className="text-red-600 hover:underline text-xs font-semibold"
-                        >
-                          Supprimer
-                        </button>
-                      </div>
-                    </td>
+        <>
+          <Card padding={false} className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm border-collapse">
+                <thead className="bg-slate-50 border-b border-slate-200/80">
+                  <tr>
+                    <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Catégorie</th>
+                    <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Slug URL</th>
+                    <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Produits associés</th>
+                    <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Description</th>
+                    <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {categories.map((c) => (
+                    <tr key={c.id} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="py-3.5 px-4 font-semibold text-slate-900">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-xl shrink-0 shadow-2xs">
+                            {getCategoryIcon(c)}
+                          </div>
+                          <span>{c.name}</span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-xs text-slate-500">{c.slug}</td>
+                      <td className="py-3.5 px-4">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">
+                          {c.products_count ?? 0} article(s)
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-600 max-w-[280px] truncate">{c.description || '—'}</td>
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="inline-flex items-center gap-2">
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => openEdit(c)}
+                          >
+                            Modifier
+                          </Button>
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => handleDelete(c.id)}
+                          >
+                            Supprimer
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
 
-          <div className="px-4 py-4">
-            {pagination && (
+          {pagination && (
+            <div className="mt-6">
               <Pagination pagination={pagination} onPageChange={setPage} />
-            )}
-          </div>
-        </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -325,4 +337,3 @@ function AdminCategories() {
 export default function AdminCategoriesPage() {
   return <AdminCategories />;
 }
-

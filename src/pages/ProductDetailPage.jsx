@@ -12,6 +12,7 @@ import ProductSeoSchema from '../components/seo/ProductSeoSchema';
 import ProductReviews from '../components/products/ProductReviews';
 import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
+import Button from '../components/ui/Button';
 
 export default function ProductDetailPage({ basePath = '/products' }) {
   const { id } = useParams();
@@ -191,44 +192,51 @@ export default function ProductDetailPage({ basePath = '/products' }) {
               </div>
               
               <div className="flex flex-wrap gap-3">
-                <button
+                <Button
                   type="button"
+                  variant="primary"
+                  size="md"
                   onClick={handleAddToCart}
                   disabled={adding || product.quantity < 1}
-                  className="flex-1 min-w-[200px] rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                  className="flex-1 min-w-[180px]"
                 >
                   {adding ? 'Ajout...' : '🛒 Ajouter au panier'}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
+                  size="md"
                   onClick={handleBuyNow}
                   disabled={adding || product.quantity < 1}
-                  className="flex-1 min-w-[200px] rounded-lg bg-green-600 px-6 py-3 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
+                  className="flex-1 min-w-[180px] bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
                 >
                   {adding ? 'Préparation...' : '⚡ Acheter maintenant'}
-                </button>
+                </Button>
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="md"
                   onClick={toggleFavorite}
-                  className={`flex-1 min-w-[200px] rounded-lg border px-6 py-3 text-sm font-medium transition-colors ${
+                  className={`flex-1 min-w-[180px] ${
                     isFavorite
-                      ? 'border-red-200 bg-red-50 text-red-600 hover:bg-red-100'
-                      : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                      ? 'border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100'
+                      : 'border-slate-200 text-slate-700 hover:bg-slate-50'
                   }`}
                 >
                   {isFavorite ? '❤️ Favori' : '🤍 Ajouter aux favoris'}
-                </button>
+                </Button>
                 {canContactSeller && (
-                  <button
+                  <Button
                     type="button"
+                    variant="outline"
+                    size="md"
                     onClick={() => setShowChat(!showChat)}
-                    className="flex-1 min-w-[200px] rounded-lg border border-slate-300 px-6 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                    className="flex-1 min-w-[180px] border-slate-200 text-slate-700 hover:bg-slate-50"
                   >
                     💬 Contacter le vendeur
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>

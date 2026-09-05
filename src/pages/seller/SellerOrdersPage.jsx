@@ -4,6 +4,10 @@ import { orderService } from '../../services/orderService';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import StatusBadge from '../../components/ui/StatusBadge';
 import InlineChat from '../../components/messages/InlineChat';
+import PageHeader from '../../components/ui/PageHeader';
+import Card from '../../components/ui/Card';
+import Button from '../../components/ui/Button';
+import EmptyState from '../../components/ui/EmptyState';
 import { formatPrice, formatDate, getErrorMessage } from '../../services/api';
 import { exportToCsv } from '../../utils/csvExporter';
 import toast from 'react-hot-toast';
@@ -62,93 +66,102 @@ function SellerOrders() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Commandes reçues</h1>
-        {orders.length > 0 && (
-          <button
-            type="button"
-            onClick={handleExportCsv}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition"
-          >
-            📥 Exporter en CSV
-          </button>
-        )}
-      </div>
+      <PageHeader
+        title="Commandes reçues"
+        subtitle="Consultez et préparez les commandes passées sur votre boutique"
+        actions={
+          orders.length > 0 && (
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={handleExportCsv}
+              iconLeft={
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+              }
+            >
+              Exporter en CSV
+            </Button>
+          )
+        }
+      />
 
       {orders.length === 0 ? (
-        <p className="text-slate-500">Aucune commande pour le moment.</p>
+        <EmptyState
+          title="Aucune commande pour le moment"
+          description="Les commandes passées par les acheteurs apparaîtront ici."
+        />
       ) : (
         <div className="space-y-4">
           {orders.map((order) => (
-            <div key={order.id} className="rounded-xl border border-slate-200 bg-white p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
+            <Card key={order.id} className="p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="font-medium">{order.order_number}</p>
-                  <p className="text-sm text-slate-500">{formatDate(order.created_at)}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold text-slate-900 text-base">{order.order_number}</p>
+                    <StatusBadge status={order.status} />
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5">{formatDate(order.created_at)}</p>
                   {order.buyer && (
-                    <p className="text-xs text-slate-400 mt-1">
-                      Acheteur : {order.buyer.name}
+                    <p className="text-xs font-medium text-slate-600 mt-1">
+                      Acheteur : <span className="text-slate-900 font-semibold">{order.buyer.name}</span>
                     </p>
                   )}
                 </div>
-                <StatusBadge status={order.status} />
-                <p className="font-bold text-indigo-600">{formatPrice(order.total_amount)}</p>
+                <div className="text-right">
+                  <p className="text-lg font-extrabold text-indigo-600">{formatPrice(order.total_amount)}</p>
+                  <div className="mt-1 flex items-center justify-end gap-1.5 text-xs text-slate-500">
+                    <span>{order.payment_method === 'card' ? '💳 Carte' : order.payment_method === 'paypal' ? '🅿️ PayPal' : order.payment_method === 'mobile_pay' ? '📱 Mobile Money' : '💵 À la livraison'}</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${order.payment_status === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}`}>
+                      {order.payment_status === 'paid' ? 'Payé' : 'En attente'}
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              {/* Statut paiement */}
-              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-600">
-                <span>Paiement : <strong>{order.payment_method === 'card' ? 'Carte bancaire' : order.payment_method === 'paypal' ? 'PayPal' : order.payment_method === 'mobile_pay' ? 'Wave/OM' : order.payment_method === 'cod' ? 'À la livraison' : (order.payment_method || 'N/A')}</strong></span>
-                <span className={`px-2 py-0.5 rounded-full font-medium ${order.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
-                  {order.payment_status === 'paid' ? 'Payé' : 'En attente'}
-                </span>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {['confirmed', 'shipped', 'delivered'].map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => updateStatus(order.id, s)}
-                    className="rounded border border-slate-200 px-2 py-1 text-xs hover:bg-slate-50"
-                  >
-                    {s}
-                  </button>
-                ))}
+              <div className="mt-4 pt-3.5 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-500 mr-1">Changer statut :</span>
+                  {[
+                    { key: 'confirmed', label: 'Confirmer' },
+                    { key: 'shipped', label: 'Expédier' },
+                    { key: 'delivered', label: 'Livrer' },
+                  ].map(({ key, label }) => (
+                    <Button
+                      key={key}
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => updateStatus(order.id, key)}
+                    >
+                      {label}
+                    </Button>
+                  ))}
+                </div>
 
-                {/* Bouton contacter l'acheteur */}
                 {order.buyer && (
-                  <button
-                    type="button"
+                  <Button
+                    variant={openChats[order.id] ? 'outline' : 'secondary'}
+                    size="sm"
                     onClick={() => toggleChat(order.id)}
-                    style={{
-                      padding: '4px 12px', borderRadius: 8,
-                      border: '1.5px solid #6366f1',
-                      background: openChats[order.id] ? '#eef2ff' : 'white',
-                      color: '#6366f1', fontSize: 12, fontWeight: 600,
-                      cursor: 'pointer', fontFamily: 'inherit',
-                      display: 'flex', alignItems: 'center', gap: 4,
-                      transition: 'all .15s',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = '#eef2ff'}
-                    onMouseLeave={e => { if (!openChats[order.id]) e.currentTarget.style.background = 'white'; }}
+                    iconLeft={<span>💬</span>}
                   >
-                    💬 Contacter {order.buyer.name}
-                  </button>
+                    Contacter l'acheteur
+                  </Button>
                 )}
               </div>
 
-              {/* Chat inline avec l'acheteur */}
+              {/* Chat direct vendeur-acheteur */}
               {openChats[order.id] && order.buyer && (
-                <div style={{ marginTop: 12 }}>
+                <div className="mt-4 pt-4 border-t border-slate-100">
                   <InlineChat
-                    recipientId={order.buyer.id}
-                    recipientName={order.buyer.name}
-                    title={`💬 Discussion avec ${order.buyer.name}`}
-                    maxHeight={280}
-                    accentColor="#6366f1"
+                    receiverId={order.buyer.id}
+                    receiverName={order.buyer.name}
+                    orderNumber={order.order_number}
                   />
                 </div>
               )}
-            </div>
+            </Card>
           ))}
         </div>
       )}

@@ -1,16 +1,17 @@
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getErrorMessage } from '../services/api';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
+import Card from '../components/ui/Card';
+import Input from '../components/ui/Input';
+import Button from '../components/ui/Button';
 
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const [submitting, setSubmitting] = useState(false);
-
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -32,64 +33,59 @@ export default function LoginPage() {
     }
   };
 
-  const inputStyle = {
-    width: '100%', padding: '11px 14px', border: '1.5px solid var(--border)',
-    borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'inherit',
-    transition: 'border-color .15s', background: 'white', boxSizing: 'border-box'
-  };
-
   return (
-    <div style={{ maxWidth: 440, margin: '40px auto' }}>
-      {/* Card */}
-      <div style={{ background: 'white', borderRadius: 24, border: '1.5px solid var(--border)', padding: '40px', boxShadow: 'var(--shadow)' }}>
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ width: 48, height: 48, borderRadius: 14, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+    <div className="max-w-[440px] mx-auto my-10 px-4">
+      <Card className="p-8 sm:p-10 shadow-lg border-slate-200">
+        {/* Logo & Header */}
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center mx-auto mb-4 shadow-sm shadow-indigo-200">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
               <line x1="3" y1="6" x2="21" y2="6"/>
               <path d="M16 10a4 4 0 01-8 0"/>
             </svg>
           </div>
-          <h1 style={{ margin: '0 0 6px', fontSize: 22, fontWeight: 800, color: '#0f172a' }}>Connexion</h1>
-          <p style={{ margin: 0, fontSize: 14, color: '#64748b' }}>
+          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+            Connexion
+          </h1>
+          <p className="mt-1.5 text-sm text-slate-500">
             Pas encore de compte ?{' '}
-            <Link to="/register" style={{ color: '#6366f1', fontWeight: 600, textDecoration: 'none' }}>Inscrivez-vous</Link>
+            <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-700 hover:underline">
+              Inscrivez-vous
+            </Link>
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-          <div>
-            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 }}>Email</label>
-            <input type="email" {...register('email', { required: 'Email requis' })}
-              style={inputStyle}
-              onFocus={e => e.target.style.borderColor = '#6366f1'}
-              onBlur={e => e.target.style.borderColor = errors.email ? '#ef4444' : 'var(--border)'}
-            />
-            {errors.email && <p style={{ margin: '5px 0 0', fontSize: 12, color: '#ef4444' }}>{errors.email.message}</p>}
-          </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Input
+            label="Adresse email"
+            type="email"
+            placeholder="vous@exemple.com"
+            error={errors.email?.message}
+            {...register('email', { required: 'L\'adresse email est requise' })}
+          />
 
-          <div>
-            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 }}>Mot de passe</label>
-            <input type="password" {...register('password', { required: 'Mot de passe requis', minLength: { value: 6, message: 'Min. 6 caractères' } })}
-              style={inputStyle}
-              onFocus={e => e.target.style.borderColor = '#6366f1'}
-              onBlur={e => e.target.style.borderColor = errors.password ? '#ef4444' : 'var(--border)'}
-            />
-            {errors.password && <p style={{ margin: '5px 0 0', fontSize: 12, color: '#ef4444' }}>{errors.password.message}</p>}
-          </div>
+          <Input
+            label="Mot de passe"
+            type="password"
+            placeholder="••••••••"
+            error={errors.password?.message}
+            {...register('password', { required: 'Le mot de passe est requis' })}
+          />
 
-          <button type="submit" disabled={submitting} style={{
-            width: '100%', padding: '12px', borderRadius: 12, border: 'none', cursor: submitting ? 'not-allowed' : 'pointer',
-            fontSize: 14, fontWeight: 700, color: 'white', fontFamily: 'inherit',
-            background: submitting ? '#a5b4fc' : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-            boxShadow: submitting ? 'none' : '0 4px 14px rgba(99,102,241,.4)',
-            transition: 'all .2s'
-          }}>
-            {submitting ? 'Connexion en cours...' : 'Se connecter →'}
-          </button>
+          <div className="pt-2">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              loading={submitting}
+              className="w-full"
+            >
+              Se connecter →
+            </Button>
+          </div>
         </form>
-      </div>
+      </Card>
     </div>
   );
 }

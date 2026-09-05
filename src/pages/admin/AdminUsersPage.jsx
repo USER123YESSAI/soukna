@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react';
 import { adminService } from '../../services/adminService';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import Pagination from '../../components/ui/Pagination';
+import StatusBadge from '../../components/ui/StatusBadge';
+import PageHeader from '../../components/ui/PageHeader';
+import Card from '../../components/ui/Card';
+import Button from '../../components/ui/Button';
+import Select from '../../components/ui/Select';
 import { getErrorMessage } from '../../services/api';
 import { downloadCsvBlob } from '../../utils/csvExporter';
 import toast from 'react-hot-toast';
@@ -62,68 +67,94 @@ function AdminUsers() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">Gestion des utilisateurs</h1>
-        <button
-          type="button"
-          onClick={handleExportCsv}
-          disabled={exporting}
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition"
-        >
-          {exporting ? 'Téléchargement...' : '📥 Exporter tous les utilisateurs (CSV)'}
-        </button>
-      </div>
+      <PageHeader
+        title="Gestion des utilisateurs"
+        subtitle="Consultez, filtrez et modérez l'ensemble des comptes de la plateforme"
+        actions={
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={handleExportCsv}
+            loading={exporting}
+            iconLeft={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            }
+          >
+            Exporter tous les utilisateurs (CSV)
+          </Button>
+        }
+      />
 
-      <select
-        value={role}
-        onChange={(e) => { setRole(e.target.value); setPage(1); }}
-        className="mb-4 rounded-lg border px-3 py-2 text-sm"
-      >
-        <option value="">Tous les rôles</option>
-        <option value="buyer">Acheteurs</option>
-        <option value="seller">Vendeurs</option>
-        <option value="admin">Admins</option>
-      </select>
+      <div className="mb-5 max-w-xs">
+        <Select
+          value={role}
+          onChange={(e) => { setRole(e.target.value); setPage(1); }}
+        >
+          <option value="">Tous les rôles ({pagination?.total ?? '...'})</option>
+          <option value="buyer">Acheteurs uniquement</option>
+          <option value="seller">Vendeurs uniquement</option>
+          <option value="admin">Administrateurs</option>
+        </Select>
+      </div>
 
       {loading ? (
         <div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div>
       ) : (
         <>
-          <div className="overflow-x-auto rounded-xl bg-white">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="p-3">Nom</th>
-                  <th className="p-3">Email</th>
-                  <th className="p-3">Rôle</th>
-                  <th className="p-3">Statut</th>
-                  <th className="p-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((u) => (
-                  <tr key={u.id} className="">
-                    <td className="p-3">{u.name}</td>
-                    <td className="p-3">{u.email}</td>
-                    <td className="p-3">{u.role}</td>
-                    <td className="p-3">{u.suspended_at ? 'Suspendu' : 'Actif'}</td>
-                    <td className="p-3">
-                      {u.role !== 'admin' && (
-                        <button
-                          type="button"
-                          onClick={() => toggleSuspend(u)}
-                          className={`text-sm ${u.suspended_at ? 'text-green-600' : 'text-red-600'} hover:underline`}
-                        >
-                          {u.suspended_at ? 'Réactiver' : 'Suspendre'}
-                        </button>
-                      )}
-                    </td>
+          <Card padding={false} className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm border-collapse">
+                <thead className="bg-slate-50 border-b border-slate-200/80">
+                  <tr>
+                    <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Utilisateur</th>
+                    <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Email</th>
+                    <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Rôle</th>
+                    <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Statut</th>
+                    <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {users.map((u) => (
+                    <tr key={u.id} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="py-3.5 px-4 font-semibold text-slate-900 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600">
+                          {u.name?.charAt(0)?.toUpperCase()}
+                        </div>
+                        <span>{u.name}</span>
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-600">{u.email}</td>
+                      <td className="py-3.5 px-4">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${
+                          u.role === 'admin' ? 'bg-purple-100 text-purple-700' : u.role === 'seller' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-700'
+                        }`}>
+                          {u.role}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <StatusBadge status={u.suspended_at ? 'suspended' : 'active'} />
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        {u.role !== 'admin' && (
+                          <Button
+                            variant={u.suspended_at ? 'outline' : 'danger'}
+                            size="sm"
+                            onClick={() => toggleSuspend(u)}
+                          >
+                            {u.suspended_at ? 'Réactiver' : 'Suspendre'}
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+          <div className="mt-6">
+            <Pagination pagination={pagination} onPageChange={setPage} />
           </div>
-          <Pagination pagination={pagination} onPageChange={setPage} />
         </>
       )}
     </div>

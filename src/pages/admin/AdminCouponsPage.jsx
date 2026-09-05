@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { adminService } from '../../services/adminService';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import PageHeader from '../../components/ui/PageHeader';
+import Card from '../../components/ui/Card';
+import Button from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
+import Select from '../../components/ui/Select';
+import EmptyState from '../../components/ui/EmptyState';
+import StatusBadge from '../../components/ui/StatusBadge';
 import { formatDate, getErrorMessage } from '../../services/api';
 import toast from 'react-hot-toast';
 
@@ -10,12 +17,14 @@ function AdminCoupons() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
-    defaultValues: { type: 'percent', is_active: true },
+    defaultValues: { type: 'percent', is_active: 'true' },
   });
 
   const load = () => {
+    setLoading(true);
     adminService
       .getCoupons()
       .then(({ data }) => setCoupons(data.data || data.coupons || []))
@@ -28,6 +37,7 @@ function AdminCoupons() {
   }, []);
 
   const onSubmit = async (data) => {
+    setSubmitting(true);
     try {
       const payload = {
         ...data,
@@ -38,17 +48,19 @@ function AdminCoupons() {
       };
       if (editing) {
         await adminService.updateCoupon(editing.id, payload);
-        toast.success('Coupon mis à jour');
+        toast.success('Code promo mis à jour');
       } else {
         await adminService.createCoupon(payload);
-        toast.success('Coupon créé');
+        toast.success('Code promo créé avec succès');
       }
-      reset({ type: 'percent', is_active: true });
+      reset({ type: 'percent', is_active: 'true' });
       setEditing(null);
       setShowForm(false);
       load();
     } catch (error) {
       toast.error(getErrorMessage(error));
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -63,15 +75,15 @@ function AdminCoupons() {
       ends_at: coupon.ends_at?.slice(0, 16) || '',
       usage_limit: coupon.usage_limit || '',
       min_order_total: coupon.min_order_total || '',
-      is_active: coupon.is_active,
+      is_active: coupon.is_active ? 'true' : 'false',
     });
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Supprimer ce coupon ?')) return;
+    if (!window.confirm('Supprimer ce code promo ?')) return;
     try {
       await adminService.deleteCoupon(id);
-      toast.success('Coupon supprimé');
+      toast.success('Code promo supprimé');
       load();
     } catch (error) {
       toast.error(getErrorMessage(error));
@@ -80,98 +92,189 @@ function AdminCoupons() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Gestion des coupons</h1>
-        <button
-          type="button"
-          onClick={() => { setShowForm(!showForm); setEditing(null); reset({ type: 'percent', is_active: true }); }}
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700"
-        >
-          {showForm ? 'Annuler' : '+ Nouveau coupon'}
-        </button>
-      </div>
+      <PageHeader
+        title="Gestion des coupons"
+        subtitle="Créez et configurez des codes promotionnels (réductions fixes ou en pourcentage)"
+        actions={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={() => {
+              if (showForm) {
+                setShowForm(false);
+                setEditing(null);
+              } else {
+                setShowForm(true);
+                setEditing(null);
+                reset({ type: 'percent', is_active: 'true' });
+              }
+            }}
+            iconLeft={
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d={showForm ? "M6 18L18 6M6 6l12 12" : "M12 4v16m8-8H4"} />
+              </svg>
+            }
+          >
+            {showForm ? 'Fermer le formulaire' : 'Nouveau coupon'}
+          </Button>
+        }
+      />
 
       {showForm && (
-        <form onSubmit={handleSubmit(onSubmit)} className="mb-6 grid gap-4 rounded-xl border bg-white p-6 sm:grid-cols-2">
-          <div>
-            <label className="text-sm font-medium">Code</label>
-            <input {...register('code', { required: 'Requis' })} className="mt-1 w-full rounded-lg border px-3 py-2" />
-            {errors.code && <p className="text-sm text-red-600">{errors.code.message}</p>}
-          </div>
-          <div>
-            <label className="text-sm font-medium">Type</label>
-            <select {...register('type')} className="mt-1 w-full rounded-lg border px-3 py-2">
-              <option value="percent">Pourcentage</option>
-              <option value="fixed">Montant fixe</option>
-            </select>
-          </div>
-          <div>
-            <label className="text-sm font-medium">Valeur</label>
-            <input type="number" step="0.01" {...register('value', { required: 'Requis' })} className="mt-1 w-full rounded-lg border px-3 py-2" />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Commande min.</label>
-            <input type="number" step="0.01" {...register('min_order_total')} className="mt-1 w-full rounded-lg border px-3 py-2" />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Début</label>
-            <input type="datetime-local" min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)} {...register('starts_at')} className="mt-1 w-full rounded-lg border px-3 py-2" />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Expiration</label>
-            <input type="datetime-local" min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)} {...register('ends_at')} className="mt-1 w-full rounded-lg border px-3 py-2" />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Limite d&apos;usage</label>
-            <input type="number" {...register('usage_limit')} className="mt-1 w-full rounded-lg border px-3 py-2" />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Actif</label>
-            <select {...register('is_active')} className="mt-1 w-full rounded-lg border px-3 py-2">
-              <option value="true">Oui</option>
-              <option value="false">Non</option>
-            </select>
-          </div>
-          <div className="sm:col-span-2">
-            <button type="submit" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700">
-              {editing ? 'Mettre à jour' : 'Créer'}
-            </button>
-          </div>
-        </form>
+        <Card className="mb-6 shadow-md border-indigo-100 bg-indigo-50/20">
+          <Card.Header
+            title={editing ? `Modifier le coupon : ${editing.code}` : 'Créer un nouveau coupon de réduction'}
+            subtitle="Renseignez la valeur, les conditions et les dates de validité"
+          />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Input
+                label="Code promo *"
+                placeholder="Ex: SOLDES2026"
+                error={errors.code?.message}
+                {...register('code', { required: 'Code requis' })}
+              />
+
+              <Select
+                label="Type de remise *"
+                {...register('type')}
+              >
+                <option value="percent">Pourcentage (%)</option>
+                <option value="fixed">Montant fixe (FCFA)</option>
+              </Select>
+
+              <Input
+                label="Valeur de la remise *"
+                type="number"
+                step="0.01"
+                placeholder="Ex: 15"
+                error={errors.value?.message}
+                {...register('value', { required: 'Valeur requise' })}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Input
+                label="Date de début"
+                type="datetime-local"
+                {...register('starts_at')}
+              />
+
+              <Input
+                label="Date d'expiration"
+                type="datetime-local"
+                {...register('ends_at')}
+              />
+
+              <Input
+                label="Commande minimale (FCFA)"
+                type="number"
+                step="0.01"
+                placeholder="Ex: 5000"
+                {...register('min_order_total')}
+              />
+
+              <Input
+                label="Limite d'utilisations"
+                type="number"
+                placeholder="Ex: 100"
+                {...register('usage_limit')}
+              />
+            </div>
+
+            <div className="max-w-xs">
+              <Select
+                label="Statut du coupon"
+                {...register('is_active')}
+              >
+                <option value="true">Actif (Utilisable immédiatement)</option>
+                <option value="false">Inactif (Désactivé)</option>
+              </Select>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <Button
+                variant="secondary"
+                size="md"
+                type="button"
+                onClick={() => { setShowForm(false); setEditing(null); }}
+              >
+                Annuler
+              </Button>
+              <Button
+                variant="primary"
+                size="md"
+                type="submit"
+                loading={submitting}
+              >
+                {editing ? 'Mettre à jour le coupon' : 'Enregistrer le coupon'}
+              </Button>
+            </div>
+          </form>
+        </Card>
       )}
 
       {loading ? (
-        <div className="flex justify-center py-12"><LoadingSpinner size="lg" /></div>
+        <div className="flex justify-center py-16"><LoadingSpinner size="lg" /></div>
+      ) : coupons.length === 0 ? (
+        <EmptyState
+          title="Aucun code promotionnel"
+          description="Créez votre premier coupon de réduction pour booster les ventes."
+        />
       ) : (
-        <div className="overflow-x-auto rounded-xl bg-white">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50">
-              <tr>
-                <th className="p-3">Code</th>
-                <th className="p-3">Type</th>
-                <th className="p-3">Valeur</th>
-                <th className="p-3">Expiration</th>
-                <th className="p-3">Actif</th>
-                <th className="p-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {coupons.map((c) => (
-                <tr key={c.id} className="">
-                  <td className="p-3 font-mono font-medium">{c.code}</td>
-                  <td className="p-3">{c.type}</td>
-                  <td className="p-3">{c.value} {c.type === 'percent' ? '%' : 'FCFA'}</td>
-                  <td className="p-3">{formatDate(c.ends_at)}</td>
-                  <td className="p-3">{c.is_active ? 'Oui' : 'Non'}</td>
-                  <td className="p-3">
-                    <button type="button" onClick={() => handleEdit(c)} className="mr-2 text-indigo-600 hover:underline">Modifier</button>
-                    <button type="button" onClick={() => handleDelete(c.id)} className="text-red-600 hover:underline">Supprimer</button>
-                  </td>
+        <Card padding={false} className="overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm border-collapse">
+              <thead className="bg-slate-50 border-b border-slate-200/80">
+                <tr>
+                  <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Code</th>
+                  <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Remise</th>
+                  <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Validité</th>
+                  <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider">Statut</th>
+                  <th className="py-3.5 px-4 text-xs font-bold text-slate-600 uppercase tracking-wider text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {coupons.map((c) => (
+                  <tr key={c.id} className="hover:bg-slate-50/70 transition-colors">
+                    <td className="py-3.5 px-4 font-mono font-bold text-slate-900 text-sm">
+                      <span className="px-2.5 py-1 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-700">
+                        {c.code}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 font-semibold text-slate-800">
+                      {c.value} {c.type === 'percent' ? '%' : 'FCFA'}
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-600 text-xs">
+                      {c.ends_at ? `Expire le ${formatDate(c.ends_at)}` : 'Illimité'}
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <StatusBadge status={c.is_active ? 'active' : 'inactive'} />
+                    </td>
+                    <td className="py-3.5 px-4 text-right">
+                      <div className="inline-flex items-center gap-2">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => handleEdit(c)}
+                        >
+                          Modifier
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDelete(c.id)}
+                        >
+                          Supprimer
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       )}
     </div>
   );
