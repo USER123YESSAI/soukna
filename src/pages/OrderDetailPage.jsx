@@ -15,6 +15,7 @@ function OrderDetail() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [openChats, setOpenChats] = useState({}); // { sellerId: true/false }
+  const [printingInvoice, setPrintingInvoice] = useState(false);
 
   const load = () => {
     orderService
@@ -27,6 +28,28 @@ function OrderDetail() {
   useEffect(() => {
     load();
   }, [id]);
+
+  const handlePrintInvoice = async () => {
+    setPrintingInvoice(true);
+    try {
+      const res = await orderService.getInvoice(id);
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(res.data);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+          printWindow.print();
+        }, 400);
+      } else {
+        toast.error('Veuillez autoriser les fenêtres pop-up pour afficher la facture.');
+      }
+    } catch (error) {
+      toast.error('Erreur lors de la récupération de la facture : ' + getErrorMessage(error));
+    } finally {
+      setPrintingInvoice(false);
+    }
+  };
 
   const handleCancel = async () => {
     if (!window.confirm('Annuler cette commande ?')) return;
@@ -124,7 +147,34 @@ function OrderDetail() {
           <p className="text-lg font-bold text-indigo-600">Total : {formatPrice(order.total_amount)}</p>
         </div>
 
+        {/* Section Paiement & Facture */}
+        <div className="mt-4 rounded-lg border border-slate-100 bg-slate-50 p-4 text-sm flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span className="font-semibold text-slate-700">Mode de paiement : </span>
+            <span className="text-slate-600">
+              {order.payment_method === 'card' && '💳 Carte bancaire'}
+              {order.payment_method === 'paypal' && '🅿️ PayPal'}
+              {order.payment_method === 'mobile_pay' && '📱 Mobile Money (Wave / OM)'}
+              {order.payment_method === 'cod' && '💵 Paiement à la livraison'}
+              {!['card', 'paypal', 'mobile_pay', 'cod'].includes(order.payment_method) && (order.payment_method || 'Non renseigné')}
+            </span>
+            <span className={`ml-3 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${order.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+              {order.payment_status === 'paid' ? 'Payé' : 'En attente de paiement'}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handlePrintInvoice}
+            disabled={printingInvoice}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 transition shadow-sm"
+          >
+            {printingInvoice ? 'Chargement...' : '📄 Facture (PDF / Imprimer)'}
+          </button>
+        </div>
+
         <div className="mt-4 rounded-lg bg-slate-50 p-4 text-sm">
+          <p className="font-semibold text-slate-700 mb-1">Adresse de livraison :</p>
           <p>{order.shipping_address}</p>
           <p>{order.shipping_postal_code} {order.shipping_city}</p>
           <p>{order.shipping_phone}</p>

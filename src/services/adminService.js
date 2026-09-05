@@ -12,4 +12,6 @@ export const adminService = {
   createCoupon: (data) => api.post('/admin/coupons', data),
   updateCoupon: (id, data) => api.put(`/admin/coupons/${id}`, data),
   deleteCoupon: (id) => api.delete(`/admin/coupons/${id}`),
+  exportUsersCsv: () => api.get('/admin/users/export-csv', { responseType: 'blob' }),
+  exportOrdersCsv: () => api.get('/admin/orders/export-csv', { responseType: 'blob' }),
 };

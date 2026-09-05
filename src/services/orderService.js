@@ -6,4 +6,5 @@ export const orderService = {
   getById: (id) => api.get(`/orders/${id}`),
   updateStatus: (id, status) => api.put(`/orders/${id}/status`, { status }),
   cancel: (id) => api.post(`/orders/${id}/cancel`),
+  getInvoice: (id) => api.get(`/orders/${id}/invoice`, { headers: { Accept: 'text/html' }, responseType: 'text' }),
 };

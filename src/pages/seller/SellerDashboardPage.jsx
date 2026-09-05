@@ -5,6 +5,7 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { formatPrice, getErrorMessage } from '../../services/api';
 import toast from 'react-hot-toast';
 import MessagesWidget from '../../components/messages/MessagesWidget';
+import SalesChart from '../../components/analytics/SalesChart';
 
 const STATUS_LABEL = { pending: 'En attente', confirmed: 'Confirmée', shipped: 'Expédiée', delivered: 'Livrée', cancelled: 'Annulée' };
 const STATUS_COLOR = { pending: '#f59e0b', confirmed: '#3b82f6', shipped: '#8b5cf6', delivered: '#10b981', cancelled: '#ef4444' };
@@ -27,6 +28,7 @@ function SellerDashboard() {
   const [dashboard, setDashboard] = useState(null);
   const [stats, setStats] = useState(null);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,7 +40,9 @@ function SellerDashboard() {
       setDashboard(dashRes.data);
       setStats(statsRes.data);
       const orders = ordersRes.data?.data ?? ordersRes.data ?? [];
-      setRecentOrders(Array.isArray(orders) ? orders.slice(0, 5) : []);
+      const orderList = Array.isArray(orders) ? orders : [];
+      setAllOrders(orderList);
+      setRecentOrders(orderList.slice(0, 5));
     }).catch(err => toast.error(getErrorMessage(err))).finally(() => setLoading(false));
   }, []);
 
@@ -64,8 +68,13 @@ function SellerDashboard() {
         <KpiCard label="Note moyenne" value={stats?.average_rating ? parseFloat(stats.average_rating).toFixed(1) + ' / 5' : '—'} color="#ec4899" />
       </div>
 
+      {/* Graphique des ventes */}
+      <div style={{ marginTop: 32 }}>
+        <SalesChart data={allOrders} title="Évolution des ventes" />
+      </div>
+
       {/* Main grid */}
-      <div className="dashboard-split-grid-seller">
+      <div className="dashboard-split-grid-seller" style={{ marginTop: 32 }}>
         {/* Recent orders */}
         <div style={{ background: 'white', borderRadius: 20, border: '1.5px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

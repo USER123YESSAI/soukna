@@ -5,6 +5,7 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import StatusBadge from '../../components/ui/StatusBadge';
 import InlineChat from '../../components/messages/InlineChat';
 import { formatPrice, formatDate, getErrorMessage } from '../../services/api';
+import { exportToCsv } from '../../utils/csvExporter';
 import toast from 'react-hot-toast';
 
 function SellerOrders() {
@@ -19,6 +20,22 @@ function SellerOrders() {
       .catch((err) => toast.error(getErrorMessage(err)))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleExportCsv = () => {
+    if (!orders.length) return;
+    const headers = ['N° Commande', 'Date', 'Acheteur', 'Statut', 'Montant (FCFA)', 'Mode Paiement', 'Statut Paiement'];
+    const rows = orders.map(o => [
+      o.order_number,
+      o.created_at ? new Date(o.created_at).toLocaleDateString('fr-FR') : '',
+      o.buyer?.name || 'Inconnu',
+      o.status,
+      o.total_amount,
+      o.payment_method || 'N/A',
+      o.payment_status || 'pending',
+    ]);
+    exportToCsv(`commandes_vendeur_${new Date().toISOString().slice(0, 10)}.csv`, headers, rows);
+    toast.success('Export CSV généré avec succès !');
+  };
 
   const updateStatus = async (orderId, status) => {
     try {
@@ -45,7 +62,18 @@ function SellerOrders() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">Commandes reçues</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-2xl font-bold">Commandes reçues</h1>
+        {orders.length > 0 && (
+          <button
+            type="button"
+            onClick={handleExportCsv}
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition"
+          >
+            📥 Exporter en CSV
+          </button>
+        )}
+      </div>
 
       {orders.length === 0 ? (
         <p className="text-slate-500">Aucune commande pour le moment.</p>
@@ -65,6 +93,14 @@ function SellerOrders() {
                 </div>
                 <StatusBadge status={order.status} />
                 <p className="font-bold text-indigo-600">{formatPrice(order.total_amount)}</p>
+              </div>
+
+              {/* Statut paiement */}
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                <span>Paiement : <strong>{order.payment_method === 'card' ? 'Carte bancaire' : order.payment_method === 'paypal' ? 'PayPal' : order.payment_method === 'mobile_pay' ? 'Wave/OM' : order.payment_method === 'cod' ? 'À la livraison' : (order.payment_method || 'N/A')}</strong></span>
+                <span className={`px-2 py-0.5 rounded-full font-medium ${order.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+                  {order.payment_status === 'paid' ? 'Payé' : 'En attente'}
+                </span>
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
                 {['confirmed', 'shipped', 'delivered'].map((s) => (

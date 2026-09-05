@@ -3,6 +3,7 @@ import { adminService } from '../../services/adminService';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import Pagination from '../../components/ui/Pagination';
 import { getErrorMessage } from '../../services/api';
+import { downloadCsvBlob } from '../../utils/csvExporter';
 import toast from 'react-hot-toast';
 
 function AdminUsers() {
@@ -11,6 +12,7 @@ function AdminUsers() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [role, setRole] = useState('');
+  const [exporting, setExporting] = useState(false);
 
   const load = () => {
     setLoading(true);
@@ -30,6 +32,19 @@ function AdminUsers() {
     load();
   }, [page, role]);
 
+  const handleExportCsv = async () => {
+    setExporting(true);
+    try {
+      const res = await adminService.exportUsersCsv();
+      downloadCsvBlob(res.data, `utilisateurs_${new Date().toISOString().slice(0, 10)}.csv`);
+      toast.success('Fichier CSV exporté avec succès');
+    } catch (error) {
+      toast.error('Erreur lors de l\'export : ' + getErrorMessage(error));
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const toggleSuspend = async (user) => {
     try {
       if (user.suspended_at) {
@@ -47,7 +62,17 @@ function AdminUsers() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">Gestion des utilisateurs</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-2xl font-bold">Gestion des utilisateurs</h1>
+        <button
+          type="button"
+          onClick={handleExportCsv}
+          disabled={exporting}
+          className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition"
+        >
+          {exporting ? 'Téléchargement...' : '📥 Exporter tous les utilisateurs (CSV)'}
+        </button>
+      </div>
 
       <select
         value={role}

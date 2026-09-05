@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { adminService } from '../../services/adminService';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { formatPrice, getErrorMessage } from '../../services/api';
+import { downloadCsvBlob } from '../../utils/csvExporter';
 import toast from 'react-hot-toast';
 import MessagesWidget from '../../components/messages/MessagesWidget';
+import SalesChart from '../../components/analytics/SalesChart';
 
 function KpiCard({ icon, label, value, sub, color, linkTo, linkLabel }) {
   return (
@@ -25,6 +27,7 @@ function KpiCard({ icon, label, value, sub, color, linkTo, linkLabel }) {
 function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [exportingOrders, setExportingOrders] = useState(false);
 
   useEffect(() => {
     adminService.getStats()
@@ -33,13 +36,46 @@ function AdminDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleExportOrders = async () => {
+    setExportingOrders(true);
+    try {
+      const res = await adminService.exportOrdersCsv();
+      downloadCsvBlob(res.data, `commandes_plateforme_${new Date().toISOString().slice(0, 10)}.csv`);
+      toast.success('Fichier CSV des commandes téléchargé');
+    } catch (err) {
+      toast.error('Erreur export : ' + getErrorMessage(err));
+    } finally {
+      setExportingOrders(false);
+    }
+  };
+
   if (loading) return <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}><LoadingSpinner size="lg" /></div>;
 
   return (
     <div>
       {/* Header */}
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: '#0f172a' }}>Tableau de bord</h1>
+      <div style={{ marginBottom: 32, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: '#0f172a' }}>Tableau de bord administrateur</h1>
+        <button
+          type="button"
+          onClick={handleExportOrders}
+          disabled={exportingOrders}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            padding: '10px 18px',
+            borderRadius: 12,
+            background: 'white',
+            border: '1.5px solid var(--border)',
+            fontWeight: 600,
+            fontSize: 13,
+            cursor: 'pointer',
+            boxShadow: 'var(--shadow-sm)',
+          }}
+        >
+          {exportingOrders ? 'Téléchargement...' : '📥 Exporter toutes les commandes (CSV)'}
+        </button>
       </div>
 
       {/* KPIs */}
@@ -48,6 +84,11 @@ function AdminDashboard() {
         <KpiCard label="Produits" value={stats?.products_count ?? stats?.total_products ?? 0} sub="dans le catalogue" color="#f59e0b" linkTo="/admin/products" />
         <KpiCard label="Commandes" value={stats?.orders_count ?? stats?.total_orders ?? 0} color="#10b981" />
         <KpiCard label="Revenus" value={formatPrice(stats?.total_revenue ?? 0)} color="#ec4899" />
+      </div>
+
+      {/* Graphique d'activité */}
+      <div style={{ marginTop: 32, marginBottom: 32 }}>
+        <SalesChart title="Volume & Performance globale de la plateforme" />
       </div>
 
       {/* Detail grid */}
