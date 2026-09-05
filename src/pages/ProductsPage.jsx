@@ -99,7 +99,7 @@ export default function ProductsPage({ basePath = '/products' }) {
           padding: '4px 14px', borderRadius: 99, fontSize: 12, fontWeight: 700,
           background: '#e0e7ff', color: '#4f46e5', marginBottom: 12
         }}>
-          ✦ Explorez l&apos;univers Soukna
+          Explorez l&apos;univers Soukna
         </span>
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16 }}>
           <div>

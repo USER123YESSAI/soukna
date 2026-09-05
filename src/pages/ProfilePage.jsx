@@ -86,7 +86,7 @@ function ProfileForm() {
             <h2 className="text-lg font-bold text-slate-900">{user?.name}</h2>
             <p className="text-sm text-slate-500">{user?.email}</p>
             <span className="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
-              ⚡ {roleLabel}
+              {roleLabel}
             </span>
           </div>
         </div>

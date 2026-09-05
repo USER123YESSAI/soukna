@@ -221,7 +221,7 @@ function ProductForm() {
           {/* Promotion flash */}
           <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-5 space-y-4">
             <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <span>⚡ Promotion flash (Optionnel)</span>
+              <span>Promotion flash (Optionnel)</span>
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Input

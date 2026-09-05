@@ -11,7 +11,7 @@ function getDefaultNotifications(role) {
     return [
       {
         id: 'adm-1',
-        title: 'Activité Marketplace ⚡',
+        title: 'Activité Marketplace',
         message: '3 nouveaux utilisateurs se sont inscrits aujourd\'hui sur la plateforme.',
         type: 'system',
         link: '/admin/users',
@@ -29,7 +29,7 @@ function getDefaultNotifications(role) {
       },
       {
         id: 'adm-3',
-        title: 'Code Promo Actif 🎉',
+        title: 'Code Promo Actif',
         message: 'Le coupon SOUKNA20 est actuellement utilisé par les acheteurs.',
         type: 'promo',
         link: '/admin/coupons',
@@ -43,7 +43,7 @@ function getDefaultNotifications(role) {
     return [
       {
         id: 'sel-1',
-        title: 'Nouvelle commande reçue ! 📦',
+        title: 'Nouvelle commande reçue !',
         message: 'Un acheteur vient de passer commande pour l\'un de vos articles.',
         type: 'order',
         link: '/seller',
@@ -52,7 +52,7 @@ function getDefaultNotifications(role) {
       },
       {
         id: 'sel-2',
-        title: 'Conseil de vente ⭐',
+        title: 'Conseil de vente',
         message: 'Ajoutez des descriptions détaillées et des photos de qualité pour augmenter vos ventes.',
         type: 'promo',
         link: '/seller/products',
@@ -75,7 +75,7 @@ function getDefaultNotifications(role) {
   return [
     {
       id: 'buy-1',
-      title: 'Commande en cours de préparation 📦',
+      title: 'Commande en cours de préparation',
       message: 'Votre dernière commande a été validée par le vendeur et est en préparation.',
       type: 'order',
       link: '/orders',
@@ -84,7 +84,7 @@ function getDefaultNotifications(role) {
     },
     {
       id: 'buy-2',
-      title: 'Code Promo Exclusif 🎉',
+      title: 'Code Promo Exclusif',
       message: 'Profitez de -15% de réduction sur tout le catalogue avec le code SOUKNA15.',
       type: 'promo',
       link: '/products',
@@ -93,7 +93,7 @@ function getDefaultNotifications(role) {
     },
     {
       id: 'buy-3',
-      title: 'Bienvenue sur Soukna ! ✨',
+      title: 'Bienvenue sur Soukna !',
       message: 'Découvrez notre sélection de produits de qualité et profitez d\'une expérience de shopping fluide.',
       type: 'system',
       link: '/',

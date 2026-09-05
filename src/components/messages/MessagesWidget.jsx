@@ -106,7 +106,9 @@ export default function MessagesWidget() {
       {/* Header */}
       <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fafafa' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 16 }}>💬</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+          </svg>
           <h2 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
             Messagerie
             {unread > 0 && <span style={{ marginLeft: 8, background: '#ef4444', color: 'white', fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 99 }}>{unread}</span>}
@@ -122,7 +124,9 @@ export default function MessagesWidget() {
             <div style={{ display: 'flex', justifyContent: 'center', padding: 20 }}><LoadingSpinner /></div>
           ) : conversations.length === 0 ? (
             <div style={{ padding: 20, textAlign: 'center', color: '#94a3b8' }}>
-              <div style={{ fontSize: 24, marginBottom: 6 }}>💬</div>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 6 }}>
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+              </svg>
               <p style={{ margin: 0, fontSize: 11 }}>Aucune conversation</p>
             </div>
           ) : conversations.map(conv => {
@@ -149,7 +153,9 @@ export default function MessagesWidget() {
         <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {!selectedUser ? (
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
-              <div style={{ fontSize: 36, marginBottom: 8 }}>💬</div>
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 8 }}>
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+              </svg>
               <p style={{ margin: 0, fontSize: 12, fontWeight: 500 }}>Choisir une conversation</p>
             </div>
           ) : (
@@ -160,7 +166,7 @@ export default function MessagesWidget() {
               </div>
               <div style={{ flex: 1, overflowY: 'auto', padding: '10px 12px', background: '#f8fafc' }}>
                 {messages.length === 0
-                  ? <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: 12, marginTop: 20 }}>Commencez la conversation 👋</p>
+                  ? <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: 12, marginTop: 20 }}>Commencez la conversation</p>
                   : <>{messages.map(msg => <MessageBubble key={msg.id} msg={msg} isMine={msg.sender?.id === user?.id || msg.sender_id === user?.id || msg.is_mine} />)}<div ref={endRef} /></>
                 }
               </div>

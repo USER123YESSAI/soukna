@@ -72,7 +72,7 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
       return;
     }
     setFavorite(!favorite);
-    toast.success(!favorite ? 'Ajouté aux favoris ❤️' : 'Retiré des favoris');
+    toast.success(!favorite ? 'Ajouté aux favoris' : 'Retiré des favoris');
   };
 
   return (
@@ -96,25 +96,19 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
       >
         {/* ── Image Box ── */}
         <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: '#f8fafc', flexShrink: 0 }}>
-          {product.image ? (
-            <ProductImage
-              src={product.image}
-              alt={product.title}
-              priority={priority}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
-              }}
-              onMouseEnter={e => { e.target.style.transform = 'scale(1.06)'; }}
-              onMouseLeave={e => { e.target.style.transform = 'scale(1)'; }}
-            />
-          ) : (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: 48 }}>
-              📦
-            </div>
-          )}
+          <ProductImage
+            src={product.image}
+            alt={product.title}
+            priority={priority}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+            }}
+            onMouseEnter={e => { e.target.style.transform = 'scale(1.06)'; }}
+            onMouseLeave={e => { e.target.style.transform = 'scale(1)'; }}
+          />
 
           {/* Badges Supérieur Gauche */}
           <div style={{ position: 'absolute', top: 12, left: 12, zIndex: 5, display: 'flex', gap: 6 }}>

@@ -5,7 +5,6 @@ import { productService } from '../services/productService';
 import { categoryService } from '../services/categoryService';
 import ProductCard from '../components/products/ProductCard';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
-import { getCategoryIcon } from '../utils/categoryIcons';
 
 export default function HomePage() {
   const { isAuthenticated, user, isSeller, isAdmin } = useAuth();
@@ -41,7 +40,7 @@ export default function HomePage() {
 
           <div style={{ position: 'relative', maxWidth: 640 }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 99, fontSize: 12, fontWeight: 700, background: 'rgba(255,255,255,.14)', color: '#c4b5fd', marginBottom: 20, border: '1px solid rgba(255,255,255,.18)' }}>
-              ✦ Espace Connecté Soukna
+              Espace Connecté Soukna
             </span>
             <h1 style={{ margin: '0 0 16px', fontSize: 36, fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1.2 }}>
               Content de vous revoir,<br />
@@ -110,7 +109,13 @@ export default function HomePage() {
           {loading ? <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}><LoadingSpinner size="lg" /></div>
             : topProducts.length === 0
               ? <div style={{ textAlign: 'center', padding: '60px 20px', background: 'white', borderRadius: 24, border: '1px solid var(--border)' }}>
-                  <div style={{ fontSize: 48, marginBottom: 12 }}>📦</div>
+                  <div style={{ width: 56, height: 56, borderRadius: 16, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: '#94a3b8' }}>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                      <line x1="12" y1="22.08" x2="12" y2="12" />
+                    </svg>
+                  </div>
                   <p style={{ margin: 0, fontWeight: 600, color: '#64748b' }}>Aucun produit pour le moment.</p>
                 </div>
               : <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 24 }}>
@@ -297,7 +302,7 @@ export default function HomePage() {
           <div className="responsive-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 24 }}>
             <div>
               <span style={{ display: 'inline-block', background: '#fef2f2', color: '#ef4444', fontWeight: 800, fontSize: 11, padding: '3px 10px', borderRadius: 99, marginBottom: 8 }}>
-                🔥 OFFRES DU JOUR
+                OFFRES DU JOUR
               </span>
               <h2 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: '#0f172a' }}>
                 Ventes Flash &amp; Promotions
@@ -333,7 +338,7 @@ export default function HomePage() {
           <div className="responsive-section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 24 }}>
             <div>
               <span style={{ display: 'inline-block', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#0f172a', fontWeight: 700, fontSize: 11, padding: '3px 10px', borderRadius: 99, marginBottom: 8 }}>
-                ✦ SÉLECTION SOUKNA
+                SÉLECTION SOUKNA
               </span>
               <h2 style={{ margin: 0, fontSize: 26, fontWeight: 800, color: '#0f172a' }}>
                 Produits Populaires &amp; Bestsellers

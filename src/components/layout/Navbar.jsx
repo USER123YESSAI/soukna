@@ -58,7 +58,7 @@ function PublicNavbar({ menuOpen, setMenuOpen }) {
       {/* Mobile menu */}
       {menuOpen && (
         <div style={{ borderTop: '1px solid var(--border)', background: 'white', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {[{ to: '/', label: '🏠 Accueil' }, { to: '/login', label: '🔑 Connexion' }, { to: '/register', label: '✨ Inscription' }].map(({ to, label }) => (
+          {[{ to: '/', label: 'Accueil' }, { to: '/login', label: 'Connexion' }, { to: '/register', label: 'Inscription' }].map(({ to, label }) => (
             <Link key={to} to={to} onClick={() => setMenuOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, fontWeight: 500, textDecoration: 'none', color: '#475569' }}>{label}</Link>
           ))}
         </div>
@@ -84,7 +84,7 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
           textDecoration: 'none', color: isActive ? '#6366f1' : '#475569',
           background: isActive ? '#eef2ff' : 'transparent', transition: 'all .15s'
         })} className="desktop-nav-item">
-          {isAdmin ? '⚡ Admin' : isSeller ? '📦 Vendeur' : '🏠 Mon espace'}
+          {isAdmin ? 'Admin' : isSeller ? 'Espace Vendeur' : 'Mon espace'}
         </NavLink>
 
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -172,7 +172,7 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
                     </div>
                   )}
                   <div style={{ display: 'inline-flex', alignItems: 'center', marginTop: 8, padding: '2px 8px', borderRadius: 99, fontSize: 11, fontWeight: 600, background: isAdmin ? '#fef2f2' : isSeller ? '#eef2ff' : '#eff6ff', color: isAdmin ? '#ef4444' : isSeller ? '#6366f1' : '#3b82f6' }}>
-                    {isAdmin ? '⚡ Administrateur' : isSeller ? '📦 Vendeur' : '🏠 Acheteur'}
+                    {isAdmin ? 'Administrateur' : isSeller ? 'Vendeur' : 'Acheteur'}
                   </div>
                 </div>
 
@@ -259,12 +259,12 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
         <div style={{ borderTop: '1px solid var(--border)', background: 'white', padding: '12px 16px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Link to={dashboardLink} onClick={() => setMenuOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, fontWeight: 600, textDecoration: 'none', color: '#6366f1' }}>
-              {isAdmin ? '⚡ Tableau de bord Admin' : isSeller ? '📦 Espace Vendeur' : '🏠 Mon espace'}
+              {isAdmin ? 'Tableau de bord Admin' : isSeller ? 'Espace Vendeur' : 'Mon espace'}
             </Link>
             <Link to={messagesLink} onClick={() => setMenuOpen(false)} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, fontWeight: 500, textDecoration: 'none', color: '#475569' }}>
-              💬 Messages {unreadCount > 0 && <span style={{ marginLeft: 6, background: '#ef4444', color: 'white', borderRadius: 99, padding: '1px 7px', fontSize: 11, fontWeight: 700 }}>{unreadCount}</span>}
+              Messages {unreadCount > 0 && <span style={{ marginLeft: 6, background: '#ef4444', color: 'white', borderRadius: 99, padding: '1px 7px', fontSize: 11, fontWeight: 700 }}>{unreadCount}</span>}
             </Link>
-            <button onClick={() => { logout(); setMenuOpen(false); }} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, fontWeight: 500, textAlign: 'left', border: 'none', background: 'transparent', color: '#ef4444', cursor: 'pointer', fontFamily: 'inherit' }}>🚪 Déconnexion</button>
+            <button onClick={() => { logout(); setMenuOpen(false); }} style={{ padding: '10px 12px', borderRadius: 8, fontSize: 14, fontWeight: 500, textAlign: 'left', border: 'none', background: 'transparent', color: '#ef4444', cursor: 'pointer', fontFamily: 'inherit' }}>Déconnexion</button>
           </div>
         </div>
       )}

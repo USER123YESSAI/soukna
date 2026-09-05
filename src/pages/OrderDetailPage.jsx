@@ -152,10 +152,10 @@ function OrderDetail() {
           <div>
             <span className="font-semibold text-slate-700">Mode de paiement : </span>
             <span className="text-slate-600">
-              {order.payment_method === 'card' && '💳 Carte bancaire'}
-              {order.payment_method === 'paypal' && '🅿️ PayPal'}
-              {order.payment_method === 'mobile_pay' && '📱 Mobile Money (Wave / OM)'}
-              {order.payment_method === 'cod' && '💵 Paiement à la livraison'}
+              {order.payment_method === 'card' && 'Carte bancaire'}
+              {order.payment_method === 'paypal' && 'PayPal'}
+              {order.payment_method === 'mobile_pay' && 'Mobile Money (Wave / OM)'}
+              {order.payment_method === 'cod' && 'Paiement à la livraison'}
               {!['card', 'paypal', 'mobile_pay', 'cod'].includes(order.payment_method) && (order.payment_method || 'Non renseigné')}
             </span>
             <span className={`ml-3 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${order.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
@@ -169,7 +169,10 @@ function OrderDetail() {
             disabled={printingInvoice}
             className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 transition shadow-sm"
           >
-            {printingInvoice ? 'Chargement...' : '📄 Facture (PDF / Imprimer)'}
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {printingInvoice ? 'Chargement...' : 'Facture (PDF / Imprimer)'}
           </button>
         </div>
 
@@ -213,7 +216,9 @@ function OrderDetail() {
                 onMouseEnter={e => { if (!openChats[seller.id]) e.currentTarget.style.borderColor = '#6366f1'; }}
                 onMouseLeave={e => { if (!openChats[seller.id]) e.currentTarget.style.borderColor = 'var(--border)'; }}
               >
-                <span style={{ fontSize: 18 }}>💬</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                </svg>
                 <span style={{ fontWeight: 600, fontSize: 14, color: '#0f172a' }}>
                   Contacter {seller.name}
                 </span>
@@ -228,7 +233,7 @@ function OrderDetail() {
                   <InlineChat
                     recipientId={seller.id}
                     recipientName={seller.name}
-                    title={`💬 Discussion avec ${seller.name}`}
+                    title={`Discussion avec ${seller.name}`}
                     maxHeight={300}
                   />
                 </div>

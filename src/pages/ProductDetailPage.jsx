@@ -172,8 +172,8 @@ export default function ProductDetailPage({ basePath = '/products' }) {
                 ({product.total_reviews || product.reviews?.length || 0} avis)
               </span>
             </a>
-            <span style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>📦 En stock : {product.quantity}</span>
-            <span style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>👁️ {product.views} vues</span>
+            <span style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>En stock : {product.quantity}</span>
+            <span style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>{product.views} vues</span>
           </div>
 
           {/* Section des boutons d'action */}
@@ -200,7 +200,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
                   disabled={adding || product.quantity < 1}
                   className="flex-1 min-w-[180px]"
                 >
-                  {adding ? 'Ajout...' : '🛒 Ajouter au panier'}
+                  {adding ? 'Ajout...' : 'Ajouter au panier'}
                 </Button>
                 <Button
                   type="button"
@@ -209,7 +209,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
                   disabled={adding || product.quantity < 1}
                   className="flex-1 min-w-[180px] bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
                 >
-                  {adding ? 'Préparation...' : '⚡ Acheter maintenant'}
+                  {adding ? 'Préparation...' : 'Acheter maintenant'}
                 </Button>
               </div>
 
@@ -225,7 +225,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
                       : 'border-slate-200 text-slate-700 hover:bg-slate-50'
                   }`}
                 >
-                  {isFavorite ? '❤️ Favori' : '🤍 Ajouter aux favoris'}
+                  {isFavorite ? 'Favori' : 'Ajouter aux favoris'}
                 </Button>
                 {canContactSeller && (
                   <Button
@@ -235,7 +235,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
                     onClick={() => setShowChat(!showChat)}
                     className="flex-1 min-w-[180px] border-slate-200 text-slate-700 hover:bg-slate-50"
                   >
-                    💬 Contacter le vendeur
+                    Contacter le vendeur
                   </Button>
                 )}
               </div>

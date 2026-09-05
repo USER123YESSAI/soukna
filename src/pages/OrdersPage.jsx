@@ -94,7 +94,7 @@ function OrdersList() {
                       </p>
                       {order.payment_method && (
                         <p className="text-xs text-slate-500 mt-0.5">
-                          {order.payment_method === 'card' ? '💳 Carte' : order.payment_method === 'paypal' ? '🅿️ PayPal' : order.payment_method === 'mobile_pay' ? '📱 Mobile Money' : '💵 À la livraison'}
+                          {order.payment_method === 'card' ? 'Carte bancaire' : order.payment_method === 'paypal' ? 'PayPal' : order.payment_method === 'mobile_pay' ? 'Mobile Money' : 'À la livraison'}
                         </p>
                       )}
                     </div>

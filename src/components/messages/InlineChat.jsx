@@ -152,7 +152,7 @@ export default function InlineChat({
         <Avatar name={recipientName} size={28} color={accentColor} />
         <div style={{ flex: 1, minWidth: 0 }}>
           <p style={{ margin: 0, fontWeight: 700, fontSize: 13, color: '#0f172a' }}>
-            {title || `💬 Conversation avec ${recipientName ?? 'Utilisateur'}`}
+            {title || `Conversation avec ${recipientName ?? 'Utilisateur'}`}
           </p>
         </div>
       </div>
@@ -168,7 +168,11 @@ export default function InlineChat({
           </div>
         ) : messages.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '24px 12px', color: '#94a3b8' }}>
-            <div style={{ fontSize: 28, marginBottom: 6 }}>👋</div>
+            <div style={{ width: 44, height: 44, borderRadius: 99, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', color: '#94a3b8' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+              </svg>
+            </div>
             <p style={{ margin: 0, fontSize: 12, fontWeight: 500 }}>
               Démarrez la conversation avec <strong>{recipientName}</strong>
             </p>
