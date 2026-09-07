@@ -10,7 +10,7 @@ const Logo = () => (
   <Link to="/" className="navbar-logo-link" aria-label="Soukna Accueil">
     <div className="navbar-logo-badge">
       <img
-        src="/soukna-icon.jpg"
+        src="/soukna-logo.jpg"
         alt="Soukna"
         className="navbar-logo-img"
       />
@@ -423,7 +423,7 @@ export default function Navbar() {
           max-width: 1280px;
           margin: 0 auto;
           padding: 0 24px;
-          height: 64px;
+          height: 66px;
           display: grid;
           grid-template-columns: 1fr auto 1fr;
           align-items: center;
@@ -454,7 +454,7 @@ export default function Navbar() {
           gap: 10px;
         }
 
-        /* Logo Badge */
+        /* Logo Badge - Grand format bien visible */
         .navbar-logo-link {
           display: inline-flex;
           align-items: center;
@@ -463,23 +463,23 @@ export default function Navbar() {
         }
 
         .navbar-logo-badge {
-          width: 44px;
-          height: 44px;
-          border-radius: 12px;
+          width: 50px;
+          height: 50px;
+          border-radius: 14px;
           overflow: hidden;
           display: flex;
           align-items: center;
           justify-content: center;
           background: #ffffff;
           border: 1.5px solid #e0e7ff;
-          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: 0 3px 12px rgba(99, 102, 241, 0.2);
+          transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .navbar-logo-link:hover .navbar-logo-badge {
-          border-color: #c7d2fe;
-          box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
-          transform: scale(1.04);
+          border-color: #a5b4fc;
+          box-shadow: 0 6px 20px rgba(99, 102, 241, 0.32);
+          transform: scale(1.06);
         }
 
         .navbar-logo-img {

@@ -18,15 +18,15 @@ export default function Footer() {
           {/* Marque */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <img
-              src="/soukna-icon.jpg"
+              src="/soukna-logo.jpg"
               alt="Soukna Logo"
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: 9,
-                objectFit: 'cover',
-                border: '1px solid #e2e8f0',
-                boxShadow: '0 2px 6px rgba(99, 102, 241, 0.12)',
+                width: 42,
+                height: 42,
+                borderRadius: 12,
+                objectFit: 'contain',
+                border: '1.5px solid #e0e7ff',
+                boxShadow: '0 2px 8px rgba(99, 102, 241, 0.15)',
               }}
             />
             <span style={{ fontWeight: 800, fontSize: 20, color: '#0f172a', letterSpacing: '-0.5px' }}>
