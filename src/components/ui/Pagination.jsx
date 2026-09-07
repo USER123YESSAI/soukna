@@ -1,3 +1,5 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
 export default function Pagination({ pagination, onPageChange }) {
   if (!pagination || pagination.last_page <= 1) return null;
 
@@ -14,19 +16,20 @@ export default function Pagination({ pagination, onPageChange }) {
         type="button"
         disabled={current_page <= 1}
         onClick={() => onPageChange(current_page - 1)}
-        className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-slate-50"
+        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 disabled:opacity-40 hover:bg-slate-50 transition-colors cursor-pointer disabled:cursor-not-allowed"
       >
-        Précédent
+        <ChevronLeft size={16} />
+        <span>Précédent</span>
       </button>
       {pages.map((page) => (
         <button
           key={page}
           type="button"
           onClick={() => onPageChange(page)}
-          className={`rounded-lg px-3 py-1.5 text-sm ${
+          className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
             page === current_page
-              ? 'bg-indigo-600 text-white'
-              : 'border border-slate-200 hover:bg-slate-50'
+              ? 'bg-indigo-600 text-white shadow-xs'
+              : 'border border-slate-200 text-slate-700 hover:bg-slate-50'
           }`}
         >
           {page}
@@ -36,10 +39,12 @@ export default function Pagination({ pagination, onPageChange }) {
         type="button"
         disabled={current_page >= last_page}
         onClick={() => onPageChange(current_page + 1)}
-        className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-slate-50"
+        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 disabled:opacity-40 hover:bg-slate-50 transition-colors cursor-pointer disabled:cursor-not-allowed"
       >
-        Suivant
+        <span>Suivant</span>
+        <ChevronRight size={16} />
       </button>
     </nav>
   );
 }
+

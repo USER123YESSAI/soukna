@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Star, Pencil, ThumbsUp, X, Check } from 'lucide-react';
+
 
 const INITIAL_REVIEWS = [
   {
@@ -145,9 +147,14 @@ export default function ProductReviews({ productId }) {
           >
             <span style={{ fontSize: 32, fontWeight: 800, color: '#0f172a' }}>{avgRating}</span>
             <div>
-              <div style={{ display: 'flex', gap: 2, color: '#eab308' }}>
-                {'★'.repeat(Math.round(avgRating))}
-                {'☆'.repeat(5 - Math.round(avgRating))}
+              <div style={{ display: 'flex', gap: 2 }}>
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <Star
+                    key={s}
+                    size={16}
+                    className={s <= Math.round(avgRating) ? 'text-amber-400 fill-amber-400' : 'text-slate-200 fill-slate-100'}
+                  />
+                ))}
               </div>
               <span style={{ fontSize: 13, color: '#64748b', fontWeight: 500 }}>
                 {reviews.length} avis vérifiés
@@ -174,7 +181,8 @@ export default function ProductReviews({ productId }) {
               boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',
             }}
           >
-            Rédiger un avis
+            <Pencil size={15} />
+            <span>Rédiger un avis</span>
           </button>
         </div>
       </div>
@@ -244,9 +252,14 @@ export default function ProductReviews({ productId }) {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: 2, color: '#eab308', fontSize: 16 }}>
-                {'★'.repeat(review.rating)}
-                {'☆'.repeat(5 - review.rating)}
+              <div style={{ display: 'flex', gap: 2 }}>
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <Star
+                    key={s}
+                    size={14}
+                    className={s <= review.rating ? 'text-amber-400 fill-amber-400' : 'text-slate-200 fill-slate-100'}
+                  />
+                ))}
               </div>
             </div>
 
@@ -290,7 +303,8 @@ export default function ProductReviews({ productId }) {
                   transition: 'all 0.2s ease',
                 }}
               >
-                Utile ({review.helpful})
+                <ThumbsUp size={13} />
+                <span>Utile ({review.helpful})</span>
               </button>
             </div>
           </div>
@@ -340,12 +354,16 @@ export default function ProductReviews({ productId }) {
                 style={{
                   background: 'none',
                   border: 'none',
-                  fontSize: 24,
                   color: '#64748b',
                   cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 4,
+                  borderRadius: 6,
                 }}
               >
-                ×
+                <X size={20} />
               </button>
             </div>
 
@@ -363,14 +381,15 @@ export default function ProductReviews({ productId }) {
                       style={{
                         background: 'none',
                         border: 'none',
-                        fontSize: 28,
-                        color: star <= newRating ? '#eab308' : '#cbd5e1',
                         cursor: 'pointer',
                         padding: 0,
                         transition: 'transform 0.1s ease',
                       }}
                     >
-                      ★
+                      <Star
+                        size={28}
+                        className={star <= newRating ? 'text-amber-400 fill-amber-400' : 'text-slate-200 fill-slate-100'}
+                      />
                     </button>
                   ))}
                 </div>
@@ -432,9 +451,13 @@ export default function ProductReviews({ productId }) {
                     color: '#475569',
                     fontWeight: 600,
                     cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6
                   }}
                 >
-                  Annuler
+                  <X size={14} />
+                  <span>Annuler</span>
                 </button>
                 <button
                   type="submit"
@@ -446,9 +469,13 @@ export default function ProductReviews({ productId }) {
                     color: 'white',
                     fontWeight: 600,
                     cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6
                   }}
                 >
-                  Publier l'avis
+                  <Check size={14} />
+                  <span>Publier l'avis</span>
                 </button>
               </div>
             </form>

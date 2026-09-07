@@ -25,7 +25,11 @@ import ProductsPage from './pages/ProductsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import SearchPage from './pages/SearchPage';
 
+import TermsUpdateModal from './components/legal/TermsUpdateModal';
+
 // Code-Splitting (React.lazy) pour les espaces connectés, vendeurs et administrateurs
+const TermsPage = lazy(() => import('./pages/legal/TermsPage'));
+const PrivacyPage = lazy(() => import('./pages/legal/PrivacyPage'));
 const AdminLayout = lazy(() => import('./components/layout/AdminLayout'));
 const SellerLayout = lazy(() => import('./components/layout/SellerLayout'));
 const BuyerLayout = lazy(() => import('./components/layout/BuyerLayout'));
@@ -70,6 +74,8 @@ export default function App() {
                   <Route index element={<HomePage />} />
                   <Route path="login" element={<LoginPage />} />
                   <Route path="register" element={<RegisterPage />} />
+                  <Route path="terms" element={<TermsPage />} />
+                  <Route path="privacy" element={<PrivacyPage />} />
 
                   {/* Catalogue public */}
                   <Route path="products" element={<ProductsPage />} />
@@ -125,6 +131,7 @@ export default function App() {
                 </Route>
               </Routes>
             </Suspense>
+            <TermsUpdateModal />
           </BrowserRouter>
           <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
         </CartProvider>

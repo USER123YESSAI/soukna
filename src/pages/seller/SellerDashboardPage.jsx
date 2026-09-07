@@ -8,6 +8,8 @@ import MessagesWidget from '../../components/messages/MessagesWidget';
 import SalesChart from '../../components/analytics/SalesChart';
 import PageHeader from '../../components/ui/PageHeader';
 import Button from '../../components/ui/Button';
+import { Plus, TrendingUp, ShoppingCart, Package, Star, ArrowRight } from 'lucide-react';
+
 
 const STATUS_LABEL = { pending: 'En attente', confirmed: 'Confirmée', shipped: 'Expédiée', delivered: 'Livrée', cancelled: 'Annulée' };
 const STATUS_COLOR = { pending: '#f59e0b', confirmed: '#3b82f6', shipped: '#8b5cf6', delivered: '#10b981', cancelled: '#ef4444' };
@@ -65,11 +67,7 @@ function SellerDashboard() {
             to="/seller/products/new"
             variant="primary"
             size="md"
-            iconLeft={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
-              </svg>
-            }
+            iconLeft={<Plus size={16} strokeWidth={2.5} />}
           >
             Ajouter un produit
           </Button>
@@ -78,10 +76,10 @@ function SellerDashboard() {
 
       {/* KPI Grid */}
       <div className="dashboard-kpi-grid">
-        <KpiCard label="Revenus totaux" value={formatPrice(totalRevenue)} sub="toutes commandes" color="#10b981" />
-        <KpiCard label="Commandes" value={totalOrders} sub={`${pendingOrders} en attente`} color="#6366f1" />
-        <KpiCard label="Produits publiés" value={totalProducts} color="#f59e0b" />
-        <KpiCard label="Note moyenne" value={stats?.average_rating ? parseFloat(stats.average_rating).toFixed(1) + ' / 5' : '—'} color="#ec4899" />
+        <KpiCard icon={<TrendingUp size={18} color="#10b981" />} label="Revenus totaux" value={formatPrice(totalRevenue)} sub="toutes commandes" color="#10b981" />
+        <KpiCard icon={<ShoppingCart size={18} color="#6366f1" />} label="Commandes" value={totalOrders} sub={`${pendingOrders} en attente`} color="#6366f1" />
+        <KpiCard icon={<Package size={18} color="#f59e0b" />} label="Produits publiés" value={totalProducts} color="#f59e0b" />
+        <KpiCard icon={<Star size={18} color="#ec4899" />} label="Note moyenne" value={stats?.average_rating ? parseFloat(stats.average_rating).toFixed(1) + ' / 5' : '—'} color="#ec4899" />
       </div>
 
       {/* Graphique des ventes */}
@@ -95,7 +93,9 @@ function SellerDashboard() {
         <div style={{ background: 'white', borderRadius: 20, border: '1.5px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Commandes récentes</h2>
-            <Link to="/seller/orders" style={{ fontSize: 13, color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>Voir tout →</Link>
+            <Link to="/seller/orders" style={{ fontSize: 13, color: '#6366f1', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              Voir tout <ArrowRight size={14} />
+            </Link>
           </div>
           {recentOrders.length === 0 ? (
             <div style={{ padding: '48px 24px', textAlign: 'center', color: '#94a3b8' }}>
@@ -152,8 +152,8 @@ function SellerDashboard() {
             <p style={{ margin: '0 0 16px', fontSize: 13, opacity: .85, lineHeight: 1.5 }}>
               Ajoutez une promotion flash pour augmenter la visibilité de vos produits.
             </p>
-            <Link to="/seller/products" style={{ display: 'block', textAlign: 'center', padding: '9px 0', borderRadius: 10, background: 'rgba(255,255,255,.2)', color: 'white', textDecoration: 'none', fontSize: 13, fontWeight: 600, border: '1px solid rgba(255,255,255,.3)' }}>
-              Gérer mes produits →
+            <Link to="/seller/products" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, width: '100%', padding: '9px 0', borderRadius: 10, background: 'rgba(255,255,255,.2)', color: 'white', textDecoration: 'none', fontSize: 13, fontWeight: 600, border: '1px solid rgba(255,255,255,.3)' }}>
+              Gérer mes produits <ArrowRight size={14} />
             </Link>
           </div>
         </div>

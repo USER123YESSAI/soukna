@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ShoppingBag } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -21,9 +22,7 @@ export default function Footer() {
               background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
-              </svg>
+              <ShoppingBag size={18} color="white" strokeWidth={2.5} />
             </div>
             <span style={{ fontWeight: 800, fontSize: 20, color: '#0f172a', letterSpacing: '-0.5px' }}>
               Soukna<span style={{ color: '#4f46e5' }}>.</span>
@@ -39,6 +38,29 @@ export default function Footer() {
               {[
                 { to: '/', label: 'Accueil' },
                 { to: '/products', label: 'Catalogue des produits' },
+              ].map(({ to, label }) => (
+                <Link
+                  key={label}
+                  to={to}
+                  style={{ fontSize: 14, color: '#475569', textDecoration: 'none', transition: 'color 0.15s' }}
+                  onMouseEnter={e => e.target.style.color = '#4f46e5'}
+                  onMouseLeave={e => e.target.style.color = '#475569'}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Légal */}
+          <div>
+            <h4 style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', marginBottom: 14, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              Informations Légales
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {[
+                { to: '/terms', label: 'Conditions d\'utilisation' },
+                { to: '/privacy', label: 'Politique de confidentialité' },
               ].map(({ to, label }) => (
                 <Link
                   key={label}
@@ -71,13 +93,23 @@ export default function Footer() {
             © {currentYear} Soukna. Tous droits réservés.
           </span>
           <div style={{ display: 'flex', gap: 24, fontSize: 13, color: '#64748b' }}>
-            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.target.style.color = '#0f172a'} onMouseLeave={e => e.target.style.color = '#64748b'}>
-              Confidentialité
-            </span>
-            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.target.style.color = '#0f172a'} onMouseLeave={e => e.target.style.color = '#64748b'}>
+            <Link
+              to="/privacy"
+              style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.15s' }}
+              onMouseEnter={e => e.target.style.color = '#0f172a'}
+              onMouseLeave={e => e.target.style.color = '#64748b'}
+            >
+              Politique de confidentialité
+            </Link>
+            <Link
+              to="/terms"
+              style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.15s' }}
+              onMouseEnter={e => e.target.style.color = '#0f172a'}
+              onMouseLeave={e => e.target.style.color = '#64748b'}
+            >
               Conditions d&apos;utilisation
-            </span>
-            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }} onMouseEnter={e => e.target.style.color = '#0f172a'} onMouseLeave={e => e.target.style.color = '#64748b'}>
+            </Link>
+            <span>
               Sécurité SSL
             </span>
           </div>

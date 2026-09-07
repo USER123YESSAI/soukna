@@ -7,6 +7,8 @@ import { useState } from 'react';
 import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
+import { ShoppingBag, ArrowRight } from 'lucide-react';
+
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -39,11 +41,7 @@ export default function LoginPage() {
         {/* Logo & Header */}
         <div className="text-center mb-8">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center mx-auto mb-4 shadow-sm shadow-indigo-200">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <path d="M16 10a4 4 0 01-8 0"/>
-            </svg>
+            <ShoppingBag size={24} className="text-white" strokeWidth={2.5} />
           </div>
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
             Connexion
@@ -79,9 +77,10 @@ export default function LoginPage() {
               variant="primary"
               size="lg"
               loading={submitting}
+              iconRight={<ArrowRight size={16} />}
               className="w-full"
             >
-              Se connecter →
+              Se connecter
             </Button>
           </div>
         </form>

@@ -12,4 +12,5 @@ export const authService = {
     }
     return api.put('/auth/profile', data);
   },
+  acceptTerms: (data = { terms_version: '1.0' }) => api.post('/auth/accept-terms', data),
 };

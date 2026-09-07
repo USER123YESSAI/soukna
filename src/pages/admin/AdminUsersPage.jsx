@@ -10,6 +10,7 @@ import Select from '../../components/ui/Select';
 import { getErrorMessage } from '../../services/api';
 import { downloadCsvBlob } from '../../utils/csvExporter';
 import toast from 'react-hot-toast';
+import { Download, CheckCircle2, Ban } from 'lucide-react';
 
 function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -76,11 +77,7 @@ function AdminUsers() {
             size="sm"
             onClick={handleExportCsv}
             loading={exporting}
-            iconLeft={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-            }
+            iconLeft={<Download size={15} />}
           >
             Exporter tous les utilisateurs (CSV)
           </Button>
@@ -141,6 +138,7 @@ function AdminUsers() {
                             variant={u.suspended_at ? 'outline' : 'danger'}
                             size="sm"
                             onClick={() => toggleSuspend(u)}
+                            iconLeft={u.suspended_at ? <CheckCircle2 size={13} /> : <Ban size={13} />}
                           >
                             {u.suspended_at ? 'Réactiver' : 'Suspendre'}
                           </Button>

@@ -4,15 +4,12 @@ import { useCart } from '../../contexts/CartContext';
 import { useState, useEffect } from 'react';
 import { messageService } from '../../services/messageService';
 import NotificationCenter from './NotificationCenter';
+import { Menu, X, MessageSquare, User, LogOut, ShoppingBag } from 'lucide-react';
 
 const Logo = () => (
   <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
-    <div style={{ width: 34, height: 34, borderRadius: 10, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-        <line x1="3" y1="6" x2="21" y2="6"/>
-        <path d="M16 10a4 4 0 01-8 0"/>
-      </svg>
+    <div style={{ width: 34, height: 34, borderRadius: 10, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+      <ShoppingBag size={18} strokeWidth={2.5} />
     </div>
     <span style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', letterSpacing: '-0.3px' }}>Soukna</span>
   </Link>
@@ -47,10 +44,8 @@ function PublicNavbar({ menuOpen, setMenuOpen }) {
           </nav>
 
           {/* Mobile toggle */}
-          <button onClick={() => setMenuOpen(!menuOpen)} style={{ padding: 8, borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', display: 'none', marginLeft: 4 }} className="mobile-toggle">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2">
-              {menuOpen ? <path d="M18 6L6 18M6 6l12 12"/> : <path d="M3 12h18M3 6h18M3 18h18"/>}
-            </svg>
+          <button onClick={() => setMenuOpen(!menuOpen)} style={{ padding: 8, borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', display: 'none', marginLeft: 4 }} className="mobile-toggle" aria-label="Menu">
+            {menuOpen ? <X size={20} className="text-slate-600" /> : <Menu size={20} className="text-slate-600" />}
           </button>
         </div>
       </div>
@@ -93,9 +88,7 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
 
           {/* Messages avec badge non lus */}
           <Link to={messagesLink} style={{ position: 'relative', padding: 8, borderRadius: 10, color: '#475569', display: 'flex', textDecoration: 'none', transition: 'all .15s' }} className="icon-btn" title="Messages">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-            </svg>
+            <MessageSquare size={20} />
             {unreadCount > 0 && (
               <span style={{ position: 'absolute', top: 2, right: 2, minWidth: 18, height: 18, borderRadius: 99, background: '#ef4444', color: 'white', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px', animation: 'pulse 2s infinite' }}>
                 {unreadCount > 9 ? '9+' : unreadCount}
@@ -197,10 +190,7 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
                     onMouseEnter={e => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.color = '#4f46e5'; }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#0f172a'; }}
                   >
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
-                    </svg>
+                    <User size={17} strokeWidth={2} />
                     <span>Mon profil</span>
                   </Link>
 
@@ -233,11 +223,7 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
                     onMouseEnter={e => { e.currentTarget.style.background = '#fef2f2'; e.currentTarget.style.color = '#dc2626'; }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#ef4444'; }}
                   >
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-                      <polyline points="16 17 21 12 16 7" />
-                      <line x1="21" y1="12" x2="9" y2="12" />
-                    </svg>
+                    <LogOut size={17} strokeWidth={2.2} />
                     <span>Déconnexion</span>
                   </button>
                 </div>
@@ -246,10 +232,8 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
           </div>
 
           {/* Mobile toggle */}
-          <button onClick={() => setMenuOpen(!menuOpen)} style={{ padding: 8, borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', display: 'none' }} className="mobile-toggle">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2">
-              {menuOpen ? <path d="M18 6L6 18M6 6l12 12"/> : <path d="M3 12h18M3 6h18M3 18h18"/>}
-            </svg>
+          <button onClick={() => setMenuOpen(!menuOpen)} style={{ padding: 8, borderRadius: 8, border: 'none', background: 'transparent', cursor: 'pointer', display: 'none' }} className="mobile-toggle" aria-label="Menu">
+            {menuOpen ? <X size={20} className="text-slate-600" /> : <Menu size={20} className="text-slate-600" />}
           </button>
         </div>
       </div>

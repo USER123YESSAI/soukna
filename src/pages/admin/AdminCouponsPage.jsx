@@ -11,6 +11,7 @@ import EmptyState from '../../components/ui/EmptyState';
 import StatusBadge from '../../components/ui/StatusBadge';
 import { formatDate, getErrorMessage } from '../../services/api';
 import toast from 'react-hot-toast';
+import { Plus, Pencil, Trash2, Check, X } from 'lucide-react';
 
 function AdminCoupons() {
   const [coupons, setCoupons] = useState([]);
@@ -19,9 +20,10 @@ function AdminCoupons() {
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm({
     defaultValues: { type: 'percent', is_active: 'true' },
   });
+  const couponType = watch('type');
 
   const load = () => {
     setLoading(true);
@@ -109,11 +111,7 @@ function AdminCoupons() {
                 reset({ type: 'percent', is_active: 'true' });
               }
             }}
-            iconLeft={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d={showForm ? "M6 18L18 6M6 6l12 12" : "M12 4v16m8-8H4"} />
-              </svg>
-            }
+            iconLeft={showForm ? <X size={15} /> : <Plus size={15} strokeWidth={2.5} />}
           >
             {showForm ? 'Fermer le formulaire' : 'Nouveau coupon'}
           </Button>
@@ -129,14 +127,15 @@ function AdminCoupons() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Input
-                label="Code promo *"
-                placeholder="Ex: SOLDES2026"
+                label="Code Promo *"
+                placeholder="Ex: PROMO2025"
                 error={errors.code?.message}
-                {...register('code', { required: 'Code requis' })}
+                {...register('code', { required: 'Le code est requis' })}
               />
 
               <Select
-                label="Type de remise *"
+                label="Type de remise"
+                error={errors.type?.message}
                 {...register('type')}
               >
                 <option value="percent">Pourcentage (%)</option>
@@ -144,41 +143,34 @@ function AdminCoupons() {
               </Select>
 
               <Input
-                label="Valeur de la remise *"
+                label={`Valeur (${couponType === 'percent' ? '%' : 'FCFA'}) *`}
                 type="number"
                 step="0.01"
-                placeholder="Ex: 15"
+                placeholder={couponType === 'percent' ? 'Ex: 10' : 'Ex: 2000'}
                 error={errors.value?.message}
-                {...register('value', { required: 'Valeur requise' })}
+                {...register('value', { required: 'La valeur est requise', min: { value: 0.01, message: 'Doit être > 0' } })}
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Input
-                label="Date de début"
-                type="datetime-local"
-                {...register('starts_at')}
-              />
-
-              <Input
-                label="Date d'expiration"
-                type="datetime-local"
-                {...register('ends_at')}
-              />
-
-              <Input
-                label="Commande minimale (FCFA)"
+                label="Montant minimum d'achat (FCFA)"
                 type="number"
-                step="0.01"
-                placeholder="Ex: 5000"
+                placeholder="Optionnel, ex: 10000"
                 {...register('min_order_total')}
               />
 
               <Input
-                label="Limite d'utilisations"
+                label="Limite globale d'utilisations"
                 type="number"
-                placeholder="Ex: 100"
+                placeholder="Optionnel, ex: 100"
                 {...register('usage_limit')}
+              />
+
+              <Input
+                label="Date d'expiration"
+                type="date"
+                {...register('ends_at')}
               />
             </div>
 
@@ -198,6 +190,7 @@ function AdminCoupons() {
                 size="md"
                 type="button"
                 onClick={() => { setShowForm(false); setEditing(null); }}
+                iconLeft={<X size={15} />}
               >
                 Annuler
               </Button>
@@ -206,6 +199,7 @@ function AdminCoupons() {
                 size="md"
                 type="submit"
                 loading={submitting}
+                iconLeft={<Check size={15} />}
               >
                 {editing ? 'Mettre à jour le coupon' : 'Enregistrer le coupon'}
               </Button>
@@ -257,6 +251,7 @@ function AdminCoupons() {
                           variant="secondary"
                           size="sm"
                           onClick={() => handleEdit(c)}
+                          iconLeft={<Pencil size={13} />}
                         >
                           Modifier
                         </Button>
@@ -264,6 +259,7 @@ function AdminCoupons() {
                           variant="danger"
                           size="sm"
                           onClick={() => handleDelete(c.id)}
+                          iconLeft={<Trash2 size={13} />}
                         >
                           Supprimer
                         </Button>

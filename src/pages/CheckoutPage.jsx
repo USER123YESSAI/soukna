@@ -9,6 +9,8 @@ import { useState } from 'react';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import { Lock, CheckCircle2 } from 'lucide-react';
+
 
 function CheckoutForm() {
   const { cart, fetchCart } = useCart();
@@ -341,6 +343,7 @@ function CheckoutForm() {
                   variant="primary"
                   size="lg"
                   loading={submitting}
+                  iconLeft={<Lock size={16} />}
                   className="w-full font-bold shadow-lg shadow-indigo-600/25 mt-2"
                 >
                   Confirmer et payer
@@ -348,13 +351,13 @@ function CheckoutForm() {
 
                 <div className="pt-4 border-t border-dashed border-slate-200 space-y-2 text-xs text-slate-500 font-medium">
                   <div className="flex items-center gap-2">
-                    <span className="text-emerald-500 font-bold">✓</span> Garantie 100% Satisfait ou Remboursé
+                    <CheckCircle2 size={14} className="text-emerald-500 shrink-0" /> <span>Garantie 100% Satisfait ou Remboursé</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-emerald-500 font-bold">✓</span> Cryptage sécurisé SSL 256 bits
+                    <CheckCircle2 size={14} className="text-emerald-500 shrink-0" /> <span>Cryptage sécurisé SSL 256 bits</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-emerald-500 font-bold">✓</span> Expédition express sous 24/48h
+                    <CheckCircle2 size={14} className="text-emerald-500 shrink-0" /> <span>Expédition express sous 24/48h</span>
                   </div>
                 </div>
               </Card.Body>

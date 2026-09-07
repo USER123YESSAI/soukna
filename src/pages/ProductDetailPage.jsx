@@ -13,6 +13,9 @@ import ProductReviews from '../components/products/ProductReviews';
 import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import Button from '../components/ui/Button';
+import { Star, ShoppingCart, Zap, Heart, MessageSquare } from 'lucide-react';
+
+
 
 export default function ProductDetailPage({ basePath = '/products' }) {
   const { id } = useParams();
@@ -164,7 +167,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
           {/* Notation & Avis */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 10, flexWrap: 'wrap' }}>
             <a href="#reviews-section" style={{ display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none', background: '#fef3c7', padding: '4px 12px', borderRadius: 99, border: '1px solid #fde68a' }}>
-              <span style={{ color: '#d97706', fontSize: 14, fontWeight: 800 }}>★</span>
+              <Star size={14} className="text-amber-500 fill-amber-400" />
               <span style={{ fontWeight: 800, color: '#92400e', fontSize: 13 }}>
                 {product.rating && parseFloat(product.rating) > 0 ? parseFloat(product.rating).toFixed(1) : '5.0'}
               </span>
@@ -196,6 +199,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
                   type="button"
                   variant="primary"
                   size="md"
+                  iconLeft={<ShoppingCart size={16} />}
                   onClick={handleAddToCart}
                   disabled={adding || product.quantity < 1}
                   className="flex-1 min-w-[180px]"
@@ -205,6 +209,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
                 <Button
                   type="button"
                   size="md"
+                  iconLeft={<Zap size={16} />}
                   onClick={handleBuyNow}
                   disabled={adding || product.quantity < 1}
                   className="flex-1 min-w-[180px] bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
@@ -218,6 +223,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
                   type="button"
                   variant="outline"
                   size="md"
+                  iconLeft={<Heart size={16} fill={isFavorite ? 'currentColor' : 'none'} />}
                   onClick={toggleFavorite}
                   className={`flex-1 min-w-[180px] ${
                     isFavorite
@@ -232,6 +238,7 @@ export default function ProductDetailPage({ basePath = '/products' }) {
                     type="button"
                     variant="outline"
                     size="md"
+                    iconLeft={<MessageSquare size={16} />}
                     onClick={() => setShowChat(!showChat)}
                     className="flex-1 min-w-[180px] border-slate-200 text-slate-700 hover:bg-slate-50"
                   >

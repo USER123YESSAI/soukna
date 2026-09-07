@@ -7,6 +7,8 @@ import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import { formatPrice } from '../services/api';
+import { ArrowRight, Trash2, Minus, Plus, ShieldCheck, Check } from 'lucide-react';
+
 
 function CartContent() {
   const { cart, loading, updateQuantity, removeItem, clearCart } = useCart();
@@ -27,8 +29,8 @@ function CartContent() {
           title="Votre panier Soukna est vide"
           description="Parcourez notre catalogue et découvrez des milliers d'offres exceptionnelles."
           action={
-            <Button to="/products" variant="primary" size="md">
-              Explorer le catalogue →
+            <Button to="/products" variant="primary" size="md" iconRight={<ArrowRight size={15} />}>
+              Explorer le catalogue
             </Button>
           }
         />
@@ -48,11 +50,7 @@ function CartContent() {
             variant="danger"
             size="sm"
             onClick={clearCart}
-            iconLeft={
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-            }
+            iconLeft={<Trash2 size={14} />}
           >
             Vider le panier
           </Button>
@@ -97,7 +95,7 @@ function CartContent() {
                       disabled={item.quantity <= 1}
                       className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-600 hover:bg-white hover:text-slate-900 disabled:opacity-40 cursor-pointer transition-colors"
                     >
-                      −
+                      <Minus size={13} strokeWidth={2.5} />
                     </button>
                     <span className="w-8 text-center text-xs font-bold text-slate-900">
                       {item.quantity}
@@ -107,7 +105,7 @@ function CartContent() {
                       onClick={() => updateQuantity(item.id, (item.quantity || 1) + 1)}
                       className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-600 hover:bg-white hover:text-slate-900 cursor-pointer transition-colors"
                     >
-                      +
+                      <Plus size={13} strokeWidth={2.5} />
                     </button>
                   </div>
 
@@ -121,9 +119,7 @@ function CartContent() {
                     className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
                     title="Supprimer l'article"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    <Trash2 size={16} />
                   </button>
                 </div>
               </div>
@@ -161,22 +157,19 @@ function CartContent() {
               variant="primary"
               size="lg"
               className="w-full"
+              iconRight={<ArrowRight size={16} />}
             >
-              Commander maintenant →
+              Commander maintenant
             </Button>
 
             {/* Badges de confiance */}
             <div className="mt-6 pt-5 border-t border-slate-100 space-y-2.5 text-xs text-slate-500 font-medium">
               <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
+                <ShieldCheck size={16} className="text-emerald-600 shrink-0" />
                 <span>Paiement 100% sécurisé et protégé</span>
               </div>
               <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-indigo-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                </svg>
+                <Check size={16} className="text-indigo-600 shrink-0" />
                 <span>Garantie acheteur Soukna</span>
               </div>
             </div>

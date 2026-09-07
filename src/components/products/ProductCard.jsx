@@ -5,6 +5,8 @@ import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { Heart, Star, ShoppingCart } from 'lucide-react';
+
 
 export default function ProductCard({ product, basePath = '/products', isFlashSale = false, priority = false }) {
   const navigate = useNavigate();
@@ -153,9 +155,7 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
               backdropFilter: 'blur(8px)'
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill={favorite ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2.2">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
+            <Heart size={16} fill={favorite ? 'currentColor' : 'none'} strokeWidth={2.2} />
           </button>
         </div>
 
@@ -187,13 +187,19 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
           </h3>
 
           {/* Notation 5 étoiles + avis */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13 }}>
-            <span style={{ color: '#eab308', letterSpacing: '-1px', fontSize: 13, lineHeight: 1 }}>
-              {'★'.repeat(Math.round(parseFloat(displayRating)))}
-              <span style={{ color: '#e2e8f0' }}>
-                {'★'.repeat(5 - Math.round(parseFloat(displayRating)))}
-              </span>
-            </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {[1, 2, 3, 4, 5].map((s) => {
+                const filled = s <= Math.round(parseFloat(displayRating));
+                return (
+                  <Star
+                    key={s}
+                    size={12}
+                    className={filled ? 'text-amber-400 fill-amber-400' : 'text-slate-200 fill-slate-100'}
+                  />
+                );
+              })}
+            </div>
             <span style={{ fontWeight: 600, color: '#64748b', fontSize: 12.5 }}>
               {displayRating} ({displayReviews})
             </span>
@@ -240,11 +246,7 @@ export default function ProductCard({ product, basePath = '/products', isFlashSa
               flexShrink: 0
             }}
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3">
-              <circle cx="9" cy="21" r="1" />
-              <circle cx="20" cy="21" r="1" />
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-            </svg>
+            <ShoppingCart size={15} strokeWidth={2.3} />
             <span>{adding ? 'Ajout en cours...' : 'Ajouter au panier'}</span>
           </button>
         </div>

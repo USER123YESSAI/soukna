@@ -88,6 +88,14 @@ export function AuthProvider({ children }) {
     return data.user;
   };
 
+  const acceptTerms = async (termsVersion = '1.0') => {
+    const { data } = await authService.acceptTerms({ terms_version: termsVersion });
+    setUser(data.user);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    toast.success(data.message || 'Conditions d’utilisation acceptées');
+    return data.user;
+  };
+
   const isAuthenticated = !!token && !!user;
   const isBuyer = user?.role === 'buyer';
   const isSeller = user?.role === 'seller';
@@ -107,6 +115,7 @@ export function AuthProvider({ children }) {
         register,
         logout,
         updateProfile,
+        acceptTerms,
         setUser,
       }}
     >

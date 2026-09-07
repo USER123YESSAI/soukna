@@ -12,6 +12,7 @@ import EmptyState from '../../components/ui/EmptyState';
 import { getErrorMessage } from '../../services/api';
 import { adminCategoryService } from '../../services/adminCategoryService';
 import { getCategoryIcon } from '../../utils/categoryIcons';
+import { Plus, Search, Pencil, Trash2, Check, X } from 'lucide-react';
 
 function safeTrim(v) {
   return typeof v === 'string' ? v.trim() : v;
@@ -161,11 +162,7 @@ function AdminCategories() {
             variant="primary"
             size="md"
             onClick={() => { setShowForm(true); openCreate(); }}
-            iconLeft={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
-              </svg>
-            }
+            iconLeft={<Plus size={16} strokeWidth={2.5} />}
           >
             Nouvelle catégorie
           </Button>
@@ -179,11 +176,7 @@ function AdminCategories() {
             value={q}
             onChange={(e) => { setQ(e.target.value); setPage(1); }}
             placeholder="Rechercher par nom ou slug..."
-            iconLeft={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            }
+            iconLeft={<Search size={16} />}
           />
         </div>
         <div className="text-xs font-semibold text-slate-500">
@@ -228,8 +221,8 @@ function AdminCategories() {
             </div>
 
             <Input
-              label="Icône ou Émoji (Optionnel)"
-              placeholder="Ex: 📱 ou 💻"
+              label="Identifiant Icône (Optionnel)"
+              placeholder="Ex: Informatique, Maison, Mode..."
               error={errors.icon?.message}
               {...register('icon')}
             />
@@ -240,6 +233,7 @@ function AdminCategories() {
                 size="md"
                 type="button"
                 onClick={() => { setShowForm(false); setEditing(null); }}
+                iconLeft={<X size={15} />}
               >
                 Annuler
               </Button>
@@ -248,6 +242,7 @@ function AdminCategories() {
                 size="md"
                 type="submit"
                 loading={submitting}
+                iconLeft={<Check size={15} />}
               >
                 {editing ? 'Mettre à jour' : 'Créer la catégorie'}
               </Button>
@@ -286,7 +281,7 @@ function AdminCategories() {
                       <td className="py-3.5 px-4 font-semibold text-slate-900">
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-xl shrink-0 shadow-2xs">
-                            {getCategoryIcon(c)}
+                            {getCategoryIcon(c, { size: 20, className: 'text-indigo-600' })}
                           </div>
                           <span>{c.name}</span>
                         </div>
@@ -304,6 +299,7 @@ function AdminCategories() {
                             variant="secondary"
                             size="sm"
                             onClick={() => openEdit(c)}
+                            iconLeft={<Pencil size={13} />}
                           >
                             Modifier
                           </Button>
@@ -311,6 +307,7 @@ function AdminCategories() {
                             variant="danger"
                             size="sm"
                             onClick={() => handleDelete(c.id)}
+                            iconLeft={<Trash2 size={13} />}
                           >
                             Supprimer
                           </Button>

@@ -5,6 +5,8 @@ import ProductCard from '../components/products/ProductCard';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { getErrorMessage } from '../services/api';
 import toast from 'react-hot-toast';
+import { Search } from 'lucide-react';
+
 
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -55,8 +57,9 @@ export default function SearchPage() {
           <option value="sellers">Vendeurs</option>
           <option value="categories">Catégories</option>
         </select>
-        <button type="submit" className="rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
-          Rechercher
+        <button type="submit" className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-700 cursor-pointer transition">
+          <Search size={15} />
+          <span>Rechercher</span>
         </button>
       </form>
 

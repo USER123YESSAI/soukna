@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 /**
  * En-tête de page universel pour tous les espaces (Admin, Vendeur, Acheteur, etc.)
@@ -19,9 +20,7 @@ export default function PageHeader({
           to={backTo}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline mb-3 transition-colors"
         >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
-          </svg>
+          <ArrowLeft size={14} strokeWidth={2.5} />
           <span>{backLabel}</span>
         </Link>
       )}

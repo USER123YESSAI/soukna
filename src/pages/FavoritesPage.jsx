@@ -9,6 +9,8 @@ import Select from '../components/ui/Select';
 import Button from '../components/ui/Button';
 import { getErrorMessage } from '../services/api';
 import toast from 'react-hot-toast';
+import { ArrowRight } from 'lucide-react';
+
 
 function FavoritesList() {
   const [favorites, setFavorites] = useState([]);
@@ -61,8 +63,8 @@ function FavoritesList() {
           title="Votre liste de favoris est vide"
           description="Explorez les articles du catalogue et cliquez sur le cœur pour les retrouver en un clic."
           action={
-            <Button to="/products" variant="primary" size="md">
-              Découvrir les produits →
+            <Button to="/products" variant="primary" size="md" iconRight={<ArrowRight size={15} />}>
+              Découvrir les produits
             </Button>
           }
         />

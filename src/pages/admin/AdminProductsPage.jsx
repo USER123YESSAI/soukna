@@ -12,6 +12,7 @@ import Select from '../../components/ui/Select';
 import EmptyState from '../../components/ui/EmptyState';
 import { formatPrice, getErrorMessage } from '../../services/api';
 import toast from 'react-hot-toast';
+import { SlidersHorizontal, Trash2, Check, X } from 'lucide-react';
 
 function AdminProducts() {
   const [products, setProducts] = useState([]);
@@ -136,6 +137,7 @@ function AdminProducts() {
                             variant="secondary"
                             size="sm"
                             onClick={() => { setSelectedProductId(p.id); setSelectedStatus(p.status); }}
+                            iconLeft={<SlidersHorizontal size={13} />}
                           >
                             Statut
                           </Button>
@@ -143,6 +145,7 @@ function AdminProducts() {
                             variant="danger"
                             size="sm"
                             onClick={() => handleForceDelete(p.id)}
+                            iconLeft={<Trash2 size={13} />}
                           >
                             Supprimer
                           </Button>
@@ -189,6 +192,7 @@ function AdminProducts() {
                   size="md"
                   type="button"
                   onClick={() => setSelectedProductId('')}
+                  iconLeft={<X size={15} />}
                 >
                   Annuler
                 </Button>
@@ -197,6 +201,7 @@ function AdminProducts() {
                   size="md"
                   type="submit"
                   loading={updating}
+                  iconLeft={<Check size={15} />}
                 >
                   Appliquer la modification
                 </Button>

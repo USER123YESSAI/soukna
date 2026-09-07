@@ -8,6 +8,8 @@ import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
 import Button from '../components/ui/Button';
+import { ShoppingBag, ArrowRight, AlertCircle } from 'lucide-react';
+
 
 export default function RegisterPage() {
   const { register: registerUser } = useAuth();
@@ -19,7 +21,7 @@ export default function RegisterPage() {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm({ defaultValues: { role: 'buyer' } });
+  } = useForm({ defaultValues: { role: 'buyer', terms_accepted: false } });
 
   const password = watch('password');
   const selectedRole = watch('role');
@@ -35,6 +37,8 @@ export default function RegisterPage() {
         role: data.role,
         phone: data.phone || undefined,
         city: data.city || undefined,
+        terms_accepted: data.terms_accepted,
+        terms_version: '1.0',
       };
       await registerUser(payload);
       toast.success('Compte créé avec succès !');
@@ -52,11 +56,7 @@ export default function RegisterPage() {
         {/* Logo & Header */}
         <div className="text-center mb-8">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center mx-auto mb-4 shadow-sm shadow-indigo-200">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <path d="M16 10a4 4 0 01-8 0"/>
-            </svg>
+            <ShoppingBag size={24} className="text-white" strokeWidth={2.5} />
           </div>
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
             Créer un compte
@@ -134,20 +134,58 @@ export default function RegisterPage() {
           </div>
 
           <div className="pt-2">
+            <label className="flex items-start gap-3 cursor-pointer select-none group">
+              <input
+                type="checkbox"
+                className="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 transition-colors cursor-pointer shrink-0"
+                {...register('terms_accepted', {
+                  required: 'Vous devez accepter les Conditions d\'utilisation et la Politique de confidentialité pour vous inscrire.',
+                })}
+              />
+              <span className="text-xs sm:text-sm text-slate-600 leading-snug">
+                J&apos;accepte les{' '}
+                <a
+                  href="/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="font-semibold text-indigo-600 hover:text-indigo-700 underline"
+                >
+                  Conditions d&apos;utilisation
+                </a>{' '}
+                et la{' '}
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="font-semibold text-indigo-600 hover:text-indigo-700 underline"
+                >
+                  Politique de confidentialité
+                </a>
+                .
+              </span>
+            </label>
+            {errors.terms_accepted && (
+              <p className="mt-2 text-xs text-rose-600 flex items-center gap-1.5 font-medium">
+                <AlertCircle size={14} className="shrink-0" />
+                {errors.terms_accepted.message}
+              </p>
+            )}
+          </div>
+
+          <div className="pt-2">
             <Button
               type="submit"
               variant="primary"
               size="lg"
               loading={submitting}
+              iconRight={<ArrowRight size={16} />}
               className="w-full"
             >
-              Créer mon compte Soukna →
+              Créer mon compte Soukna
             </Button>
           </div>
-
-          <p className="text-center text-xs text-slate-400 mt-4">
-            En vous inscrivant, vous acceptez nos Conditions Générales et notre Politique de Confidentialité.
-          </p>
         </form>
       </Card>
     </div>

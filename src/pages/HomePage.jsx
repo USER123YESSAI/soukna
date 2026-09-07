@@ -5,6 +5,9 @@ import { productService } from '../services/productService';
 import { categoryService } from '../services/categoryService';
 import ProductCard from '../components/products/ProductCard';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import { ArrowRight, Search } from 'lucide-react';
+import { getCategoryIcon } from '../utils/categoryIcons';
+
 
 export default function HomePage() {
   const { isAuthenticated, user, isSeller, isAdmin } = useAuth();
@@ -53,9 +56,9 @@ export default function HomePage() {
               <Link to={dashLink} className="btn-primary" style={{
                 padding: '12px 28px', borderRadius: 99, fontWeight: 700, fontSize: 15,
                 background: 'white', color: '#4f46e5', textDecoration: 'none',
-                boxShadow: '0 4px 20px rgba(0,0,0,.2)'
+                boxShadow: '0 4px 20px rgba(0,0,0,.2)', display: 'inline-flex', alignItems: 'center', gap: 6
               }}>
-                {dashLabel} →
+                <span>{dashLabel}</span> <ArrowRight size={16} />
               </Link>
               <Link to="/products" style={{
                 padding: '12px 28px', borderRadius: 99, fontWeight: 700, fontSize: 15,
@@ -76,18 +79,19 @@ export default function HomePage() {
                 <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a' }}>Catégories</h2>
                 <p style={{ margin: '4px 0 0', fontSize: 14, color: '#64748b' }}>Explorez nos sélections par univers</p>
               </div>
-              <Link to="/products" style={{ fontSize: 14, color: '#4f46e5', textDecoration: 'none', fontWeight: 700 }}>
-                Voir tout ({categories.length}) →
+              <Link to="/products" style={{ fontSize: 14, color: '#4f46e5', textDecoration: 'none', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                Voir tout ({categories.length}) <ArrowRight size={14} />
               </Link>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
-              {categories.slice(0, 8).map((cat, i) => (
+              {categories.slice(0, 8).map((cat) => (
                 <Link key={cat.id} to={`/products?category_id=${cat.id}`} className="card-hover" style={{
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                   gap: 10, padding: '20px 16px', borderRadius: 20, background: 'white',
                   border: '1px solid var(--border)', textDecoration: 'none', color: '#0f172a',
                   fontSize: 14, fontWeight: 700, textAlign: 'center', boxShadow: 'var(--shadow-xs)'
                 }}>
+                  <span style={{ color: '#4f46e5' }}>{getCategoryIcon(cat.name, 24)}</span>
                   <span>{cat.name}</span>
                 </Link>
               ))}
@@ -102,8 +106,8 @@ export default function HomePage() {
               <h2 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: '#0f172a' }}>Meilleures ventes</h2>
               <p style={{ margin: '4px 0 0', fontSize: 14, color: '#64748b' }}>Les produits les plus populaires du moment</p>
             </div>
-            <Link to="/products" style={{ fontSize: 14, color: '#4f46e5', textDecoration: 'none', fontWeight: 700 }}>
-              Voir tout le catalogue →
+            <Link to="/products" style={{ fontSize: 14, color: '#4f46e5', textDecoration: 'none', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              Voir tout le catalogue <ArrowRight size={14} />
             </Link>
           </div>
           {loading ? <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0' }}><LoadingSpinner size="lg" /></div>
@@ -228,18 +232,7 @@ export default function HomePage() {
               gap: 12
             }}
           >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#94a3b8"
-              strokeWidth="2.2"
-              style={{ marginLeft: 14, flexShrink: 0 }}
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+            <Search size={20} className="text-slate-400 shrink-0" style={{ marginLeft: 14 }} />
             <input
               name="heroSearch"
               type="text"
@@ -261,10 +254,14 @@ export default function HomePage() {
                 padding: '12px 24px',
                 borderRadius: 10,
                 fontSize: 15,
-                flexShrink: 0
+                flexShrink: 0,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6
               }}
             >
-              Rechercher
+              <Search size={15} />
+              <span>Rechercher</span>
             </button>
           </form>
 
@@ -311,8 +308,8 @@ export default function HomePage() {
                 Des réductions exceptionnelles à durée limitée
               </p>
             </div>
-            <Link to="/products?discount=true" style={{ fontSize: 14, color: '#4f46e5', textDecoration: 'none', fontWeight: 700 }}>
-              Voir toutes les promos →
+            <Link to="/products?discount=true" style={{ fontSize: 14, color: '#4f46e5', textDecoration: 'none', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              Voir toutes les promos <ArrowRight size={14} />
             </Link>
           </div>
 
@@ -347,8 +344,8 @@ export default function HomePage() {
                 Explorez les articles les plus prisés par notre communauté
               </p>
             </div>
-            <Link to="/products" style={{ fontSize: 14, color: '#4f46e5', textDecoration: 'none', fontWeight: 700 }}>
-              Voir tout le catalogue →
+            <Link to="/products" style={{ fontSize: 14, color: '#4f46e5', textDecoration: 'none', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              Voir tout le catalogue <ArrowRight size={14} />
             </Link>
           </div>
 
@@ -381,12 +378,12 @@ export default function HomePage() {
                   Trouvez ce qu&apos;il vous faut par univers
                 </p>
               </div>
-              <Link to="/products" style={{ fontSize: 14, color: '#4f46e5', textDecoration: 'none', fontWeight: 700 }}>
-                Voir toutes les catégories →
+              <Link to="/products" style={{ fontSize: 14, color: '#4f46e5', textDecoration: 'none', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                Voir toutes les catégories <ArrowRight size={14} />
               </Link>
             </div>
             <div className="categories-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 14 }}>
-              {categories.slice(0, 8).map((cat, i) => (
+              {categories.slice(0, 8).map((cat) => (
                 <Link
                   key={cat.id}
                   to={`/products?category_id=${cat.id}`}
@@ -409,6 +406,7 @@ export default function HomePage() {
                     textAlign: 'center'
                   }}
                 >
+                  <span style={{ color: '#4f46e5' }}>{getCategoryIcon(cat.name, 26)}</span>
                   <span>{cat.name}</span>
                 </Link>
               ))}

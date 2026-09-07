@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import MessagesWidget from '../../components/messages/MessagesWidget';
 import PageHeader from '../../components/ui/PageHeader';
 import Button from '../../components/ui/Button';
+import { ArrowRight, ShoppingBag, Heart, ShoppingCart } from 'lucide-react';
 
 function KpiCard({ icon, label, value, sub, color = '#10b981', linkTo, linkLabel }) {
   return (
@@ -18,8 +19,8 @@ function KpiCard({ icon, label, value, sub, color = '#10b981', linkTo, linkLabel
         <span style={{ fontSize: 12, fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {linkTo && (
-            <Link to={linkTo} style={{ fontSize: 12, color: color, textDecoration: 'none', fontWeight: 600 }}>
-              {linkLabel ?? 'Voir →'}
+            <Link to={linkTo} style={{ fontSize: 12, color: color, textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+              {linkLabel ?? 'Voir'} <ArrowRight size={12} />
             </Link>
           )}
           {icon && <div style={{ width: 36, height: 36, borderRadius: 10, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>{icon}</div>}
@@ -69,28 +70,31 @@ function BuyerDashboard() {
             to="/products"
             variant="primary"
             size="md"
+            iconRight={<ArrowRight size={15} />}
           >
-            Explorer le catalogue →
+            Explorer le catalogue
           </Button>
         }
       />
 
       <div className="dashboard-kpi-grid">
-        <KpiCard label="Commandes récentes" value={orders.length > 0 ? orders.length : 0} sub={pendingCount ? `${pendingCount} en attente` : 'sur les 5 dernières'} color="#6366f1" linkTo="/buyer/orders" />
-        <KpiCard label="Favoris" value={favoritesCount} color="#ec4899" linkTo="/buyer/favorites" />
-        <KpiCard label="Panier" value={itemCount} sub={itemCount === 1 ? 'article' : 'articles'} color="#10b981" linkTo="/buyer/cart" />
+        <KpiCard icon={<ShoppingBag size={18} color="#6366f1" />} label="Commandes récentes" value={orders.length > 0 ? orders.length : 0} sub={pendingCount ? `${pendingCount} en attente` : 'sur les 5 dernières'} color="#6366f1" linkTo="/buyer/orders" />
+        <KpiCard icon={<Heart size={18} color="#ec4899" />} label="Favoris" value={favoritesCount} color="#ec4899" linkTo="/buyer/favorites" />
+        <KpiCard icon={<ShoppingCart size={18} color="#10b981" />} label="Panier" value={itemCount} sub={itemCount === 1 ? 'article' : 'articles'} color="#10b981" linkTo="/buyer/cart" />
       </div>
 
       <div style={{ background: 'white', borderRadius: 20, border: '1.5px solid var(--border)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
         <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Dernières commandes</h2>
-          <Link to="/buyer/orders" style={{ fontSize: 13, color: '#10b981', textDecoration: 'none', fontWeight: 600 }}>Voir tout →</Link>
+          <Link to="/buyer/orders" style={{ fontSize: 13, color: '#10b981', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            Voir tout <ArrowRight size={14} />
+          </Link>
         </div>
         {orders.length === 0 ? (
           <div style={{ padding: '48px 24px', textAlign: 'center', color: '#94a3b8' }}>
             <p style={{ margin: '0 0 12px', fontWeight: 500 }}>Aucune commande pour le moment</p>
-            <Link to="/products" style={{ fontSize: 13, fontWeight: 600, color: '#10b981', textDecoration: 'none' }}>
-              Parcourir le catalogue →
+            <Link to="/products" style={{ fontSize: 13, fontWeight: 600, color: '#10b981', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              Parcourir le catalogue <ArrowRight size={14} />
             </Link>
           </div>
         ) : (

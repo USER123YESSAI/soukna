@@ -1,4 +1,7 @@
+import { Search, X, RotateCcw } from 'lucide-react';
+
 export default function ProductFilters({ filters, categories, onChange }) {
+
   const inputStyle = {
     width: '100%',
     padding: '10px 14px',
@@ -67,12 +70,13 @@ export default function ProductFilters({ filters, categories, onChange }) {
             Recherche
           </label>
           <div style={{ position: 'relative' }}>
+            <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
             <input
               type="text"
               value={filters.search || ''}
               onChange={(e) => onChange({ search: e.target.value })}
               placeholder="Rechercher par nom, marque ou description..."
-              style={{ ...inputStyle, paddingRight: 32 }}
+              style={{ ...inputStyle, paddingLeft: 36, paddingRight: 32 }}
               onFocus={(e) => { e.target.style.borderColor = '#4f46e5'; e.target.style.background = 'white'; }}
               onBlur={(e) => { e.target.style.borderColor = 'var(--border)'; e.target.style.background = '#f8fafc'; }}
             />
@@ -82,12 +86,12 @@ export default function ProductFilters({ filters, categories, onChange }) {
                 style={{
                   position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
                   border: 'none', background: '#e2e8f0', color: '#64748b',
-                  width: 20, height: 20, borderRadius: 99, fontSize: 11,
+                  width: 20, height: 20, borderRadius: 99,
                   cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
                 }}
                 title="Effacer"
               >
-                ✕
+                <X size={12} strokeWidth={2.5} />
               </button>
             )}
           </div>
@@ -219,7 +223,8 @@ export default function ProductFilters({ filters, categories, onChange }) {
               transition: 'all 0.2s ease'
             }}
           >
-            Réinitialiser les filtres
+            <RotateCcw size={14} />
+            <span>Réinitialiser les filtres</span>
           </button>
         )}
       </div>

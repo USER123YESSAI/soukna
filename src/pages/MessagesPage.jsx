@@ -5,6 +5,8 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { formatDate, getErrorMessage } from '../services/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
+import { CheckCheck, Check, Search, MessageSquare, Send } from 'lucide-react';
+
 
 // ─── Sous-composants ────────────────────────────────────────
 
@@ -81,8 +83,8 @@ function MessageBubble({ msg, isMine }) {
             {msg.created_at ? new Date(msg.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : ''}
           </span>
           {isMine && (
-            <span style={{ fontSize: 11, opacity: .7, color: 'white' }}>
-              {msg.read_at ? '✓✓' : '✓'}
+            <span style={{ display: 'inline-flex', alignItems: 'center', opacity: .75, color: 'white' }}>
+              {msg.read_at ? <CheckCheck size={12} /> : <Check size={12} />}
             </span>
           )}
         </div>
@@ -231,9 +233,7 @@ function MessagesContent() {
             </p>
             {/* Recherche */}
             <div style={{ position: 'relative' }}>
-              <svg style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-              </svg>
+              <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', pointerEvents: 'none' }} />
               <input type="search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Chercher..." style={{
                   width: '100%', padding: '7px 10px 7px 30px', border: '1.5px solid var(--border)',
@@ -273,6 +273,7 @@ function MessagesContent() {
         <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {!selectedUser ? (
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+              <MessageSquare size={40} className="text-slate-300 mb-2" />
               <h3 style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700, color: '#475569' }}>Vos messages</h3>
               <p style={{ margin: 0, fontSize: 14, textAlign: 'center', maxWidth: 280, lineHeight: 1.6 }}>
                 Sélectionnez une conversation à gauche ou démarrez une nouvelle discussion.
@@ -341,10 +342,7 @@ function MessagesContent() {
                   }}>
                     {sending
                       ? <div style={{ width: 16, height: 16, borderRadius: 99, border: '2px solid #94a3b8', borderTopColor: 'transparent', animation: 'spin .6s linear infinite' }} />
-                      : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <line x1="22" y1="2" x2="11" y2="13"/>
-                          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                        </svg>
+                      : <Send size={18} strokeWidth={2.5} />
                     }
                   </button>
                 </form>

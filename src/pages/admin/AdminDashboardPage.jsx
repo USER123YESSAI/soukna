@@ -9,13 +9,29 @@ import PageHeader from '../../components/ui/PageHeader';
 import Button from '../../components/ui/Button';
 import MessagesWidget from '../../components/messages/MessagesWidget';
 import SalesChart from '../../components/analytics/SalesChart';
+import {
+  Download,
+  Users,
+  Package,
+  ShoppingCart,
+  TrendingUp,
+  ShieldCheck,
+  TicketPercent,
+  ArrowRight,
+  ChevronRight
+} from 'lucide-react';
 
 function KpiCard({ icon, label, value, sub, color, linkTo, linkLabel }) {
   return (
     <div style={{ background: 'white', borderRadius: 16, border: '1.5px solid var(--border)', padding: '22px 24px', boxShadow: 'var(--shadow-sm)', display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        {icon && <div style={{ width: 44, height: 44, borderRadius: 12, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>{icon}</div>}
-        {linkTo && <Link to={linkTo} style={{ fontSize: 12, color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>{linkLabel ?? 'Voir →'}</Link>}
+        {icon && <div style={{ width: 44, height: 44, borderRadius: 12, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', color }}>{icon}</div>}
+        {linkTo && (
+          <Link to={linkTo} style={{ fontSize: 12, color: '#6366f1', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+            <span>{linkLabel ?? 'Voir'}</span>
+            <ArrowRight size={13} />
+          </Link>
+        )}
       </div>
       <div>
         <div style={{ fontSize: 30, fontWeight: 800, color: '#0f172a', lineHeight: 1 }}>{value}</div>
@@ -64,11 +80,7 @@ function AdminDashboard() {
             size="md"
             onClick={handleExportOrders}
             loading={exportingOrders}
-            iconLeft={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-            }
+            iconLeft={<Download size={15} />}
           >
             Exporter toutes les commandes (CSV)
           </Button>
@@ -77,10 +89,10 @@ function AdminDashboard() {
 
       {/* KPIs */}
       <div className="dashboard-kpi-grid">
-        <KpiCard label="Utilisateurs" value={stats?.users_count ?? stats?.total_users ?? 0} sub="comptes actifs" color="#6366f1" linkTo="/admin/users" />
-        <KpiCard label="Produits" value={stats?.products_count ?? stats?.total_products ?? 0} sub="dans le catalogue" color="#f59e0b" linkTo="/admin/products" />
-        <KpiCard label="Commandes" value={stats?.orders_count ?? stats?.total_orders ?? 0} color="#10b981" />
-        <KpiCard label="Revenus" value={formatPrice(stats?.total_revenue ?? 0)} color="#ec4899" />
+        <KpiCard icon={<Users size={20} />} label="Utilisateurs" value={stats?.users_count ?? stats?.total_users ?? 0} sub="comptes actifs" color="#6366f1" linkTo="/admin/users" />
+        <KpiCard icon={<Package size={20} />} label="Produits" value={stats?.products_count ?? stats?.total_products ?? 0} sub="dans le catalogue" color="#f59e0b" linkTo="/admin/products" />
+        <KpiCard icon={<ShoppingCart size={20} />} label="Commandes" value={stats?.orders_count ?? stats?.total_orders ?? 0} color="#10b981" />
+        <KpiCard icon={<TrendingUp size={20} />} label="Revenus" value={formatPrice(stats?.total_revenue ?? 0)} color="#ec4899" />
       </div>
 
       {/* Graphique d'activité */}
@@ -97,19 +109,19 @@ function AdminDashboard() {
           </div>
           <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
             {[
-              { to: '/admin/users', label: 'Gérer les utilisateurs', desc: 'Suspendre, réactiver des comptes', color: '#6366f1' },
-              { to: '/admin/products', label: 'Modérer les produits', desc: 'Valider, rejeter des produits', color: '#f59e0b' },
-              { to: '/admin/coupons', label: 'Gérer les coupons', desc: 'Créer et modifier des codes promo', color: '#10b981' },
+              { to: '/admin/users', label: 'Gérer les utilisateurs', desc: 'Suspendre, réactiver des comptes', color: '#6366f1', icon: <Users size={20} color="#6366f1" /> },
+              { to: '/admin/products', label: 'Modérer les produits', desc: 'Valider, rejeter des produits', color: '#f59e0b', icon: <ShieldCheck size={20} color="#f59e0b" /> },
+              { to: '/admin/coupons', label: 'Gérer les coupons', desc: 'Créer et modifier des codes promo', color: '#10b981', icon: <TicketPercent size={20} color="#10b981" /> },
             ].map(({ to, icon, label, desc, color }) => (
               <Link key={to} to={to} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', borderRadius: 12, textDecoration: 'none', border: '1.5px solid var(--border)', transition: 'all .15s' }}
                 onMouseEnter={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.borderColor = color; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.borderColor = 'var(--border)'; }}>
-                {icon && <div style={{ width: 40, height: 40, borderRadius: 10, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>{icon}</div>}
+                {icon && <div style={{ width: 40, height: 40, borderRadius: 10, background: color + '18', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{icon}</div>}
                 <div>
                   <div style={{ fontWeight: 700, fontSize: 14, color: '#0f172a' }}>{label}</div>
                   <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2 }}>{desc}</div>
                 </div>
-                <span style={{ marginLeft: 'auto', color: '#94a3b8', fontSize: 18 }}>→</span>
+                <ChevronRight size={18} style={{ marginLeft: 'auto', color: '#94a3b8' }} />
               </Link>
             ))}
           </div>
@@ -150,8 +162,9 @@ function AdminDashboard() {
             <p style={{ margin: '0 0 14px', fontSize: 12, color: '#b45309', lineHeight: 1.5 }}>
               Des produits soumis par les vendeurs attendent votre validation.
             </p>
-            <Link to="/admin/products" style={{ fontSize: 13, fontWeight: 700, color: '#92400e', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-              Modérer maintenant →
+            <Link to="/admin/products" style={{ fontSize: 13, fontWeight: 700, color: '#92400e', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <span>Modérer maintenant</span>
+              <ArrowRight size={14} />
             </Link>
           </div>
         </div>

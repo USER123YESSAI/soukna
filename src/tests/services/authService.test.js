@@ -97,4 +97,21 @@ describe('authService', () => {
       expect(result).toEqual({ data: { name: 'Updated Name' } });
     });
   });
+
+  describe('acceptTerms', () => {
+    it('should call accept-terms endpoint with version', async () => {
+      const payload = { terms_version: '1.0' };
+      api.post.mockResolvedValue({
+        data: {
+          message: 'Conditions d’utilisation acceptées avec succès.',
+          user: { id: 1, terms_accepted: true, terms_version: '1.0' },
+        },
+      });
+
+      const result = await authService.acceptTerms(payload);
+
+      expect(api.post).toHaveBeenCalledWith('/auth/accept-terms', payload);
+      expect(result.data.user.terms_accepted).toBe(true);
+    });
+  });
 });

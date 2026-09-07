@@ -12,6 +12,8 @@ import Select from '../../components/ui/Select';
 import { getErrorMessage } from '../../services/api';
 import { compressImage, compressImages } from '../../utils/imageCompressor';
 import toast from 'react-hot-toast';
+import { Check, X } from 'lucide-react';
+
 
 function ProductForm() {
   const { id } = useParams();
@@ -251,6 +253,7 @@ function ProductForm() {
               variant="secondary"
               size="md"
               to="/seller/products"
+              iconLeft={<X size={15} />}
             >
               Annuler
             </Button>
@@ -259,6 +262,7 @@ function ProductForm() {
               variant="primary"
               size="md"
               loading={submitting}
+              iconLeft={<Check size={15} />}
             >
               {isEdit ? 'Mettre à jour le produit' : 'Publier le produit'}
             </Button>

@@ -5,6 +5,8 @@ import LoadingSpinner from '../ui/LoadingSpinner';
 import { getErrorMessage } from '../../services/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../contexts/AuthContext';
+import { CheckCheck, Check, MessageSquare, ArrowRight, Send } from 'lucide-react';
+
 
 function Avatar({ name, size = 32, color = '#6366f1' }) {
   return (
@@ -23,7 +25,11 @@ function MessageBubble({ msg, isMine }) {
           <span style={{ fontSize: 10, opacity: .65, color: isMine ? 'white' : '#94a3b8' }}>
             {msg.created_at ? new Date(msg.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : ''}
           </span>
-          {isMine && <span style={{ fontSize: 10, opacity: .65, color: 'white' }}>{msg.read_at ? '✓✓' : '✓'}</span>}
+          {isMine && (
+            <span style={{ display: 'inline-flex', alignItems: 'center', opacity: .75, color: 'white' }}>
+              {msg.read_at ? <CheckCheck size={12} /> : <Check size={12} />}
+            </span>
+          )}
         </div>
       </div>
     </div>
@@ -106,15 +112,15 @@ export default function MessagesWidget() {
       {/* Header */}
       <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fafafa' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-          </svg>
+          <MessageSquare size={18} className="text-indigo-600" />
           <h2 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
             Messagerie
             {unread > 0 && <span style={{ marginLeft: 8, background: '#ef4444', color: 'white', fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 99 }}>{unread}</span>}
           </h2>
         </div>
-        <Link to="messages" style={{ fontSize: 12, color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>Tout voir →</Link>
+        <Link to="messages" style={{ fontSize: 12, color: '#6366f1', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+          Tout voir <ArrowRight size={12} />
+        </Link>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '190px 1fr', height: 400 }}>
@@ -124,9 +130,9 @@ export default function MessagesWidget() {
             <div style={{ display: 'flex', justifyContent: 'center', padding: 20 }}><LoadingSpinner /></div>
           ) : conversations.length === 0 ? (
             <div style={{ padding: 20, textAlign: 'center', color: '#94a3b8' }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 6 }}>
-                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-              </svg>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6 }}>
+                <MessageSquare size={24} className="text-slate-400" />
+              </div>
               <p style={{ margin: 0, fontSize: 11 }}>Aucune conversation</p>
             </div>
           ) : conversations.map(conv => {
@@ -153,9 +159,7 @@ export default function MessagesWidget() {
         <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {!selectedUser ? (
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 8 }}>
-                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-              </svg>
+              <MessageSquare size={36} className="text-slate-300 mb-2" />
               <p style={{ margin: 0, fontSize: 12, fontWeight: 500 }}>Choisir une conversation</p>
             </div>
           ) : (
@@ -179,7 +183,7 @@ export default function MessagesWidget() {
                     onFocus={e => e.target.style.borderColor = '#6366f1'}
                     onBlur={e => e.target.style.borderColor = 'var(--border)'} />
                   <button type="submit" disabled={!text.trim() || sending} style={{ width: 34, height: 34, borderRadius: 9, border: 'none', cursor: !text.trim() || sending ? 'not-allowed' : 'pointer', background: !text.trim() || sending ? '#e2e8f0' : 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: !text.trim() || sending ? '#94a3b8' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    <Send size={14} strokeWidth={2.5} />
                   </button>
                 </form>
               </div>

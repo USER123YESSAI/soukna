@@ -10,6 +10,8 @@ import Card from '../components/ui/Card';
 import Select from '../components/ui/Select';
 import { formatPrice, formatDate, getErrorMessage } from '../services/api';
 import toast from 'react-hot-toast';
+import { ChevronRight } from 'lucide-react';
+
 
 const STATUS_OPTIONS = [
   { value: '',          label: 'Tous les statuts' },
@@ -107,7 +109,7 @@ function OrdersList() {
                         {order.items[0]?.product?.title ? ` · ${order.items[0].product.title}${order.items.length > 1 ? '…' : ''}` : ''}
                       </span>
                       <span className="font-semibold text-indigo-600 flex items-center gap-1">
-                        Détails & Facture →
+                        Détails & Facture <ChevronRight size={14} />
                       </span>
                     </div>
                   )}

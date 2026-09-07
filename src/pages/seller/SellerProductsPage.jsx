@@ -11,6 +11,8 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import { formatPrice, getErrorMessage } from '../../services/api';
 import toast from 'react-hot-toast';
+import { Plus, Search, Pencil, Trash2 } from 'lucide-react';
+
 
 function SellerProducts() {
   const [products, setProducts] = useState([]);
@@ -70,11 +72,8 @@ function SellerProducts() {
             to="/seller/products/new"
             variant="primary"
             size="md"
-            iconLeft={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
-              </svg>
-            }
+            iconLeft={<Plus size={16} strokeWidth={2.5} />}
+
           >
             Nouveau produit
           </Button>
@@ -110,11 +109,7 @@ function SellerProducts() {
             placeholder="Rechercher un produit..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            iconLeft={
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            }
+            iconLeft={<Search size={16} className="text-slate-400" />}
           />
         </div>
       </div>
@@ -183,12 +178,14 @@ function SellerProducts() {
                           to={`/seller/products/${p.id}/edit`}
                           variant="secondary"
                           size="sm"
+                          iconLeft={<Pencil size={13} />}
                         >
                           Modifier
                         </Button>
                         <Button
                           variant="danger"
                           size="sm"
+                          iconLeft={<Trash2 size={13} />}
                           onClick={() => handleDelete(p.id)}
                         >
                           Supprimer

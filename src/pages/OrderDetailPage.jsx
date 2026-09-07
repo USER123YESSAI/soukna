@@ -8,6 +8,8 @@ import StatusBadge from '../components/ui/StatusBadge';
 import InlineChat from '../components/messages/InlineChat';
 import { formatPrice, formatDate, getErrorMessage } from '../services/api';
 import toast from 'react-hot-toast';
+import { ArrowLeft, Star, Printer, XCircle, MessageSquare, ChevronDown } from 'lucide-react';
+
 
 function OrderDetail() {
   const { id } = useParams();
@@ -90,8 +92,8 @@ function OrderDetail() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <Link to="/buyer/orders" className="text-sm text-indigo-600 hover:underline">
-        ← Retour aux commandes
+      <Link to="/buyer/orders" className="inline-flex items-center gap-1.5 text-sm text-indigo-600 hover:underline">
+        <ArrowLeft size={16} /> Retour aux commandes
       </Link>
       <div className="mt-4 rounded-xl border border-slate-200 bg-white p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -128,10 +130,13 @@ function OrderDetail() {
                       background: '#f1f5f9',
                       padding: '4px 10px',
                       borderRadius: 99,
-                      border: '1px solid #e2e8f0'
+                      border: '1px solid #e2e8f0',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4
                     }}
                   >
-                    ⭐ Noter le produit
+                    <Star size={13} className="text-amber-500 fill-amber-400" /> Noter le produit
                   </Link>
                 )}
               </div>
@@ -169,9 +174,7 @@ function OrderDetail() {
             disabled={printingInvoice}
             className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 transition shadow-sm"
           >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
+            <Printer size={14} />
             {printingInvoice ? 'Chargement...' : 'Facture (PDF / Imprimer)'}
           </button>
         </div>
@@ -187,8 +190,9 @@ function OrderDetail() {
           <button
             type="button"
             onClick={handleCancel}
-            className="mt-4 rounded-lg border border-red-200 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-red-200 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
           >
+            <XCircle size={15} />
             Annuler la commande
           </button>
         )}
@@ -216,14 +220,12 @@ function OrderDetail() {
                 onMouseEnter={e => { if (!openChats[seller.id]) e.currentTarget.style.borderColor = '#6366f1'; }}
                 onMouseLeave={e => { if (!openChats[seller.id]) e.currentTarget.style.borderColor = 'var(--border)'; }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-                </svg>
+                <MessageSquare size={18} className="text-indigo-600 shrink-0" />
                 <span style={{ fontWeight: 600, fontSize: 14, color: '#0f172a' }}>
                   Contacter {seller.name}
                 </span>
-                <span style={{ marginLeft: 'auto', fontSize: 12, color: '#94a3b8', transition: 'transform .2s', transform: openChats[seller.id] ? 'rotate(180deg)' : 'rotate(0)' }}>
-                  ▼
+                <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', color: '#94a3b8', transition: 'transform .2s', transform: openChats[seller.id] ? 'rotate(180deg)' : 'rotate(0)' }}>
+                  <ChevronDown size={16} />
                 </span>
               </button>
 
