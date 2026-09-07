@@ -114,9 +114,6 @@ export default function Footer() {
             >
               Conditions d&apos;utilisation
             </Link>
-            <span>
-              Sécurité SSL
-            </span>
           </div>
         </div>
       </div>
