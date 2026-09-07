@@ -397,7 +397,7 @@ export default function Navbar() {
       <style>{`
         /* Scroll Padding pour éviter que le sticky masque le contenu sous ancre */
         html {
-          scroll-padding-top: 76px;
+          scroll-padding-top: 80px;
         }
 
         /* Header Sticky & Layout */
@@ -423,7 +423,7 @@ export default function Navbar() {
           max-width: 1280px;
           margin: 0 auto;
           padding: 0 24px;
-          height: 64px;
+          height: 68px;
           display: grid;
           grid-template-columns: 1fr auto 1fr;
           align-items: center;
@@ -454,7 +454,7 @@ export default function Navbar() {
           gap: 10px;
         }
 
-        /* Logo Badge */
+        /* Logo Badge - Agrandit pour un fort impact visuel avec hauteur raisonnable */
         .navbar-logo-link {
           display: inline-flex;
           align-items: center;
@@ -463,30 +463,30 @@ export default function Navbar() {
         }
 
         .navbar-logo-badge {
-          width: 44px;
-          height: 44px;
-          border-radius: 12px;
+          width: 50px;
+          height: 50px;
+          border-radius: 14px;
           overflow: hidden;
           display: flex;
           align-items: center;
           justify-content: center;
           background: #ffffff;
           border: 1.5px solid #e0e7ff;
-          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: 0 2px 10px rgba(99, 102, 241, 0.16);
+          transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease;
         }
 
         .navbar-logo-link:hover .navbar-logo-badge {
-          border-color: #c7d2fe;
-          box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
-          transform: scale(1.04);
+          border-color: #a5b4fc;
+          box-shadow: 0 4px 16px rgba(99, 102, 241, 0.28);
+          transform: translateY(-1px) scale(1.03);
         }
 
         .navbar-logo-img {
           width: 100%;
           height: 100%;
           object-fit: contain;
-          padding: 2px;
+          padding: 3px;
           display: block;
         }
 
