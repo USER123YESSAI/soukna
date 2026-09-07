@@ -1,10 +1,10 @@
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
 import { useState, useEffect } from 'react';
 import { messageService } from '../../services/messageService';
 import NotificationCenter from './NotificationCenter';
-import { Menu, X, MessageSquare, User, LogOut, ShoppingCart } from 'lucide-react';
+import { Menu, X, MessageSquare, User, LogOut, ShoppingCart, Search, Plus } from 'lucide-react';
 
 const Logo = () => (
   <Link to="/" className="navbar-logo-link" aria-label="Soukna Accueil">
@@ -17,6 +17,33 @@ const Logo = () => (
     </div>
   </Link>
 );
+
+// Barre de recherche centrale
+function NavbarSearchBar({ className = '' }) {
+  const [query, setQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSearch} className={`navbar-search-form ${className}`} role="search">
+      <Search size={16} className="navbar-search-icon" />
+      <input
+        type="search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Rechercher des articles, catégories..."
+        className="navbar-search-input"
+        aria-label="Rechercher sur Soukna"
+      />
+    </form>
+  );
+}
 
 // Hook pour détecter le scroll et adapter l'apparence sticky
 function useScrolled(threshold = 10) {
@@ -42,7 +69,7 @@ function PublicNavbar({ menuOpen, setMenuOpen }) {
   return (
     <header className={`navbar-header ${isScrolled ? 'navbar-scrolled' : ''}`}>
       <div className="navbar-container">
-        {/* Groupe gauche : Logo + Navigation principale sans espaces inutiles */}
+        {/* Groupe gauche : Logo + Liens de navigation élégants */}
         <div className="navbar-left-group">
           <Logo />
           <nav className="navbar-desktop-nav" aria-label="Navigation principale">
@@ -62,8 +89,24 @@ function PublicNavbar({ menuOpen, setMenuOpen }) {
           </nav>
         </div>
 
-        {/* Groupe droit : Hiérarchie claire Connexion (secondaire) vs S'inscrire (primaire) */}
+        {/* Centre : Barre de recherche dynamique */}
+        <div className="navbar-center-group">
+          <NavbarSearchBar />
+        </div>
+
+        {/* Groupe droit : Bouton Vendre + Connexion + Inscription */}
         <div className="navbar-right-group">
+          {/* Bouton Vendre / Déposer une annonce */}
+          <Link
+            to="/login"
+            className="navbar-btn-sell navbar-desktop-nav"
+            title="Vendre sur Soukna"
+          >
+            <Plus size={15} strokeWidth={2.5} />
+            <span>Vendre</span>
+          </Link>
+
+          {/* Actions Connexion / Inscription */}
           <div className="navbar-auth-actions navbar-desktop-nav">
             <NavLink
               to="/login"
@@ -79,7 +122,7 @@ function PublicNavbar({ menuOpen, setMenuOpen }) {
             </Link>
           </div>
 
-          {/* Mobile toggle SVG */}
+          {/* Toggle Hamburger Mobile SVG */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="navbar-mobile-toggle"
@@ -94,6 +137,10 @@ function PublicNavbar({ menuOpen, setMenuOpen }) {
       {/* Menu mobile déroulant */}
       {menuOpen && (
         <div className="navbar-mobile-drawer">
+          <div className="navbar-mobile-search-wrapper">
+            <NavbarSearchBar />
+          </div>
+
           <nav className="navbar-mobile-links">
             <NavLink
               to="/"
@@ -108,6 +155,15 @@ function PublicNavbar({ menuOpen, setMenuOpen }) {
             >
               Catalogue
             </NavLink>
+            <Link
+              to="/login"
+              className="navbar-mobile-link"
+              style={{ color: '#4f46e5', fontWeight: 600 }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Plus size={16} /> Vendre un article
+              </span>
+            </Link>
           </nav>
 
           <div className="navbar-mobile-divider" />
@@ -134,6 +190,7 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
 
   const dashboardLink = isAdmin ? '/admin' : isSeller ? '/seller' : '/buyer';
   const messagesLink = isBuyer ? '/buyer/messages' : isSeller ? '/seller/messages' : '/admin/messages';
+  const sellLink = isSeller ? '/seller/products/new' : '/seller';
 
   useEffect(() => {
     setMenuOpen(false);
@@ -169,8 +226,23 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
           </nav>
         </div>
 
-        {/* Groupe droit : Panier, Notifications, Messages, Avatar */}
+        {/* Centre : Barre de recherche */}
+        <div className="navbar-center-group">
+          <NavbarSearchBar />
+        </div>
+
+        {/* Groupe droit : Vendre + Panier + Notifications + Messages + Avatar */}
         <div className="navbar-right-group">
+          {/* Bouton Vendre pour utilisateurs */}
+          <Link
+            to={sellLink}
+            className="navbar-btn-sell navbar-desktop-nav"
+            title="Déposer une annonce"
+          >
+            <Plus size={15} strokeWidth={2.5} />
+            <span>Vendre</span>
+          </Link>
+
           {/* Panier Acheteur */}
           {isBuyer && (
             <Link
@@ -179,7 +251,7 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
               title="Panier"
               aria-label="Voir mon panier"
             >
-              <ShoppingCart size={20} strokeWidth={2} />
+              <ShoppingCart size={19} strokeWidth={2} />
               {itemCount > 0 && (
                 <span className="navbar-badge-pill navbar-badge-cart">
                   {itemCount > 99 ? '99+' : itemCount}
@@ -198,7 +270,7 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
             title="Messages"
             aria-label="Voir mes messages"
           >
-            <MessageSquare size={20} strokeWidth={2} />
+            <MessageSquare size={19} strokeWidth={2} />
             {unreadCount > 0 && (
               <span className="navbar-badge-pill navbar-badge-unread">
                 {unreadCount > 9 ? '9+' : unreadCount}
@@ -297,6 +369,10 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
             {user?.email && <div className="navbar-dropdown-email">{user?.email}</div>}
           </div>
 
+          <div className="navbar-mobile-search-wrapper">
+            <NavbarSearchBar />
+          </div>
+
           <nav className="navbar-mobile-links">
             <NavLink
               to="/"
@@ -317,6 +393,15 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
             >
               {isAdmin ? 'Tableau de bord Admin' : isSeller ? 'Espace Vendeur' : 'Mon espace'}
             </NavLink>
+            <Link
+              to={sellLink}
+              className="navbar-mobile-link"
+              style={{ color: '#4f46e5', fontWeight: 600 }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Plus size={16} /> Déposer une annonce
+              </span>
+            </Link>
             {isBuyer && (
               <NavLink
                 to="/buyer/cart"
@@ -396,23 +481,23 @@ export default function Navbar() {
         }
 
         .navbar-scrolled {
-          background: rgba(255, 255, 255, 0.92);
+          background: rgba(255, 255, 255, 0.94);
           border-bottom-color: #e2e8f0;
-          box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.07);
+          box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.08);
         }
 
         .navbar-container {
-          max-width: 1280px;
+          max-width: 1360px;
           margin: 0 auto;
-          padding: 0 20px;
+          padding: 0 24px;
           height: 64px;
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          gap: 24px;
           box-sizing: border-box;
         }
 
-        /* Logo Badge */
+        /* Logo */
         .navbar-logo-link {
           display: inline-flex;
           align-items: center;
@@ -421,22 +506,23 @@ export default function Navbar() {
         }
 
         .navbar-logo-badge {
-          width: 44px;
-          height: 44px;
+          width: 42px;
+          height: 42px;
           border-radius: 12px;
           overflow: hidden;
           display: flex;
           align-items: center;
           justify-content: center;
           background: #ffffff;
-          border: 1.5px solid #e0e7ff;
-          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+          transition: all 0.2s ease;
         }
 
         .navbar-logo-link:hover .navbar-logo-badge {
-          transform: scale(1.05);
-          box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+          border-color: #c7d2fe;
+          box-shadow: 0 3px 12px rgba(99, 102, 241, 0.2);
+          transform: scale(1.04);
         }
 
         .navbar-logo-img {
@@ -446,32 +532,38 @@ export default function Navbar() {
           display: block;
         }
 
-        /* Groupes de gauche & droite */
+        /* Groupes de gauche, centre et droite */
         .navbar-left-group {
           display: flex;
           align-items: center;
-          gap: 20px;
-          min-width: 0;
+          gap: 16px;
+          flex-shrink: 0;
+        }
+
+        .navbar-center-group {
+          flex: 1;
+          max-width: 480px;
+          display: flex;
+          align-items: center;
         }
 
         .navbar-right-group {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 12px;
           margin-left: auto;
           flex-shrink: 0;
         }
 
-        /* Desktop Nav */
+        /* Desktop Nav Links */
         .navbar-desktop-nav {
           display: flex;
           align-items: center;
           gap: 4px;
         }
 
-        /* Liens de navigation */
         .navbar-navlink {
-          padding: 7px 14px;
+          padding: 6px 12px;
           border-radius: 8px;
           font-size: 14px;
           font-weight: 500;
@@ -480,17 +572,12 @@ export default function Navbar() {
           transition: all 0.15s ease;
           display: inline-flex;
           align-items: center;
-          line-height: 1.25;
+          line-height: 1.3;
         }
 
         .navbar-navlink:hover {
           color: #0f172a;
           background: #f8fafc;
-        }
-
-        .navbar-navlink:focus-visible {
-          outline: none;
-          box-shadow: 0 0 0 2px #6366f1;
         }
 
         .navbar-navlink-active {
@@ -503,6 +590,69 @@ export default function Navbar() {
           font-weight: 600;
         }
 
+        /* Barre de Recherche Centrale Moderne */
+        .navbar-search-form {
+          position: relative;
+          width: 100%;
+          display: flex;
+          align-items: center;
+        }
+
+        .navbar-search-icon {
+          position: absolute;
+          left: 14px;
+          color: #94a3b8;
+          pointer-events: none;
+        }
+
+        .navbar-search-input {
+          width: 100%;
+          height: 38px;
+          padding: 0 14px 0 38px;
+          font-size: 13.5px;
+          font-family: inherit;
+          color: #0f172a;
+          background: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 9999px;
+          outline: none;
+          transition: all 0.2s ease;
+        }
+
+        .navbar-search-input::placeholder {
+          color: #94a3b8;
+        }
+
+        .navbar-search-input:focus {
+          background: #ffffff;
+          border-color: #6366f1;
+          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+
+        /* Bouton Vendre (Action Vendeur Marketplace) */
+        .navbar-btn-sell {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 7px 14px;
+          border-radius: 9999px;
+          font-size: 13.5px;
+          font-weight: 600;
+          color: #4f46e5;
+          background: #eef2ff;
+          border: 1px solid #c7d2fe;
+          text-decoration: none;
+          transition: all 0.15s ease;
+          line-height: 1.2;
+        }
+
+        .navbar-btn-sell:hover {
+          background: #e0e7ff;
+          border-color: #a5b4fc;
+          color: #4338ca;
+          transform: translateY(-1px);
+        }
+
         /* Actions Auth Desktop */
         .navbar-auth-actions {
           display: flex;
@@ -510,16 +660,16 @@ export default function Navbar() {
           gap: 8px;
         }
 
-        /* Bouton Connexion (Action secondaire) */
+        /* Bouton Connexion */
         .navbar-btn-login {
-          padding: 8px 16px;
-          border-radius: 9px;
+          padding: 7px 15px;
+          border-radius: 8px;
           font-size: 13.5px;
           font-weight: 600;
           color: #334155;
           text-decoration: none;
           background: transparent;
-          border: 1px solid #e2e8f0;
+          border: 1px solid transparent;
           transition: all 0.15s ease;
           display: inline-flex;
           align-items: center;
@@ -529,59 +679,42 @@ export default function Navbar() {
 
         .navbar-btn-login:hover {
           color: #0f172a;
-          background: #f8fafc;
-          border-color: #cbd5e1;
-        }
-
-        .navbar-btn-login:focus-visible {
-          outline: none;
-          box-shadow: 0 0 0 2px #6366f1;
+          background: #f1f5f9;
         }
 
         .navbar-btn-login-active {
-          border-color: #c7d2fe;
           color: #4f46e5;
           background: #eef2ff;
         }
 
-        /* Bouton S'inscrire (Action principale CTA) */
+        /* Bouton S'inscrire */
         .navbar-btn-register {
-          padding: 8px 18px;
-          border-radius: 9px;
+          padding: 8px 16px;
+          border-radius: 8px;
           font-size: 13.5px;
           font-weight: 600;
           color: #ffffff;
           text-decoration: none;
           background: linear-gradient(135deg, #4f46e5, #6366f1);
-          box-shadow: 0 2px 8px rgba(79, 70, 229, 0.28);
-          transition: all 0.18s ease;
+          box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+          transition: all 0.15s ease;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           line-height: 1.2;
-          border: 1px solid transparent;
         }
 
         .navbar-btn-register:hover {
           background: linear-gradient(135deg, #4338ca, #4f46e5);
-          box-shadow: 0 4px 14px rgba(79, 70, 229, 0.38);
+          box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
           transform: translateY(-1px);
         }
 
-        .navbar-btn-register:active {
-          transform: translateY(0);
-        }
-
-        .navbar-btn-register:focus-visible {
-          outline: none;
-          box-shadow: 0 0 0 2px #6366f1, 0 0 0 4px #c7d2fe;
-        }
-
-        /* Boutons Icônes (Panier, Messages) */
+        /* Boutons Icônes */
         .navbar-icon-btn {
           position: relative;
           padding: 8px;
-          border-radius: 10px;
+          border-radius: 9px;
           color: #475569;
           display: inline-flex;
           align-items: center;
@@ -623,15 +756,15 @@ export default function Navbar() {
 
         /* Avatar Utilisateur */
         .navbar-avatar-btn {
-          width: 38px;
-          height: 38px;
+          width: 36px;
+          height: 36px;
           border-radius: 99px;
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: 700;
-          font-size: 14.5px;
+          font-size: 14px;
           border: 2px solid #ffffff;
           box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
           cursor: pointer;
@@ -639,7 +772,7 @@ export default function Navbar() {
         }
 
         .navbar-avatar-btn:hover {
-          transform: scale(1.04);
+          transform: scale(1.05);
           box-shadow: 0 3px 10px rgba(79, 70, 229, 0.3);
         }
 
@@ -746,7 +879,7 @@ export default function Navbar() {
           justify-content: center;
           width: 38px;
           height: 38px;
-          border-radius: 9px;
+          border-radius: 8px;
           border: 1px solid #e2e8f0;
           background: #ffffff;
           color: #334155;
@@ -775,6 +908,10 @@ export default function Navbar() {
           border-radius: 12px;
           margin-bottom: 12px;
           border: 1px solid #f1f5f9;
+        }
+
+        .navbar-mobile-search-wrapper {
+          margin-bottom: 14px;
         }
 
         .navbar-mobile-links {
@@ -829,8 +966,8 @@ export default function Navbar() {
         }
 
         .navbar-mobile-btn-login {
-          padding: 11px 16px;
-          border-radius: 10px;
+          padding: 10px 16px;
+          border-radius: 8px;
           font-size: 14px;
           font-weight: 600;
           color: #334155;
@@ -842,15 +979,15 @@ export default function Navbar() {
         }
 
         .navbar-mobile-btn-register {
-          padding: 11px 16px;
-          border-radius: 10px;
+          padding: 10px 16px;
+          border-radius: 8px;
           font-size: 14px;
           font-weight: 600;
           color: #ffffff;
           text-align: center;
           text-decoration: none;
           background: linear-gradient(135deg, #4f46e5, #6366f1);
-          box-shadow: 0 2px 8px rgba(79, 70, 229, 0.28);
+          box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
           transition: all 0.15s ease;
         }
 
@@ -860,8 +997,8 @@ export default function Navbar() {
           justify-content: center;
           gap: 8px;
           width: 100%;
-          padding: 11px 16px;
-          border-radius: 10px;
+          padding: 10px 16px;
+          border-radius: 8px;
           font-size: 14px;
           font-weight: 600;
           color: #ef4444;
@@ -873,6 +1010,12 @@ export default function Navbar() {
         }
 
         /* Responsive Breakpoints */
+        @media (max-width: 900px) {
+          .navbar-center-group {
+            display: none;
+          }
+        }
+
         @media (max-width: 820px) {
           .navbar-desktop-nav {
             display: none !important;
@@ -899,4 +1042,5 @@ export default function Navbar() {
       `}</style>
     </>
   );
-}
+}
+
