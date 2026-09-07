@@ -7,23 +7,41 @@ import NotificationCenter from './NotificationCenter';
 import { Menu, X, MessageSquare, User, LogOut, ShoppingBag } from 'lucide-react';
 
 const Logo = () => (
-  <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', flexShrink: 0 }}>
-    <img
-      src="/soukna-icon.jpg"
-      alt="Soukna Logo"
+  <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flexShrink: 0 }} aria-label="Soukna Accueil">
+    <div
       style={{
-        width: 38,
-        height: 38,
-        borderRadius: 10,
-        objectFit: 'cover',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 2px 8px rgba(99, 102, 241, 0.15)',
-        display: 'block',
+        width: 48,
+        height: 48,
+        borderRadius: 12,
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#ffffff',
+        border: '1.5px solid #e0e7ff',
+        boxShadow: '0 2px 10px rgba(99, 102, 241, 0.18)',
+        transition: 'all 0.2s ease',
       }}
-    />
-    <span style={{ fontWeight: 800, fontSize: 18, color: '#0f172a', letterSpacing: '-0.3px' }}>
-      Soukna<span style={{ color: '#6366f1' }}>.</span>
-    </span>
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'scale(1.05)';
+        e.currentTarget.style.boxShadow = '0 4px 14px rgba(99, 102, 241, 0.28)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'scale(1)';
+        e.currentTarget.style.boxShadow = '0 2px 10px rgba(99, 102, 241, 0.18)';
+      }}
+    >
+      <img
+        src="/soukna-icon.jpg"
+        alt="Soukna"
+        style={{
+          width: '130%',
+          height: '130%',
+          objectFit: 'cover',
+          display: 'block',
+        }}
+      />
+    </div>
   </Link>
 );
 
