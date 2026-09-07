@@ -506,30 +506,29 @@ export default function Navbar() {
         }
 
         .navbar-logo-badge {
-          width: 48px;
-          height: 48px;
+          width: 42px;
+          height: 42px;
           border-radius: 12px;
           overflow: hidden;
           display: flex;
           align-items: center;
           justify-content: center;
           background: #ffffff;
-          border: 1.5px solid #e0e7ff;
-          box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
           transition: all 0.2s ease;
         }
 
         .navbar-logo-link:hover .navbar-logo-badge {
           border-color: #c7d2fe;
-          box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
-          transform: scale(1.05);
+          box-shadow: 0 3px 12px rgba(99, 102, 241, 0.2);
+          transform: scale(1.04);
         }
 
         .navbar-logo-img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          padding: 3px;
+          width: 130%;
+          height: 130%;
+          object-fit: cover;
           display: block;
         }
 
@@ -560,21 +559,20 @@ export default function Navbar() {
         .navbar-desktop-nav {
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 4px;
         }
 
         .navbar-navlink {
-          padding: 8px 14px;
-          border-radius: 9px;
-          font-size: 14.5px;
-          font-weight: 600;
+          padding: 6px 12px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 500;
           text-decoration: none;
           color: #475569;
           transition: all 0.15s ease;
           display: inline-flex;
           align-items: center;
-          line-height: 1.2;
-          border: 1px solid transparent;
+          line-height: 1.3;
         }
 
         .navbar-navlink:hover {
@@ -585,8 +583,7 @@ export default function Navbar() {
         .navbar-navlink-active {
           color: #4f46e5 !important;
           background: #eef2ff !important;
-          border-color: #e0e7ff !important;
-          font-weight: 700 !important;
+          font-weight: 600 !important;
         }
 
         .navbar-role-badge {
