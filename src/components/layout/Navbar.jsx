@@ -7,11 +7,23 @@ import NotificationCenter from './NotificationCenter';
 import { Menu, X, MessageSquare, User, LogOut, ShoppingBag } from 'lucide-react';
 
 const Logo = () => (
-  <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', flexShrink: 0 }}>
-    <div style={{ width: 34, height: 34, borderRadius: 10, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-      <ShoppingBag size={18} strokeWidth={2.5} />
-    </div>
-    <span style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', letterSpacing: '-0.3px' }}>Soukna</span>
+  <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', flexShrink: 0 }}>
+    <img
+      src="/soukna-logo.jpg"
+      alt="Soukna Logo"
+      style={{
+        width: 38,
+        height: 38,
+        borderRadius: 10,
+        objectFit: 'cover',
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 2px 8px rgba(99, 102, 241, 0.15)',
+        display: 'block',
+      }}
+    />
+    <span style={{ fontWeight: 800, fontSize: 18, color: '#0f172a', letterSpacing: '-0.3px' }}>
+      Soukna<span style={{ color: '#6366f1' }}>.</span>
+    </span>
   </Link>
 );
 

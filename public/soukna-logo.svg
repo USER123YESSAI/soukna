@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="souknaGrad1" x1="10%" y1="10%" x2="90%" y2="90%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="50%" stop-color="#7C3AED" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+    <filter id="souknaShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#4f46e5" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Fond arrondi moderne -->
+  <rect x="10" y="10" width="100" height="100" rx="28" fill="url(#souknaGrad1)" filter="url(#souknaShadow)"/>
+
+  <!-- Poignee du sac shopping -->
+  <path d="M46 44 C46 33 74 33 74 44" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.95" />
+
+  <!-- Monogramme S stylise interconnecte -->
+  <path d="M72 48 H48 C41 48 37 53 37 60 C37 68 44 72 52 74 L68 78 C76 80 83 84 83 92 C83 99 77 104 69 104 H48 C41 104 36 99 36 93" 
+        stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+
+  <circle cx="73" cy="48" r="4.5" fill="#38BDF8" />
+  <circle cx="47" cy="93" r="3.5" fill="#C084FC" />
+</svg>

@@ -55,9 +55,13 @@ export default function RegisterPage() {
       <Card className="p-8 sm:p-10 shadow-lg border-slate-200">
         {/* Logo & Header */}
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center mx-auto mb-4 shadow-sm shadow-indigo-200">
-            <ShoppingBag size={24} className="text-white" strokeWidth={2.5} />
-          </div>
+          <Link to="/" className="inline-block group mb-3">
+            <img
+              src="/soukna-logo.jpg"
+              alt="Soukna Logo"
+              className="w-16 h-16 rounded-2xl mx-auto shadow-md shadow-indigo-100 border border-slate-200 object-cover group-hover:scale-105 transition-transform"
+            />
+          </Link>
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
             Créer un compte
           </h1>

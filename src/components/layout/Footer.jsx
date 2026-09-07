@@ -16,14 +16,19 @@ export default function Footer() {
           }}
         >
           {/* Marque */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{
-              width: 32, height: 32, borderRadius: 8,
-              background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}>
-              <ShoppingBag size={18} color="white" strokeWidth={2.5} />
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img
+              src="/soukna-logo.jpg"
+              alt="Soukna Logo"
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 9,
+                objectFit: 'cover',
+                border: '1px solid #e2e8f0',
+                boxShadow: '0 2px 6px rgba(99, 102, 241, 0.12)',
+              }}
+            />
             <span style={{ fontWeight: 800, fontSize: 20, color: '#0f172a', letterSpacing: '-0.5px' }}>
               Soukna<span style={{ color: '#4f46e5' }}>.</span>
             </span>
