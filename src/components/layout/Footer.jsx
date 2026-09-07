@@ -18,7 +18,7 @@ export default function Footer() {
           {/* Marque */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <img
-              src="/soukna-logo.jpg"
+              src="/soukna-icon.jpg"
               alt="Soukna Logo"
               style={{
                 width: 36,

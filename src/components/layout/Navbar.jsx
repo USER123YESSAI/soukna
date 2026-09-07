@@ -9,7 +9,7 @@ import { Menu, X, MessageSquare, User, LogOut, ShoppingBag } from 'lucide-react'
 const Logo = () => (
   <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', flexShrink: 0 }}>
     <img
-      src="/soukna-logo.jpg"
+      src="/soukna-icon.jpg"
       alt="Soukna Logo"
       style={{
         width: 38,

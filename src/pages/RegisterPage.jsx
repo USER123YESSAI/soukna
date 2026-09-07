@@ -57,7 +57,7 @@ export default function RegisterPage() {
         <div className="text-center mb-8">
           <Link to="/" className="inline-block group mb-3">
             <img
-              src="/soukna-logo.jpg"
+              src="/soukna-icon.jpg"
               alt="Soukna Logo"
               className="w-16 h-16 rounded-2xl mx-auto shadow-md shadow-indigo-100 border border-slate-200 object-cover group-hover:scale-105 transition-transform"
             />
