@@ -397,7 +397,7 @@ export default function Navbar() {
       <style>{`
         /* Scroll Padding pour éviter que le sticky masque le contenu sous ancre */
         html {
-          scroll-padding-top: 80px;
+          scroll-padding-top: 84px;
         }
 
         /* Header Sticky & Layout */
@@ -423,7 +423,7 @@ export default function Navbar() {
           max-width: 1280px;
           margin: 0 auto;
           padding: 0 24px;
-          height: 68px;
+          height: 72px;
           display: grid;
           grid-template-columns: 1fr auto 1fr;
           align-items: center;
@@ -463,30 +463,29 @@ export default function Navbar() {
         }
 
         .navbar-logo-badge {
-          width: 50px;
-          height: 50px;
-          border-radius: 14px;
+          width: 56px;
+          height: 56px;
+          border-radius: 15px;
           overflow: hidden;
           display: flex;
           align-items: center;
           justify-content: center;
           background: #ffffff;
           border: 1.5px solid #e0e7ff;
-          box-shadow: 0 2px 10px rgba(99, 102, 241, 0.16);
+          box-shadow: 0 3px 12px rgba(99, 102, 241, 0.18), 0 1px 3px rgba(15, 23, 42, 0.06);
           transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease;
         }
 
         .navbar-logo-link:hover .navbar-logo-badge {
-          border-color: #a5b4fc;
-          box-shadow: 0 4px 16px rgba(99, 102, 241, 0.28);
-          transform: translateY(-1px) scale(1.03);
+          border-color: #818cf8;
+          box-shadow: 0 6px 20px rgba(99, 102, 241, 0.28);
+          transform: translateY(-1px) scale(1.04);
         }
 
         .navbar-logo-img {
           width: 100%;
           height: 100%;
-          object-fit: contain;
-          padding: 3px;
+          object-fit: cover;
           display: block;
         }
 
@@ -918,8 +917,13 @@ export default function Navbar() {
         /* Responsive Breakpoints */
         @media (max-width: 820px) {
           .navbar-container {
+            height: 64px !important;
             display: flex !important;
             justify-content: space-between !important;
+          }
+          .navbar-logo-badge {
+            width: 48px !important;
+            height: 48px !important;
           }
           .navbar-desktop-nav {
             display: none !important;
