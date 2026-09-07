@@ -30,7 +30,7 @@ function useScrolled(threshold = 10) {
   return isScrolled;
 }
 
-// Navbar visiteur non connecté
+// Navbar pour visiteur non connecté (Navigation regroupée au centre)
 function PublicNavbar({ menuOpen, setMenuOpen }) {
   const isScrolled = useScrolled(10);
   const location = useLocation();
@@ -42,10 +42,15 @@ function PublicNavbar({ menuOpen, setMenuOpen }) {
   return (
     <header className={`navbar-header ${isScrolled ? 'navbar-scrolled' : ''}`}>
       <div className="navbar-container">
-        {/* Groupe gauche : Logo + Navigation principale sans espaces inutiles */}
-        <div className="navbar-left-group">
+        {/* Colonne gauche : Logo seul */}
+        <div className="navbar-col-left">
           <Logo />
-          <nav className="navbar-desktop-nav" aria-label="Navigation principale">
+        </div>
+
+        {/* Colonne centrale : Éléments de navigation regroupés au centre */}
+        <div className="navbar-col-center navbar-desktop-nav">
+          <div className="navbar-nav-cluster">
+            {/* Liens de navigation */}
             <NavLink
               to="/"
               end
@@ -59,18 +64,19 @@ function PublicNavbar({ menuOpen, setMenuOpen }) {
             >
               Catalogue
             </NavLink>
-          </nav>
-        </div>
 
-        {/* Groupe droit : Hiérarchie claire Connexion (secondaire) vs S'inscrire (primaire) */}
-        <div className="navbar-right-group">
-          <div className="navbar-auth-actions navbar-desktop-nav">
+            {/* Séparateur visuel fin entre navigation et actions */}
+            <div className="navbar-cluster-separator" aria-hidden="true" />
+
+            {/* Action secondaire : Connexion */}
             <NavLink
               to="/login"
               className={({ isActive }) => `navbar-btn-login ${isActive ? 'navbar-btn-login-active' : ''}`}
             >
               Connexion
             </NavLink>
+
+            {/* Action principale : S'inscrire */}
             <Link
               to="/register"
               className="navbar-btn-register"
@@ -78,8 +84,10 @@ function PublicNavbar({ menuOpen, setMenuOpen }) {
               S'inscrire
             </Link>
           </div>
+        </div>
 
-          {/* Mobile toggle SVG */}
+        {/* Colonne droite : Espace équilibrant sur desktop / Toggle sur mobile */}
+        <div className="navbar-col-right">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="navbar-mobile-toggle"
@@ -143,10 +151,14 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
   return (
     <header className={`navbar-header ${isScrolled ? 'navbar-scrolled' : ''}`}>
       <div className="navbar-container">
-        {/* Groupe gauche : Logo + Liens réguliers & Dashboard */}
-        <div className="navbar-left-group">
+        {/* Colonne gauche : Logo */}
+        <div className="navbar-col-left">
           <Logo />
-          <nav className="navbar-desktop-nav" aria-label="Navigation connectée">
+        </div>
+
+        {/* Colonne centrale : Navigation connectée regroupée */}
+        <div className="navbar-col-center navbar-desktop-nav">
+          <div className="navbar-nav-cluster">
             <NavLink
               to="/"
               end
@@ -166,115 +178,115 @@ function AuthNavbar({ user, isBuyer, isSeller, isAdmin, itemCount, unreadCount, 
             >
               {isAdmin ? 'Administration' : isSeller ? 'Espace Vendeur' : 'Mon espace'}
             </NavLink>
-          </nav>
+          </div>
         </div>
 
-        {/* Groupe droit : Panier, Notifications, Messages, Avatar */}
-        <div className="navbar-right-group">
-          {/* Panier Acheteur */}
-          {isBuyer && (
+        {/* Colonne droite : Actions utilisateur (Panier, Notifications, Messages, Avatar) */}
+        <div className="navbar-col-right">
+          <div className="navbar-auth-group navbar-desktop-nav">
+            {/* Panier Acheteur */}
+            {isBuyer && (
+              <Link
+                to="/buyer/cart"
+                className="navbar-icon-btn"
+                title="Panier"
+                aria-label="Voir mon panier"
+              >
+                <ShoppingCart size={19} strokeWidth={2} />
+                {itemCount > 0 && (
+                  <span className="navbar-badge-pill navbar-badge-cart">
+                    {itemCount > 99 ? '99+' : itemCount}
+                  </span>
+                )}
+              </Link>
+            )}
+
+            {/* Notifications */}
+            <NotificationCenter />
+
+            {/* Messages */}
             <Link
-              to="/buyer/cart"
+              to={messagesLink}
               className="navbar-icon-btn"
-              title="Panier"
-              aria-label="Voir mon panier"
+              title="Messages"
+              aria-label="Voir mes messages"
             >
-              <ShoppingCart size={20} strokeWidth={2} />
-              {itemCount > 0 && (
-                <span className="navbar-badge-pill navbar-badge-cart">
-                  {itemCount > 99 ? '99+' : itemCount}
+              <MessageSquare size={19} strokeWidth={2} />
+              {unreadCount > 0 && (
+                <span className="navbar-badge-pill navbar-badge-unread">
+                  {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}
             </Link>
-          )}
 
-          {/* Notifications */}
-          <NotificationCenter />
+            {/* Dropdown Profil */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                title="Compte & Paramètres"
+                aria-haspopup="true"
+                aria-expanded={profileMenuOpen}
+                className="navbar-avatar-btn"
+                style={{
+                  background: isAdmin
+                    ? 'linear-gradient(135deg, #ef4444, #f97316)'
+                    : isSeller
+                    ? 'linear-gradient(135deg, #6366f1, #8b5cf6)'
+                    : 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+                }}
+              >
+                {user?.name?.[0]?.toUpperCase() ?? 'U'}
+              </button>
 
-          {/* Messages */}
-          <Link
-            to={messagesLink}
-            className="navbar-icon-btn"
-            title="Messages"
-            aria-label="Voir mes messages"
-          >
-            <MessageSquare size={20} strokeWidth={2} />
-            {unreadCount > 0 && (
-              <span className="navbar-badge-pill navbar-badge-unread">
-                {unreadCount > 9 ? '9+' : unreadCount}
-              </span>
-            )}
-          </Link>
+              {profileMenuOpen && (
+                <div
+                  style={{ position: 'fixed', inset: 0, zIndex: 90 }}
+                  onClick={() => setProfileMenuOpen(false)}
+                />
+              )}
 
-          {/* Menu Profil Avatar Dropdown */}
-          <div style={{ position: 'relative' }} className="navbar-desktop-nav">
-            <button
-              onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-              title="Compte & Paramètres"
-              aria-haspopup="true"
-              aria-expanded={profileMenuOpen}
-              className="navbar-avatar-btn"
-              style={{
-                background: isAdmin
-                  ? 'linear-gradient(135deg, #ef4444, #f97316)'
-                  : isSeller
-                  ? 'linear-gradient(135deg, #6366f1, #8b5cf6)'
-                  : 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-              }}
-            >
-              {user?.name?.[0]?.toUpperCase() ?? 'U'}
-            </button>
+              {profileMenuOpen && (
+                <div className="navbar-dropdown-card">
+                  <div className="navbar-dropdown-header">
+                    <div className="navbar-dropdown-name">{user?.name || 'Utilisateur'}</div>
+                    {user?.email && <div className="navbar-dropdown-email">{user?.email}</div>}
+                    <div
+                      className="navbar-dropdown-role"
+                      style={{
+                        background: isAdmin ? '#fef2f2' : isSeller ? '#eef2ff' : '#eff6ff',
+                        color: isAdmin ? '#ef4444' : isSeller ? '#6366f1' : '#3b82f6',
+                      }}
+                    >
+                      {isAdmin ? 'Administrateur' : isSeller ? 'Vendeur' : 'Acheteur'}
+                    </div>
+                  </div>
 
-            {profileMenuOpen && (
-              <div
-                style={{ position: 'fixed', inset: 0, zIndex: 90 }}
-                onClick={() => setProfileMenuOpen(false)}
-              />
-            )}
+                  <div className="navbar-dropdown-body">
+                    <Link
+                      to={isBuyer ? '/buyer/profile' : '/profile'}
+                      onClick={() => setProfileMenuOpen(false)}
+                      className="navbar-dropdown-item"
+                    >
+                      <User size={17} strokeWidth={2} />
+                      <span>Mon profil</span>
+                    </Link>
 
-            {profileMenuOpen && (
-              <div className="navbar-dropdown-card">
-                <div className="navbar-dropdown-header">
-                  <div className="navbar-dropdown-name">{user?.name || 'Utilisateur'}</div>
-                  {user?.email && (
-                    <div className="navbar-dropdown-email">{user?.email}</div>
-                  )}
-                  <div
-                    className="navbar-dropdown-role"
-                    style={{
-                      background: isAdmin ? '#fef2f2' : isSeller ? '#eef2ff' : '#eff6ff',
-                      color: isAdmin ? '#ef4444' : isSeller ? '#6366f1' : '#3b82f6',
-                    }}
-                  >
-                    {isAdmin ? 'Administrateur' : isSeller ? 'Vendeur' : 'Acheteur'}
+                    <div className="navbar-dropdown-divider" />
+
+                    <button
+                      onClick={() => {
+                        setProfileMenuOpen(false);
+                        logout();
+                      }}
+                      className="navbar-dropdown-item navbar-dropdown-item-danger"
+                    >
+                      <LogOut size={17} strokeWidth={2.2} />
+                      <span>Déconnexion</span>
+                    </button>
                   </div>
                 </div>
-
-                <div className="navbar-dropdown-body">
-                  <Link
-                    to={isBuyer ? '/buyer/profile' : '/profile'}
-                    onClick={() => setProfileMenuOpen(false)}
-                    className="navbar-dropdown-item"
-                  >
-                    <User size={17} strokeWidth={2} />
-                    <span>Mon profil</span>
-                  </Link>
-
-                  <div className="navbar-dropdown-divider" />
-
-                  <button
-                    onClick={() => {
-                      setProfileMenuOpen(false);
-                      logout();
-                    }}
-                    className="navbar-dropdown-item navbar-dropdown-item-danger"
-                  >
-                    <LogOut size={17} strokeWidth={2.2} />
-                    <span>Déconnexion</span>
-                  </button>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           {/* Toggle Hamburger Mobile */}
@@ -383,6 +395,11 @@ export default function Navbar() {
         : <PublicNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       }
       <style>{`
+        /* Scroll Padding pour éviter que le sticky masque le contenu sous ancre */
+        html {
+          scroll-padding-top: 76px;
+        }
+
         /* Header Sticky & Layout */
         .navbar-header {
           position: sticky;
@@ -396,20 +413,45 @@ export default function Navbar() {
         }
 
         .navbar-scrolled {
-          background: rgba(255, 255, 255, 0.92);
+          background: rgba(255, 255, 255, 0.94);
           border-bottom-color: #e2e8f0;
-          box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.07);
+          box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.08);
         }
 
+        /* Layout 3 colonnes symétriques pour centrage mathématique parfait */
         .navbar-container {
           max-width: 1280px;
           margin: 0 auto;
-          padding: 0 20px;
+          padding: 0 24px;
           height: 64px;
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          align-items: center;
+          box-sizing: border-box;
+        }
+
+        .navbar-col-left {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          box-sizing: border-box;
+          justify-content: flex-start;
+        }
+
+        .navbar-col-center {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .navbar-col-right {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+        }
+
+        .navbar-auth-group {
+          display: flex;
+          align-items: center;
+          gap: 10px;
         }
 
         /* Logo Badge */
@@ -435,43 +477,48 @@ export default function Navbar() {
         }
 
         .navbar-logo-link:hover .navbar-logo-badge {
-          transform: scale(1.05);
+          border-color: #c7d2fe;
           box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+          transform: scale(1.04);
         }
 
         .navbar-logo-img {
-          width: 130%;
-          height: 130%;
-          object-fit: cover;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          padding: 2px;
           display: block;
         }
 
-        /* Groupes de gauche & droite */
-        .navbar-left-group {
-          display: flex;
+        /* Cluster de Navigation Central (Éléments regroupés au centre) */
+        .navbar-nav-cluster {
+          display: inline-flex;
           align-items: center;
-          gap: 20px;
-          min-width: 0;
+          gap: 6px;
+          padding: 4px 8px;
+          background: rgba(248, 250, 252, 0.85);
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .navbar-right-group {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin-left: auto;
+        .navbar-nav-cluster:hover {
+          border-color: #cbd5e1;
+          box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+        }
+
+        .navbar-cluster-separator {
+          width: 1px;
+          height: 20px;
+          background: #cbd5e1;
+          margin: 0 6px;
           flex-shrink: 0;
         }
 
-        /* Desktop Nav */
-        .navbar-desktop-nav {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-        }
-
-        /* Liens de navigation */
+        /* Liens de navigation (Accueil, Catalogue) */
         .navbar-navlink {
-          padding: 7px 14px;
+          padding: 6px 14px;
           border-radius: 8px;
           font-size: 14px;
           font-weight: 500;
@@ -481,11 +528,12 @@ export default function Navbar() {
           display: inline-flex;
           align-items: center;
           line-height: 1.25;
+          border: 1px solid transparent;
         }
 
         .navbar-navlink:hover {
           color: #0f172a;
-          background: #f8fafc;
+          background: #f1f5f9;
         }
 
         .navbar-navlink:focus-visible {
@@ -495,42 +543,37 @@ export default function Navbar() {
 
         .navbar-navlink-active {
           color: #4f46e5 !important;
-          background: #eef2ff !important;
+          background: #ffffff !important;
+          border-color: #e0e7ff !important;
           font-weight: 600 !important;
+          box-shadow: 0 1px 3px rgba(79, 70, 229, 0.08);
         }
 
         .navbar-role-badge {
           font-weight: 600;
         }
 
-        /* Actions Auth Desktop */
-        .navbar-auth-actions {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
         /* Bouton Connexion (Action secondaire) */
         .navbar-btn-login {
-          padding: 8px 16px;
-          border-radius: 9px;
+          padding: 6px 14px;
+          border-radius: 8px;
           font-size: 13.5px;
           font-weight: 600;
           color: #334155;
           text-decoration: none;
           background: transparent;
-          border: 1px solid #e2e8f0;
+          border: 1px solid transparent;
           transition: all 0.15s ease;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          line-height: 1.2;
+          line-height: 1.25;
         }
 
         .navbar-btn-login:hover {
           color: #0f172a;
-          background: #f8fafc;
-          border-color: #cbd5e1;
+          background: #ffffff;
+          border-color: #e2e8f0;
         }
 
         .navbar-btn-login:focus-visible {
@@ -539,32 +582,32 @@ export default function Navbar() {
         }
 
         .navbar-btn-login-active {
-          border-color: #c7d2fe;
           color: #4f46e5;
-          background: #eef2ff;
+          background: #ffffff;
+          border-color: #c7d2fe;
         }
 
-        /* Bouton S'inscrire (Action principale CTA) */
+        /* Bouton S'inscrire (Action principale / CTA) */
         .navbar-btn-register {
-          padding: 8px 18px;
-          border-radius: 9px;
+          padding: 7px 16px;
+          border-radius: 8px;
           font-size: 13.5px;
           font-weight: 600;
           color: #ffffff;
           text-decoration: none;
           background: linear-gradient(135deg, #4f46e5, #6366f1);
-          box-shadow: 0 2px 8px rgba(79, 70, 229, 0.28);
-          transition: all 0.18s ease;
+          box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+          transition: all 0.15s ease;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          line-height: 1.2;
+          line-height: 1.25;
           border: 1px solid transparent;
         }
 
         .navbar-btn-register:hover {
           background: linear-gradient(135deg, #4338ca, #4f46e5);
-          box-shadow: 0 4px 14px rgba(79, 70, 229, 0.38);
+          box-shadow: 0 3px 10px rgba(79, 70, 229, 0.35);
           transform: translateY(-1px);
         }
 
@@ -581,7 +624,7 @@ export default function Navbar() {
         .navbar-icon-btn {
           position: relative;
           padding: 8px;
-          border-radius: 10px;
+          border-radius: 9px;
           color: #475569;
           display: inline-flex;
           align-items: center;
@@ -623,15 +666,15 @@ export default function Navbar() {
 
         /* Avatar Utilisateur */
         .navbar-avatar-btn {
-          width: 38px;
-          height: 38px;
+          width: 36px;
+          height: 36px;
           border-radius: 99px;
           color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: 700;
-          font-size: 14.5px;
+          font-size: 14px;
           border: 2px solid #ffffff;
           box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
           cursor: pointer;
@@ -639,7 +682,7 @@ export default function Navbar() {
         }
 
         .navbar-avatar-btn:hover {
-          transform: scale(1.04);
+          transform: scale(1.05);
           box-shadow: 0 3px 10px rgba(79, 70, 229, 0.3);
         }
 
@@ -746,7 +789,7 @@ export default function Navbar() {
           justify-content: center;
           width: 38px;
           height: 38px;
-          border-radius: 9px;
+          border-radius: 8px;
           border: 1px solid #e2e8f0;
           background: #ffffff;
           color: #334155;
@@ -829,8 +872,8 @@ export default function Navbar() {
         }
 
         .navbar-mobile-btn-login {
-          padding: 11px 16px;
-          border-radius: 10px;
+          padding: 10px 16px;
+          border-radius: 8px;
           font-size: 14px;
           font-weight: 600;
           color: #334155;
@@ -842,15 +885,15 @@ export default function Navbar() {
         }
 
         .navbar-mobile-btn-register {
-          padding: 11px 16px;
-          border-radius: 10px;
+          padding: 10px 16px;
+          border-radius: 8px;
           font-size: 14px;
           font-weight: 600;
           color: #ffffff;
           text-align: center;
           text-decoration: none;
           background: linear-gradient(135deg, #4f46e5, #6366f1);
-          box-shadow: 0 2px 8px rgba(79, 70, 229, 0.28);
+          box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
           transition: all 0.15s ease;
         }
 
@@ -860,8 +903,8 @@ export default function Navbar() {
           justify-content: center;
           gap: 8px;
           width: 100%;
-          padding: 11px 16px;
-          border-radius: 10px;
+          padding: 10px 16px;
+          border-radius: 8px;
           font-size: 14px;
           font-weight: 600;
           color: #ef4444;
@@ -874,6 +917,10 @@ export default function Navbar() {
 
         /* Responsive Breakpoints */
         @media (max-width: 820px) {
+          .navbar-container {
+            display: flex !important;
+            justify-content: space-between !important;
+          }
           .navbar-desktop-nav {
             display: none !important;
           }
@@ -899,4 +946,5 @@ export default function Navbar() {
       `}</style>
     </>
   );
-}
+}
+
